@@ -1,0 +1,201 @@
+.divsection {
+  width: 200px;
+  height: 140px;
+  background-color: white;
+  border-radius: 20px;
+  margin: 23px;
+  position: relative;
+  align-content: center;
+}
+.displayflexhome {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+.sizeboxUnderSaidbar {
+  width: 15%;
+  height: 100vh;
+  margin: 0px;
+  padding: 0px;
+}
+.homepage {
+  justify-items: center;
+  width: 85%;
+}
+.displayflexjust {
+  display: flex;
+}
+.divsection-title {
+  width: 150px;
+  height: 40px;
+  border-radius: 30px;
+  background-color: #0a9b80;
+  position: absolute;
+  top: -20px;
+  left: 25px;
+  justify-items: center;
+}
+.divsection-title-text {
+  margin-top: 10px;
+  font-weight: bold;
+  font-family: "amiri";
+  font-size: 20px;
+}
+.image {
+  width: 100px;
+  height: 100px;
+  margin: 0px;
+  margin-top: 20px;
+  margin-left: 48px;
+}
+.no-select {
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -o-user-select: none; /* Opera */
+  user-select: none; /* Standard syntax */
+}
+.zoom-div {
+  transition: transform 0.2s ease; /* لإضافة تأثير انتقالي سلس */
+}
+
+.zoom-div:hover {
+  transform: scale(1.1); /* تكبير العنصر بنسبة 1.2 عند التمرير عليه */
+}
+.divforlogintitlehome {
+  text-align: center;
+  font-family: "amiri";
+  font-size: 25px;
+  color: white;
+  margin-right: 20px;
+  padding: 10px;
+  padding-bottom: 60px;
+}
+.divfortitleofmanagement {
+  font-family: "amiri";
+  color: white;
+  margin: 0px;
+  padding: 0px;
+  font-size: 32px;
+}
+.subhomepage {
+  width: 95%;
+  height: 75%;
+  margin: 0%;
+  padding: 0%;
+}
+.divforbuttons {
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+  width: 100%;
+  height: 8%;
+  margin: 0%;
+  padding: 0%;
+}
+:root {
+  --primary-color: rgb(16, 89, 75);
+  --secondry-color: rgb(255, 255, 255);
+  --shadow-color: rgb(10, 156, 129);
+  --button-color: #97c1ab;
+}
+
+.divforconten {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  margin: 0%;
+  padding: 0%;
+  justify-items: center;
+  background-color: var(--secondry-color);
+  overflow-y: auto;
+}
+.divforaddmosque {
+  width: 100%;
+  height: 80%;
+  border-radius: 20px;
+  margin: 0%;
+  padding: 0%;
+  justify-items: center;
+  background-color: var(--secondry-color);
+  overflow-y: auto;
+}
+.divforsearchandcards {
+  width: 80%;
+  height: 100%;
+}
+.divforsearch {
+  width: 100%;
+  height: 15%;
+}
+.divforcards {
+  width: 100%;
+  height: 85%;
+  max-height: 490px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box; /* إضافة box-sizing */
+}
+.dataforproperty {
+  width: 100%;
+  height: 10%;
+  justify-items: center;
+  align-content: center;
+  margin: 0%;
+  padding: 0%;
+  font-size: 25px;
+  font-family: "amiri";
+}
+.RowForInsertinputs {
+  display: flex;
+  margin: 0%;
+  padding: 0%;
+  width: 95%;
+  height: 10%;
+  align-items: center;
+  justify-content: end;
+}
+.RowForInsertinputs2 {
+  display: flex;
+  width: 90%;
+  height: 12%;
+  align-items: center;
+  justify-content: center;
+}
+.RowForInsertinputs3 {
+  width: 100%;
+  height: 66%;
+  align-items: center;
+  justify-items: center;
+  overflow-y: auto;
+}
+.Allinputs {
+  width: 100%;
+  height: 100%;
+}
+
+.st_hr1managment {
+  align-self: center;
+  width: 100%;
+  margin-left: 5px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-right: 0%;
+}
+.st_hr2managment {
+  align-self: center;
+  width: 100%;
+  margin-right: 5px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-left: 0%;
+}
+.deviderwithword {
+  display: flex;
+  font-family: "amiri";
+  color: rgb(0, 0, 0);
+  width: 100%;
+  margin: 0%;
+  padding: 0%;
+  font-size: 10px;
+}

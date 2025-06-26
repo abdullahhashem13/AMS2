@@ -1,0 +1,66 @@
+.custom-select-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: relative;
+}
+
+.custom-select-container label {
+  margin-bottom: 5px;
+  font-weight: 500;
+  text-align: right;
+}
+
+.select-wrapper {
+  width: 100%;
+  height: 40px;
+  direction: rtl;
+}
+
+/* تنسيق مكون SearchableSelect ليتناسب مع التصميم */
+.select-wrapper > div {
+  height: 40px;
+  min-height: 40px;
+}
+
+.select-wrapper .css-1s2u09g-control,
+.select-wrapper .css-1pahdxg-control {
+  height: 40px;
+  min-height: 40px;
+  border-color: #ced4da;
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+.select-wrapper .css-1s2u09g-control:hover {
+  border-color: #80bdff;
+}
+
+.select-wrapper .css-14el2xx-placeholder {
+  text-align: right;
+}
+
+.select-wrapper .css-qc6sy-singleValue {
+  text-align: right;
+}
+
+.select-wrapper .css-26l3qy-menu {
+  text-align: right;
+  z-index: 9999;
+}
+
+.select-wrapper .css-4ljt47-MenuList {
+  text-align: right;
+}
+
+.select-wrapper .css-1n7v3ny-option {
+  text-align: right;
+  cursor: pointer;
+}
+
+.error-message {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+  text-align: left;
+}

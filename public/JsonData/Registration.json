@@ -1,0 +1,26 @@
+{
+  "Registration": [
+    {
+      "id": "3ab0",
+      "username": "Shsrhrshrs",
+      "password": "12345678",
+      "confirmPassword": "12345678",
+      "fullName": "عبدالله هاشم الحامد",
+      "phoneNumber": "777565453",
+      "address": "الغويزي",
+      "educationalQualification": "بكلاريوس",
+      "gender": "ذكر"
+    },
+    {
+      "id": "5237",
+      "username": "Shsrhrshrs",
+      "password": "87654321",
+      "confirmPassword": "87654321",
+      "fullName": "بلاببلالابلاب",
+      "phoneNumber": "777656453",
+      "address": "الغويزي",
+      "educationalQualification": "ماجستير",
+      "gender": "ذكر"
+    }
+  ]
+}

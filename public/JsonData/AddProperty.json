@@ -1,0 +1,53 @@
+{
+  "AddProperty": [
+    {
+      "id": "c271",
+      "property_number": "2_9",
+      "property_type": "",
+      "branch_name": "",
+      "mosque_name": "",
+      "property_rent": "2000000",
+      "property_statue": "",
+      "property_governorate": "حضرموت",
+      "property_city": "المكلا",
+      "property_neighborhood": "السلام",
+      "property_north": "مطعم",
+      "property_south": "بقالة",
+      "property_east": "مستشفى",
+      "property_west": "مقبرة",
+      "property_property_city": "n"
+    },
+    {
+      "id": "cc74",
+      "property_number": "سيريس",
+      "property_type": "",
+      "branch_name": "",
+      "mosque_name": "",
+      "property_rent": "نتنم",
+      "property_statue": "",
+      "property_governorate": "نمت",
+      "property_city": "منتنم",
+      "property_neighborhood": "نتنمت",
+      "property_north": "نمتمننمت",
+      "property_south": "نمت",
+      "property_east": "نمتنم",
+      "property_west": "نمتنتمنت"
+    },
+    {
+      "id": "98fe",
+      "property_number": "kjh",
+      "property_type": "بيت",
+      "branch_name": "المكلا",
+      "mosque_name": "الروضة",
+      "property_rent": "576576576",
+      "property_statue": " متاحة ",
+      "property_governorate": "kjjk",
+      "property_city": ";ljlkjsd",
+      "property_neighborhood": "jkj",
+      "property_north": "jkbkjb",
+      "property_south": "jkbjk",
+      "property_east": "jkbjkb",
+      "property_west": "jkbjb"
+    }
+  ]
+}

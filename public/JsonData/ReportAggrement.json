@@ -1,0 +1,16 @@
+{
+  "ReportAggrement": [
+    {
+      "id": "3891",
+      "branch_name": "الشحر",
+      "aggrement_agreementType": "مصلى",
+      "builderMosque_name": "محمد علي الحامد"
+    },
+    {
+      "id": "aa9c",
+      "branch_name": "المكلا",
+      "aggrement_agreementType": "مسجد",
+      "builderMosque_name": "محمد علي الحامد"
+    }
+  ]
+}

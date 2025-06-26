@@ -1,0 +1,16 @@
+.submitinput {
+  padding: 0%;
+  border-radius: 20px;
+  margin: 0px 5px 0px 5px;
+  width: 100px;
+  height: 30px;
+  border: none;
+  background-color: var(--button-color);
+  font-weight: bold;
+  font-family: "amiri";
+  font-size: 18px;
+}
+.submitinput:hover {
+  background-color: var(--primary-color);
+  color: var(--secondry-color);
+}

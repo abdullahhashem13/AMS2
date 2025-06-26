@@ -1,0 +1,104 @@
+:root {
+  --primary-color: rgb(16, 89, 75);
+  --secondry-color: rgb(255, 255, 255);
+  --shadow-color: rgb(10, 156, 129);
+}
+.saidbar {
+  height: 100vh;
+  width: 200px;
+  background-color: white;
+  border-top-right-radius: 50px;
+  border-bottom-right-radius: 20px;
+  background-image: url("logo.jpg");
+  background-size: 150px 170px;
+  background-repeat: no-repeat;
+  background-position: top center;
+  padding-top: 200px;
+  box-sizing: border-box;
+  margin: 0%;
+  position: fixed; /* لتثبيت الشريط الجانبي */
+  top: 0;
+  left: 0;
+}
+.displayflex {
+  display: flex;
+}
+.centeritem {
+  width: 100px;
+  height: auto;
+  justify-items: center;
+  align-content: center;
+  padding: 0px;
+  margin: 0%;
+}
+.imageprofile {
+  height: 40px;
+  width: 40px;
+  border-radius: 10px;
+  opacity: 80%;
+  margin-right: 10px;
+  margin-left: 20px;
+  margin-bottom: 0%;
+  margin-top: 0%;
+  padding: 0%;
+}
+.nameprofile {
+  font-size: 15px;
+  font-weight: bold;
+  font-family: "amiri";
+  margin: 0px;
+  padding: 0px;
+}
+.namerole {
+  font-size: 14px;
+  font-weight: bold;
+  font-family: "amiri";
+  margin: 0px;
+  padding: 0px;
+}
+.saidbarlist {
+  height: 88%;
+  padding: 0%;
+  width: 100%;
+  position: relative; /* إضافة حاوية مرجعية */
+}
+
+.saidbarlist .row.logout {
+  /* إضافة فئة جديدة لعنصر تسجيل الخروج */
+  position: absolute;
+
+  bottom: 0px;
+  left: 0px;
+}
+.saidbarlist .row {
+  width: 100%;
+  height: 50px;
+  list-style-type: none;
+  margin: 0%;
+  display: flex;
+  flex-direction: row;
+  color: black;
+  justify-content: center;
+  align-items: center;
+  font-family: "amiri";
+  font-size: 20px;
+  font-weight: bold;
+}
+.row #icon {
+  flex: 20%;
+  display: grid;
+  place-items: center;
+}
+.row #title {
+  flex: 80%;
+  display: grid;
+  place-items: center;
+}
+.saidbarlist .row:hover {
+  cursor: pointer;
+  background-color: rgb(10, 156, 129);
+}
+.saidbarlist #active {
+  background-color: var(--primary-color);
+  color: white;
+}

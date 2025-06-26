@@ -1,0 +1,12 @@
+{
+  "ReportEmployee": [
+    {
+      "id": "92c8",
+      "employee_gender": "ذكر",
+      "mosque_name": "الروضة",
+      "employee_type": "مصلى",
+      "employee_statue": "فعال",
+      "employee_workAs": "ارشادي"
+    }
+  ]
+}

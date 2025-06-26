@@ -1,0 +1,36 @@
+body {
+  background-color: rgb(16, 89, 75);
+  margin: 0px;
+  padding: 0px;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+.displayflex {
+  display: flex;
+}
+
+.divwhite {
+  width: 600px;
+  height: 670px;
+  background-color: white;
+  background-image: url("logo.jpg");
+  background-size: 200px 230px;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-bottom-right-radius: 1000px;
+  border-top-left-radius: 1000px;
+  margin: 20px;
+}
+.logo {
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0.9),
+      rgba(255, 255, 255, 0.9)
+    ),
+    url("logo.jpg");
+  background-size: 50% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+}

@@ -1,0 +1,42 @@
+/* تنسيق نافذة النجاح */
+.success-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  width: 400px;
+  max-width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.success-message-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #28a745;
+  margin-bottom: 15px;
+}
+
+.success-message-body {
+  font-size: 18px;
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+.success-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 30px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.success-button:hover {
+  background-color: #218838;
+}

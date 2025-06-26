@@ -1,0 +1,15 @@
+{
+  "AddRevenues": [
+    {
+      "id": "218f",
+      "receiptVoucher_description": "ايجار شهر 12 من عام 2024",
+      "tenant_name": "محمد علي المحمدي",
+      "receiptVoucher_date": "2025-03-05",
+      "receiptVoucher_amount": "600000",
+      "receiptVoucher_writtenamount": "ستمائة الف ريال يمني فقط ",
+      "receiptVoucher_bondnumber": "3245235",
+      "mosque_name": "عمر",
+      "property_name": "5_5"
+    }
+  ]
+}

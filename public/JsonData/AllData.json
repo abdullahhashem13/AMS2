@@ -1,0 +1,154 @@
+{
+  "Branches": [
+    {
+      "id": "d6c9",
+      "name": "المكلا",
+      "manager": "احمد علي محمد السعدي",
+      "phone": "777000111",
+      "governorate": "حضرموت",
+      "city": "المكلا",
+      "neighborhood": "السلام"
+    },
+    {
+      "id": "ad7b",
+      "name": "الشحر",
+      "manager": "عبدالله هاشم احمد الحامد",
+      "phone": "777315622",
+      "governorate": "حضرموت",
+      "city": "الشحر",
+      "neighborhood": "السده"
+    }
+  ],
+  "Tenants": [
+    {
+      "id": "066f",
+      "name": "محمد علي احمد الحامد",
+      "phone": "777000111",
+      "IDnumber": "84897948",
+      "gender": "ذكر",
+      "type": "حالي",
+      "governorate": "حضرموت",
+      "city": "المكلا",
+      "neighborhood": "السلام"
+    },
+    {
+      "id": "4cd8",
+      "name": "عبدالله هاشم أحمد الحامد",
+      "phone": "777000111",
+      "IDnumber": "84897949",
+      "gender": "ذكر",
+      "type": "حالي",
+      "governorate": "حضرموت",
+      "city": "المكلا",
+      "neighborhood": "السلام"
+    }
+  ],
+  "TenantWaring": [
+    {
+      "tenant_id": "4cd8",
+      "typeOfWarning": "إنذار أول",
+      "date": "2025-06-26",
+      "description": "متأخرات",
+      "id": "3aec"
+    },
+    {
+      "tenant_id": "4cd8",
+      "typeOfWarning": "إنذار ثاني",
+      "date": "2025-06-26",
+      "description": "متأخرات",
+      "id": "0a13"
+    }
+  ],
+  "TypeOfMosque": [
+    {
+      "id": "ed57",
+      "name": "جامع"
+    }
+  ],
+  "Mosques": [
+    {
+      "id": "a1fc",
+      "name": "الغالبي",
+      "number": "1",
+      "branch_id": "d6c9",
+      "type_id": "ed57",
+      "statue": "جاهز",
+      "isForAwgaf": true,
+      "governorate": "حضرموت",
+      "city": "المكلا",
+      "neighborhood": "السلام",
+      "numberOfProperty": "10"
+    },
+    {
+      "id": "e587",
+      "name": "الروضة",
+      "number": "2",
+      "branch_id": "d6c9",
+      "type_id": "ed57",
+      "statue": "جاهز",
+      "isForAwgaf": false,
+      "governorate": "حضرموت",
+      "city": "المكلا",
+      "neighborhood": "السلام",
+      "numberOfProperty": "6"
+    }
+  ],
+  "TypesOfEmployee": [],
+  "Employees": [],
+  "EmployeeWaring": [],
+  "Properties": [
+    {
+      "id": "8291",
+      "property_number": "1-1",
+      "property_type_id": "6669",
+      "branch_id": "d6c9",
+      "mosque_id": "c0cc",
+      "property_rent": "2000000",
+      "property_statue": "متاحة",
+      "property_governorate": "حضرموت",
+      "property_city": "المكلا",
+      "property_neighborhood": "السلام",
+      "property_north": "مطعم",
+      "property_south": "بقالة",
+      "property_east": "مستشفى",
+      "property_west": "مقبرة",
+      "branch_name": "المكلا",
+      "mosque_name": "الرحمه",
+      "property_type": "دكان"
+    }
+  ],
+  "TypeOfProperty": [
+    {
+      "id": "6669",
+      "property_type": "دكان"
+    }
+  ],
+  "Gauidnces": [],
+  "Expenses": [],
+  "Revenues": [],
+  "Aggrements": [],
+  "Builder": [],
+  "LandFarmingContract": [],
+  "PropertyContract": [
+    {
+      "id": "614d",
+      "contract_landlord": "مكتب وزارة الأوقاف",
+      "tenant_name": "066f",
+      "property_number": "8291",
+      "contract_statue": "منتهي",
+      "contract_contractNumber": "44534",
+      "contract_creationDate": "2025-06-25",
+      "contract_startDate": "2025-06-25",
+      "contract_endDate": "2025-06-25",
+      "branch_name": "d6c9",
+      "contract_monthlyRent": "250000",
+      "contract_yerlyRent": "3000000",
+      "contract_purposeOfLease": "الانتقاع",
+      "contract_initialPayment": "6000000",
+      "contract_landArea": "12*12",
+      "renewal_order": ""
+    }
+  ],
+  "WhiteLandContract": [],
+  "RenewlyContract": []
+}

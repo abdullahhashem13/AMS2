@@ -1,0 +1,221 @@
+.erorrinput1 {
+  color: yellow;
+  font-size: 10px;
+  margin: 0;
+  margin-left: 250px;
+}
+.spacebetweepagesLoginAndRegistration {
+  width: 140px;
+}
+.sizeboxwidth4 {
+  width: 4px;
+}
+.sizeboxwidth20 {
+  width: 20px;
+}
+.sizebox5 {
+  height: 5px;
+}
+.sizebox10 {
+  height: 10px;
+}
+.sizebox20 {
+  height: 20px;
+}
+.sizebox30 {
+  height: 30px;
+}
+.divforlogintitle {
+  text-align: center;
+  font-family: "amiri";
+  font-size: 25px;
+  color: white;
+}
+.divforcontainerlogin {
+  justify-items: center;
+}
+
+.divforloginword {
+  display: flex;
+  font-family: "amiri";
+  color: white;
+}
+
+.st_hr1 {
+  align-self: center;
+  width: 50px;
+  margin-left: 10px;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.st_hr2 {
+  align-self: center;
+  width: 50px;
+  margin-right: 10px;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.inputgeneral {
+  display: block;
+  width: 400px;
+  height: 40px;
+  border-radius: 50px;
+  padding-right: 40px;
+  position: relative;
+  border: 0px;
+}
+.inputgeneral2 {
+  display: block;
+  width: 300px;
+  height: 40px;
+  border-radius: 50px;
+  padding-right: 40px;
+  position: relative;
+  border: 0px;
+}
+.inputgeneral3 {
+  display: block;
+  width: 250px;
+  height: 35px;
+  border-radius: 50px;
+  padding-right: 40px;
+  position: relative;
+  border: 0px;
+}
+.inputgeneralgender {
+  display: block;
+  width: 120px;
+  height: 35px;
+  border-radius: 50px;
+  padding-right: 40px;
+  position: relative;
+  border: 0px;
+}
+.inputgeneralgradu {
+  display: block;
+  width: 290px;
+  height: 35px;
+  border-radius: 50px;
+  padding-right: 40px;
+  position: relative;
+  border: 0px;
+}
+.inputbutton {
+  width: 350px;
+  height: 40px;
+  border-radius: 50px;
+  background-color: rgb(10, 156, 129);
+  font-weight: bold;
+  font-size: 20px;
+  border-color: rgb(10, 156, 129);
+}
+.labelgeneral {
+  color: white;
+  font-family: "cario";
+  display: block;
+  text-align: end;
+  padding-right: 20px;
+  padding-bottom: 3px;
+  font-weight: bold;
+  font-size: 14px;
+}
+.inputcheckbox {
+  display: block;
+  width: 17px;
+  height: 17px;
+  margin-right: 20px;
+}
+.labelcheckbox {
+  color: white;
+  font-family: "cairo";
+  font-weight: bold;
+  padding-top: 4px;
+  padding-right: 5px;
+}
+.iconUserName {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 26px;
+  left: 308px;
+  opacity: 90%;
+}
+.iconUserNameRe {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 26px;
+  left: 406px;
+  opacity: 90%;
+}
+.iconPassword {
+  width: 21px;
+  height: 21px;
+  position: absolute;
+  top: 32px;
+  left: 312px;
+  opacity: 90%;
+}
+.iconPasswordRe {
+  width: 21px;
+  height: 21px;
+  position: absolute;
+  top: 30px;
+  left: 411px;
+  opacity: 90%;
+}
+.icongrad {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 28px;
+  left: 260px;
+  opacity: 90%;
+}
+.icongender {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 28px;
+  left: 90px;
+  opacity: 90%;
+}
+.iconfulname {
+  width: 23px;
+  height: 23px;
+  position: absolute;
+  top: 30px;
+  left: 409px;
+  opacity: 90%;
+}
+.iconyemen {
+  width: 26px;
+  height: 18px;
+  position: absolute;
+  top: 32px;
+  left: 20px;
+  opacity: 90%;
+}
+.iconkeyyemen {
+  position: absolute;
+  top: 11px;
+  left: 50px;
+  opacity: 90%;
+  font-size: 15px;
+}
+/* تنسيق رسائل الخطأ */
+.error-message {
+  color: #ff0000;
+  font-size: 10px;
+  margin-top: 2px;
+  text-align: right;
+  font-weight: 400;
+  direction: rtl;
+}
+
+/* حاوية الإدخال لإضافة مساحة لرسالة الخطأ */
+.input-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}

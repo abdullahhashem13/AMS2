@@ -1,0 +1,84 @@
+:root {
+  --primary-color: rgb(16, 89, 75);
+  --secondry-color: rgb(255, 255, 255);
+  --shadow-color: rgb(10, 156, 129);
+  --button-color: #97c1ab;
+}
+.cards {
+  background-color: var(--button-color);
+  width: 100%;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.cards:hover {
+  background-color: var(--shadow-color);
+}
+p {
+  margin: 0%;
+  padding: 4px;
+  padding-left: 15px;
+  font-weight: bold;
+  font-family: "amiri";
+}
+.alinmentcenter {
+  align-items: center;
+}
+.deleteAndEditicons {
+  padding-right: 15px;
+  padding-left: 60px;
+}
+.spacebetweenicons {
+  width: 6px;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-content {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.18);
+  padding: 32px 24px 24px 24px;
+  min-width: 340px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  direction: rtl;
+}
+.close-modal-btn {
+  position: absolute;
+  top: 10px;
+  left: 16px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #888;
+  cursor: pointer;
+  z-index: 2;
+}
+.details-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+}
+.details-label {
+  min-width: 120px;
+  color: #2a5d4d;
+  font-weight: bold;
+  margin-left: 10px;
+}

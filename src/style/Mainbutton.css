@@ -1,0 +1,38 @@
+:root {
+  --primary-color: rgb(16, 89, 75);
+  --secondry-color: rgb(255, 255, 255);
+  --shadow-color: rgb(10, 156, 129);
+  --button-color: #97c1ab;
+}
+.mainbutton {
+  padding: 0%;
+  border-radius: 10px;
+  margin: 0px 5px 0px 5px;
+  width: 80px;
+  height: 30px;
+  border: none;
+  background-color: var(--button-color);
+  font-weight: bold;
+  font-family: "amiri";
+  font-size: 18px;
+}
+.mainbutton:hover {
+  background-color: var(--secondry-color);
+  color: black;
+}
+.Bigbutton {
+  padding: 0%;
+  border-radius: 10px;
+  margin: 0px 5px 0px 5px;
+  width: 120px;
+  height: 30px;
+  border: none;
+  background-color: var(--button-color);
+  font-weight: bold;
+  font-family: "amiri";
+  font-size: 18px;
+}
+.Bigbutton:hover {
+  background-color: var(--secondry-color);
+  color: black;
+}

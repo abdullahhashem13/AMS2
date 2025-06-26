@@ -1,0 +1,125 @@
+@keyframes popIn {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes popOut {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.modal-content {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 20px;
+  width: 500px;
+  max-width: 90%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  direction: rtl; /* تأكيد أن الاتجاه من اليمين إلى اليسار */
+  font-family: "Amiri", serif; /* تعيين الخط لكل المحتوى */
+  animation: popIn 0.3s ease-out forwards; /* إضافة انيميشن pop */
+}
+
+.modal-content.closing {
+  animation: popOut 0.3s ease-in forwards;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+.modal-overlay.closing {
+  animation: fadeOut 0.3s ease-in forwards;
+}
+
+.modal-title {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #0a4d3c;
+  font-family: "Amiri", serif;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.details-container {
+  margin-bottom: 20px;
+}
+
+.details-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.details-label {
+  font-weight: bold;
+  color: #0a4d3c;
+  text-align: right; /* محاذاة النص إلى اليمين */
+}
+
+.details-value {
+  text-align: left; /* محاذاة النص إلى اليسار */
+  font-family: "Amiri", serif;
+  font-weight: bold;
+}
+
+.modal-close-btn {
+  background-color: #0a4d3c;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+  font-family: "Amiri", serif;
+}
+
+.modal-close-btn:hover {
+  background-color: #083a2e;
+}

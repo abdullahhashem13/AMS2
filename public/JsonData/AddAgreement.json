@@ -1,0 +1,29 @@
+{
+  "AddAgreement": [
+    {
+      "id": "2098",
+      "aggrement_aggrementNo": "2535",
+      "aggrement_agreementType": "هدم واعادة بناء",
+      "aggrement_date": "2025-04-23",
+      "aggrement_timeToBuild": "تمنت",
+      "aggrement_firstWitness": "منتمن",
+      "aggrement_secondWitness": "هختمهتمن",
+      "aggrement_height": "منتمنتم",
+      "aggrement_width": "منت",
+      "aggrement_totalArea": "نمت",
+      "aggrement_north": "منت",
+      "aggrement_south": "نمنتنمت",
+      "aggrement_east": "منتمنت",
+      "aggrement_west": "منتمن",
+      "builderMosque_name": "منت",
+      "builderMosque_NOIdentity": "منت",
+      "builderMosque_issuedFrom": "متنمنت",
+      "builderMosque_issuedDate": "2025-04-16",
+      "builderMosque_phone": "منت",
+      "builderMosque_governorate": "انانتا",
+      "builderMosque_city": "ناانانع",
+      "builderMosque_neighborhood": "ناناع",
+      "aggrement.aggrement_agreementType": "بناء"
+    }
+  ]
+}
