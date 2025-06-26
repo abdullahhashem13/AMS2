@@ -12,7 +12,7 @@ import Swal from "sweetalert2";
 
 export default function TypesProperty() {
   const [formData, setFormData] = useState({
-    property_type: "",
+    type: "",
   });
   const [error, setErrors] = useState({});
   const [existingTypes, setExistingTypes] = useState([]);
@@ -45,19 +45,17 @@ export default function TypesProperty() {
     const newErrors = {};
     let isValid = true;
 
-    if (!formData.property_type.trim()) {
-      newErrors.property_type = "يرجى إدخال نوع العين";
+    if (!formData.type.trim()) {
+      newErrors.type = "يرجى إدخال نوع العين";
       isValid = false;
-    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.property_type)) {
-      newErrors.property_type = "يجب أن يحتوي نوع العين على أحرف عربية فقط";
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.type)) {
+      newErrors.type = "يجب أن يحتوي نوع العين على أحرف عربية فقط";
       isValid = false;
     }
 
     // التحقق من وجود نوع مكرر
     const isDuplicate = existingTypes.some(
-      (type) =>
-        type.property_type.toLowerCase() ===
-        formData.property_type.toLowerCase()
+      (type) => type.type?.toLowerCase() === formData.type.toLowerCase()
     );
 
     if (isDuplicate) {
@@ -90,7 +88,7 @@ export default function TypesProperty() {
         const newType = await response.json();
         setExistingTypes([...existingTypes, newType]);
         // إعادة تعيين النموذج
-        setFormData({ property_type: "" });
+        setFormData({ type: "" });
         console.log("تمت الإضافة بنجاح!");
       } else {
         const data = await response.json();
@@ -186,18 +184,18 @@ export default function TypesProperty() {
                 <Submitinput text="إضافة" />
                 <div className="input-container">
                   <Inputwithlabel
-                    name="property_type"
+                    name="type"
                     text="نوع العين"
-                    value={formData.property_type}
+                    value={formData.type}
                     change={handleChange}
                   />
                   {
                     // @ts-ignore
-                    error.property_type && (
+                    error.type && (
                       <div className="error-message">
                         {
                           // @ts-ignore
-                          error.property_type
+                          error.type
                         }
                       </div>
                     )
@@ -226,7 +224,7 @@ export default function TypesProperty() {
                 existingTypes.map((type) => (
                   <CardForTypesOfManagement
                     key={type.id}
-                    text={type.property_type}
+                    text={type.type}
                     onDelete={() => handleDeleteType(type.id)}
                   />
                 ))

@@ -18,24 +18,25 @@ export default function EditProperty() {
   const { id } = useParams(); // استقبال معرف العين من الرابط
   const [originalPropertyNumber, setOriginalPropertyNumber] = useState(""); // لتخزين رقم العين الأصلي
   const [formData, setFormData] = useState({
-    property_number: "",
-    property_type_id: "", // تغيير من property_type إلى property_type_id
-    branch_id: "", // تغيير من branch_name إلى branch_id
-    mosque_id: "", // تغيير من mosque_name إلى mosque_id
-    property_rent: "",
-    property_statue: "",
-    property_governorate: "",
-    property_city: "",
-    property_neighborhood: "",
-    property_north: "",
-    property_south: "",
-    property_east: "",
-    property_west: "",
+    number: "",
+    type_id: "",
+    type: "",
+    mosque_id: "",
+    name: "",
+    rent: "",
+    statue: "",
+    governorate: "",
+    city: "",
+    neighborhood: "",
+    north: "",
+    south: "",
+    east: "",
+    west: "",
+    id: "",
   });
   const [error, setErrors] = useState({});
   const [existingPropertyNumbers, setExistingPropertyNumbers] = useState([]);
   const [propertyTypes, setPropertyTypes] = useState([]);
-  const [branches, setBranches] = useState([]); // إضافة حالة لتخزين الفروع
   const [mosques, setMosques] = useState([]); // إضافة حالة لتخزين المساجد
 
   // جلب بيانات العين المحددة والبيانات الأخرى عند تحميل الصفحة
@@ -49,7 +50,7 @@ export default function EditProperty() {
         if (propertyResponse.ok) {
           const propertyData = await propertyResponse.json();
           setFormData(propertyData);
-          setOriginalPropertyNumber(propertyData.property_number);
+          setOriginalPropertyNumber(propertyData.number);
           console.log("Property data loaded:", propertyData);
         } else {
           console.error("Failed to fetch property:", propertyResponse.status);
@@ -64,7 +65,7 @@ export default function EditProperty() {
           const properties = await propertiesResponse.json();
           const numbers = properties
             .filter((property) => property.id !== id) // استبعاد العين الحالية
-            .map((property) => property.property_number);
+            .map((property) => property.number);
           setExistingPropertyNumbers(numbers);
         }
 
@@ -75,13 +76,6 @@ export default function EditProperty() {
         if (typesResponse.ok) {
           const types = await typesResponse.json();
           setPropertyTypes(types);
-        }
-
-        // جلب الفروع
-        const branchesResponse = await fetch("http://localhost:3001/Branches");
-        if (branchesResponse.ok) {
-          const branchesData = await branchesResponse.json();
-          setBranches(branchesData);
         }
 
         // جلب المساجد
@@ -111,43 +105,39 @@ export default function EditProperty() {
     delete newErrors[name];
 
     // التحقق من رقم العين
-    if (name === "property_number") {
+    if (name === "number") {
       // التحقق من أن القيمة تتبع النمط المطلوب (رقم-رقم)
       const propertyNumberPattern = /^\d+-\d+$/;
 
       if (!value) {
         // @ts-ignore
-        newErrors.property_number = "يجب تعبئة الحقل";
+        newErrors.number = "يجب تعبئة الحقل";
       } else if (!propertyNumberPattern.test(value)) {
         // @ts-ignore
-        newErrors.property_number =
+        newErrors.number =
           "يجب أن يكون رقم العين بالشكل: رقم المسجد-رقم العين (مثال: 9-12)";
       } else if (
         value !== originalPropertyNumber &&
         existingPropertyNumbers.includes(value)
       ) {
         // @ts-ignore
-        newErrors.property_number = "رقم العين موجود بالفعل";
+        newErrors.number = "رقم العين موجود بالفعل";
       }
     }
 
     // التحقق من إيجار العين (أرقام فقط)
-    if (name === "property_rent") {
+    if (name === "rent") {
       if (!value) {
         // @ts-ignore
-        newErrors.property_rent = "يجب تعبئة الحقل";
+        newErrors.rent = "يجب تعبئة الحقل";
       } else if (!/^\d+$/.test(value)) {
         // @ts-ignore
-        newErrors.property_rent = "يجب أن يحتوي إيجار العين على أرقام فقط";
+        newErrors.rent = "يجب أن يحتوي إيجار العين على أرقام فقط";
       }
     }
 
     // التحقق من حقول الموقع (أحرف عربية فقط)
-    if (
-      name === "property_governorate" ||
-      name === "property_city" ||
-      name === "property_neighborhood"
-    ) {
+    if (name === "governorate" || name === "city" || name === "neighborhood") {
       if (!value) {
         newErrors[name] = "يجب تعبئة الحقل";
       } else if (!/^[\u0600-\u06FF\s]+$/.test(value)) {
@@ -157,14 +147,12 @@ export default function EditProperty() {
 
     // التحقق من حقول الحدود (أحرف عربية وأرقام فقط)
     if (
-      name === "property_north" ||
-      name === "property_south" ||
-      name === "property_east" ||
-      name === "property_west"
+      name === "north" ||
+      name === "south" ||
+      name === "east" ||
+      name === "west"
     ) {
-      if (!value) {
-        newErrors[name] = "يجب تعبئة الحقل";
-      } else if (!/^[\u0600-\u06FF0-9\s]+$/.test(value)) {
+      if (value && !/^[\u0600-\u06FF0-9\s]+$/.test(value)) {
         newErrors[name] = "يجب أن يحتوي الحقل على أحرف عربية وأرقام فقط";
       }
     }
@@ -177,39 +165,33 @@ export default function EditProperty() {
     let errors = {};
 
     // التحقق من رقم العين
-    if (!formData.property_number) {
-      errors.property_number = "يجب تعبئة الحقل";
+    if (!formData.number) {
+      errors.number = "يجب تعبئة الحقل";
       isValid = false;
     } else {
       const propertyNumberPattern = /^\d+-\d+$/;
-      if (!propertyNumberPattern.test(formData.property_number)) {
-        errors.property_number =
+      if (!propertyNumberPattern.test(formData.number)) {
+        errors.number =
           "يجب أن يكون رقم العين بالشكل: رقم المسجد-رقم العين (مثال: 9-12)";
         isValid = false;
       } else if (
-        formData.property_number !== originalPropertyNumber &&
-        existingPropertyNumbers.includes(formData.property_number)
+        formData.number !== originalPropertyNumber &&
+        existingPropertyNumbers.includes(formData.number)
       ) {
-        errors.property_number = "رقم العين موجود بالفعل";
+        errors.number = "رقم العين موجود بالفعل";
         isValid = false;
       }
     }
 
-    // التحقق من اختيار الفرع
-    if (!formData.branch_id) {
-      errors.branch_id = "يجب اختيار الفرع";
-      isValid = false;
-    }
-
     // التحقق من اختيار نوع العين
-    if (!formData.property_type_id) {
-      errors.property_type_id = "يجب اختيار نوع العين";
+    if (!formData.type_id) {
+      errors.type_id = "يجب اختيار نوع العين";
       isValid = false;
     }
 
     // التحقق من اختيار حالة العين
-    if (!formData.property_statue) {
-      errors.property_statue = "يجب اختيار حالة العين";
+    if (!formData.statue) {
+      errors.statue = "يجب اختيار حالة العين";
       isValid = false;
     }
 
@@ -220,19 +202,19 @@ export default function EditProperty() {
     }
 
     // التحقق من إيجار العين (أرقام فقط)
-    if (!formData.property_rent) {
-      errors.property_rent = "يجب تعبئة الحقل";
+    if (!formData.rent) {
+      errors.rent = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^\d+$/.test(formData.property_rent)) {
-      errors.property_rent = "يجب أن يحتوي إيجار العين على أرقام فقط";
+    } else if (!/^\d+$/.test(formData.rent)) {
+      errors.rent = "يجب أن يحتوي إيجار العين على أرقام فقط";
       isValid = false;
     }
 
     // التحقق من حقول الموقع (أحرف عربية فقط)
     const locationFields = [
-      { name: "property_governorate", label: "المحافظة" },
-      { name: "property_city", label: "المدينة" },
-      { name: "property_neighborhood", label: "الحي" },
+      { name: "governorate", label: "المحافظة" },
+      { name: "city", label: "المدينة" },
+      { name: "neighborhood", label: "الحي" },
     ];
 
     locationFields.forEach((field) => {
@@ -247,17 +229,17 @@ export default function EditProperty() {
 
     // التحقق من حقول الحدود (أحرف عربية وأرقام فقط)
     const boundaryFields = [
-      { name: "property_north", label: "الحد الشمالي" },
-      { name: "property_south", label: "الحد الجنوبي" },
-      { name: "property_east", label: "الحد الشرقي" },
-      { name: "property_west", label: "الحد الغربي" },
+      { name: "north", label: "الحد الشمالي" },
+      { name: "south", label: "الحد الجنوبي" },
+      { name: "east", label: "الحد الشرقي" },
+      { name: "west", label: "الحد الغربي" },
     ];
 
     boundaryFields.forEach((field) => {
-      if (!formData[field.name]) {
-        errors[field.name] = "يجب تعبئة الحقل";
-        isValid = false;
-      } else if (!/^[\u0600-\u06FF0-9\s]+$/.test(formData[field.name])) {
+      if (
+        formData[field.name] &&
+        !/^[\u0600-\u06FF0-9\s]+$/.test(formData[field.name])
+      ) {
         errors[
           field.name
         ] = `يجب أن يحتوي ${field.label} على أحرف عربية وأرقام فقط`;
@@ -294,17 +276,7 @@ export default function EditProperty() {
 
     try {
       // إنشاء كائن البيانات للإرسال
-      const dataToSend = {
-        ...formData,
-        // إضافة أسماء الفرع والمسجد ونوع العين للعرض
-        branch_name:
-          branches.find((b) => b.id === formData.branch_id)?.name || "",
-        mosque_name:
-          mosques.find((m) => m.id === formData.mosque_id)?.mosque_name || "",
-        property_type:
-          propertyTypes.find((t) => t.id === formData.property_type_id)
-            ?.property_type || "",
-      };
+      const { name, type, ...dataToSend } = formData;
 
       const response = await fetch(`http://localhost:3001/Properties/${id}`, {
         method: "PUT",
@@ -377,49 +349,30 @@ export default function EditProperty() {
             // action="/management/Properties/AddProperty"
           >
             <Managementdata dataname="تعديل بيانات العين" />
-            <div className="RowForInsertinputs">
+            <div
+              className="RowForInsertinputs"
+              style={{
+                marginBottom: 20,
+              }}
+            >
               <div className="input-container">
                 <SearchableSelect
-                  name="branch_id"
-                  text="تابعة لفرع"
-                  options={branches.map((branch) => ({
-                    value: branch.id,
-                    label: branch.name,
-                  }))}
-                  value={formData.branch_id}
-                  change={handleChange}
-                />
-                {
-                  // @ts-ignore
-                  error.branch_id && (
-                    <div className="error-message">
-                      {
-                        // @ts-ignore
-                        error.branch_id
-                      }
-                    </div>
-                  )
-                }
-              </div>
-              <div className="widthbetween"></div>
-              <div className="input-container">
-                <SearchableSelect
-                  name="property_type_id"
+                  name="type_id"
                   text="نوع العين"
                   options={propertyTypes.map((type) => ({
                     value: type.id,
-                    label: type.property_type,
+                    label: type.type,
                   }))}
-                  value={formData.property_type_id}
+                  value={formData.type_id}
                   change={handleChange}
                 />
                 {
                   // @ts-ignore
-                  error.property_type_id && (
+                  error.type_id && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.property_type_id
+                        error.type_id
                       }
                     </div>
                   )
@@ -428,18 +381,18 @@ export default function EditProperty() {
               <div className="widthbetween"></div>
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.property_number}
-                  name="property_number"
+                  value={formData.number}
+                  name="number"
                   change={handleChange}
                   text="رقم العين"
                 />
                 {
                   // @ts-ignore
-                  error.property_number && (
+                  error.number && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.property_number
+                        error.number
                       }
                     </div>
                   )
@@ -449,8 +402,8 @@ export default function EditProperty() {
             <div className="RowForInsertinputs">
               <div className="input-container">
                 <SelectWithLabel3
-                  value={formData.property_statue}
-                  name="property_statue"
+                  value={formData.statue}
+                  name="statue"
                   change={handleChange}
                   text="حالة العين"
                   // values
@@ -460,11 +413,11 @@ export default function EditProperty() {
                 />
                 {
                   // @ts-ignore
-                  error.property_statue && (
+                  error.statue && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.property_statue
+                        error.statue
                       }
                     </div>
                   )
@@ -473,18 +426,18 @@ export default function EditProperty() {
               <div className="widthbetween"></div>
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.property_rent}
-                  name="property_rent"
+                  value={formData.rent}
+                  name="rent"
                   change={handleChange}
                   text="إيجار العين"
                 />
                 {
                   // @ts-ignore
-                  error.property_rent && (
+                  error.rent && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.property_rent
+                        error.rent
                       }
                     </div>
                   )
@@ -497,7 +450,7 @@ export default function EditProperty() {
                   text="تابعة لمسجد"
                   options={mosques.map((mosque) => ({
                     value: mosque.id,
-                    label: mosque.mosque_name,
+                    label: mosque.name,
                   }))}
                   value={formData.mosque_id}
                   change={handleChange}
@@ -525,18 +478,18 @@ export default function EditProperty() {
             <div className="RowForInsertinputs">
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.property_neighborhood}
-                  name="property_neighborhood"
+                  value={formData.neighborhood}
+                  name="neighborhood"
                   change={handleChange}
                   text="الحي"
                 />
                 {
                   // @ts-ignore
-                  error.property_neighborhood && (
+                  error.neighborhood && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.property_neighborhood
+                        error.neighborhood
                       }
                     </div>
                   )
@@ -545,18 +498,18 @@ export default function EditProperty() {
               <div className="widthbetween"></div>
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.property_city}
-                  name="property_city"
+                  value={formData.city}
+                  name="city"
                   change={handleChange}
                   text="المدينة"
                 />
                 {
                   // @ts-ignore
-                  error.property_city && (
+                  error.city && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.property_city
+                        error.city
                       }
                     </div>
                   )
@@ -565,18 +518,18 @@ export default function EditProperty() {
               <div className="widthbetween"></div>
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.property_governorate}
-                  name="property_governorate"
+                  value={formData.governorate}
+                  name="governorate"
                   change={handleChange}
                   text="المحافظة"
                 />
                 {
                   // @ts-ignore
-                  error.property_governorate && (
+                  error.governorate && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.property_governorate
+                        error.governorate
                       }
                     </div>
                   )
@@ -599,18 +552,18 @@ export default function EditProperty() {
               <div className="RowForInsertinputs">
                 <div className="input-container">
                   <Inputwithlabel
-                    value={formData.property_south}
-                    name="property_south"
+                    value={formData.south}
+                    name="south"
                     change={handleChange}
                     text="جنوب"
                   />
                   {
                     // @ts-ignore
-                    error.property_south && (
+                    error.south && (
                       <div className="error-message">
                         {
                           // @ts-ignore
-                          error.property_south
+                          error.south
                         }
                       </div>
                     )
@@ -622,18 +575,18 @@ export default function EditProperty() {
 
                 <div className="input-container">
                   <Inputwithlabel
-                    value={formData.property_north}
-                    name="property_north"
+                    value={formData.north}
+                    name="north"
                     change={handleChange}
                     text="شمال"
                   />
                   {
                     // @ts-ignore
-                    error.property_north && (
+                    error.north && (
                       <div className="error-message">
                         {
                           // @ts-ignore
-                          error.property_north
+                          error.north
                         }
                       </div>
                     )
@@ -648,18 +601,18 @@ export default function EditProperty() {
               <div className="RowForInsertinputs">
                 <div className="input-container">
                   <Inputwithlabel
-                    value={formData.property_east}
-                    name="property_east"
+                    value={formData.east}
+                    name="east"
                     change={handleChange}
                     text="غرب"
                   />
                   {
                     // @ts-ignore
-                    error.property_east && (
+                    error.east && (
                       <div className="error-message">
                         {
                           // @ts-ignore
-                          error.property_east
+                          error.east
                         }
                       </div>
                     )
@@ -671,18 +624,18 @@ export default function EditProperty() {
 
                 <div className="input-container">
                   <Inputwithlabel
-                    value={formData.property_west}
-                    name="property_west"
+                    value={formData.west}
+                    name="west"
                     change={handleChange}
                     text="شرق"
                   />
                   {
                     // @ts-ignore
-                    error.property_west && (
+                    error.west && (
                       <div className="error-message">
                         {
                           // @ts-ignore
-                          error.property_west
+                          error.west
                         }
                       </div>
                     )

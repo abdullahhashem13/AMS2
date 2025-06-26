@@ -21,19 +21,19 @@ export default function PropertyDetails({ property, onClose }) {
         <div className="modal-body">
           <div className="details-row">
             <span className="details-label">رقم العين:</span>
-            <span className="details-value">{property.property_number}</span>
+            <span className="details-value">{property.number}</span>
           </div>
           <div className="details-row">
             <span className="details-label">نوع العين:</span>
-            <span className="details-value">{property.property_type}</span>
+            <span className="details-value">{property.type}</span>
           </div>
           <div className="details-row">
             <span className="details-label">حالة العين:</span>
-            <span className="details-value">{property.property_statue}</span>
+            <span className="details-value">{property.statue}</span>
           </div>
           <div className="details-row">
             <span className="details-label">الإيجار:</span>
-            <span className="details-value">{property.property_rent}</span>
+            <span className="details-value">{property.rent}</span>
           </div>
           <div className="details-row">
             <span className="details-label">الفرع:</span>
@@ -41,39 +41,35 @@ export default function PropertyDetails({ property, onClose }) {
           </div>
           <div className="details-row">
             <span className="details-label">المسجد:</span>
-            <span className="details-value">{property.mosque_name}</span>
+            <span className="details-value">{property.name}</span>
           </div>
           <div className="details-row">
             <span className="details-label">المحافظة:</span>
-            <span className="details-value">
-              {property.property_governorate}
-            </span>
+            <span className="details-value">{property.governorate}</span>
           </div>
           <div className="details-row">
             <span className="details-label">المدينة:</span>
-            <span className="details-value">{property.property_city}</span>
+            <span className="details-value">{property.city}</span>
           </div>
           <div className="details-row">
             <span className="details-label">الحي:</span>
-            <span className="details-value">
-              {property.property_neighborhood}
-            </span>
+            <span className="details-value">{property.neighborhood}</span>
           </div>
           <div className="details-row">
             <span className="details-label">شمال:</span>
-            <span className="details-value">{property.property_north}</span>
+            <span className="details-value">{property.north}</span>
           </div>
           <div className="details-row">
             <span className="details-label">جنوب:</span>
-            <span className="details-value">{property.property_south}</span>
+            <span className="details-value">{property.south}</span>
           </div>
           <div className="details-row">
             <span className="details-label">شرق:</span>
-            <span className="details-value">{property.property_east}</span>
+            <span className="details-value">{property.east}</span>
           </div>
           <div className="details-row">
             <span className="details-label">غرب:</span>
-            <span className="details-value">{property.property_west}</span>
+            <span className="details-value">{property.west}</span>
           </div>
         </div>
         <div className="modal-footer">

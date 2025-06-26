@@ -98,29 +98,29 @@
   "EmployeeWaring": [],
   "Properties": [
     {
-      "id": "8291",
-      "property_number": "1-1",
-      "property_type_id": "6669",
-      "branch_id": "d6c9",
-      "mosque_id": "c0cc",
-      "property_rent": "2000000",
-      "property_statue": "متاحة",
-      "property_governorate": "حضرموت",
-      "property_city": "المكلا",
-      "property_neighborhood": "السلام",
-      "property_north": "مطعم",
-      "property_south": "بقالة",
-      "property_east": "مستشفى",
-      "property_west": "مقبرة",
-      "branch_name": "المكلا",
-      "mosque_name": "الرحمه",
-      "property_type": "دكان"
+      "id": "025d",
+      "number": "1-1",
+      "type_id": "ca94",
+      "mosque_id": "a1fc",
+      "rent": "10000",
+      "statue": "متاحة",
+      "governorate": "حضرموت",
+      "city": "المكلا",
+      "neighborhood": "السلام",
+      "north": "",
+      "south": "",
+      "east": "",
+      "west": ""
     }
   ],
   "TypeOfProperty": [
     {
-      "id": "6669",
-      "property_type": "دكان"
+      "id": "ca94",
+      "type": "دكان"
+    },
+    {
+      "id": "e3ef",
+      "type": "ارض زراعية"
     }
   ],
   "Gauidnces": [],

@@ -9,13 +9,14 @@ import "../../../style/Table.css";
 import ButtonInput from "../../../components/ButtonInput";
 import SelectWithLabel4 from "../../../components/SelectWithLabel4";
 import SelectWithLabelDynamic from "../../../components/SelectWithLabelDynamic";
+import SearchableSelect from "../../../components/SearchableSelect";
 
 export default function ReportProperty() {
   const [formData, setFormData] = useState({
     branch_id: "الجميع",
     mosque_id: "الجميع",
-    property_type_id: "الجميع",
-    property_statue: "الجميع",
+    type_id: "الجميع",
+    statue: "الجميع",
   });
   const [error, setErrors] = useState({});
   const [properties, setProperties] = useState([]);
@@ -106,16 +107,16 @@ export default function ReportProperty() {
     }
 
     // فلترة حسب نوع العين
-    if (formData.property_type_id !== "الجميع") {
+    if (formData.type_id !== "الجميع") {
       filtered = filtered.filter(
-        (property) => property.property_type_id === formData.property_type_id
+        (property) => property.type_id === formData.type_id
       );
     }
 
     // فلترة حسب حالة العين
-    if (formData.property_statue !== "الجميع") {
+    if (formData.statue !== "الجميع") {
       filtered = filtered.filter(
-        (property) => property.property_statue === formData.property_statue
+        (property) => property.statue === formData.statue
       );
     }
 
@@ -146,28 +147,28 @@ export default function ReportProperty() {
 
   // إعداد خيارات الفروع للقائمة المنسدلة
   const branchOptions = [
-    { id: "الجميع", name: "جميع الفروع" },
+    { value: "الجميع", label: "جميع الفروع" },
     ...branches.map((branch) => ({
-      id: branch.id,
-      name: branch.name || branch.branch_name,
+      value: branch.id,
+      label: branch.name,
     })),
   ];
 
   // إعداد خيارات المساجد للقائمة المنسدلة
   const mosqueOptions = [
-    { id: "الجميع", name: "جميع المساجد" },
+    { value: "الجميع", label: "جميع المساجد" },
     ...mosques.map((mosque) => ({
-      id: mosque.id,
-      name: mosque.mosque_name,
+      value: mosque.id,
+      label: mosque.name,
     })),
   ];
 
   // إعداد خيارات أنواع الأعيان للقائمة المنسدلة
   const propertyTypeOptions = [
-    { id: "الجميع", name: "جميع الأنواع" },
+    { value: "الجميع", label: "جميع الأنواع" },
     ...propertyTypes.map((type) => ({
-      id: type.id,
-      name: type.property_type,
+      value: type.id,
+      label: type.type,
     })),
   ];
 
@@ -200,40 +201,31 @@ export default function ReportProperty() {
               />
             </div>
           </div>
-          <div className="divforconten">
+          <div>
             <form className="divforconten" onSubmit={handleSubmit}>
               <div className="RowForInsertinputs">
-                <SelectWithLabelDynamic
+                <SearchableSelect
                   name="mosque_id"
                   text="المسجد"
+                  options={mosqueOptions}
                   value={formData.mosque_id}
                   change={handleChange}
-                  options={mosqueOptions}
-                  placeholder="اختر المسجد"
-                  valueKey="id"
-                  displayKey="name"
                 />
                 <div className="widthbetween"></div>
-                <SelectWithLabelDynamic
+                <SearchableSelect
                   name="branch_id"
                   text="الفرع"
+                  options={branchOptions}
                   value={formData.branch_id}
                   change={handleChange}
-                  options={branchOptions}
-                  placeholder="اختر الفرع"
-                  valueKey="id"
-                  displayKey="name"
                 />
                 <div className="widthbetween"></div>
-                <SelectWithLabelDynamic
-                  name="property_type_id"
+                <SearchableSelect
+                  name="type_id"
                   text="نوع العين"
-                  value={formData.property_type_id}
-                  change={handleChange}
                   options={propertyTypeOptions}
-                  placeholder="اختر نوع العين"
-                  valueKey="id"
-                  displayKey="name"
+                  value={formData.type_id}
+                  change={handleChange}
                 />
               </div>
               <div className="RowForInsertinputs">
@@ -261,9 +253,9 @@ export default function ReportProperty() {
                   }}
                 >
                   <SelectWithLabel4
-                    name="property_statue"
+                    name="statue"
                     text="حالة العين"
-                    value={formData.property_statue}
+                    value={formData.statue}
                     change={handleChange}
                     // values
                     value1="الجميع"
@@ -298,19 +290,36 @@ export default function ReportProperty() {
                       {filteredProperties.length > 0 ? (
                         filteredProperties.map((property) => (
                           <tr key={property.id}>
-                            {showgovernorate && (
-                              <td>{property.property_governorate}</td>
-                            )}
-                            {showCity && <td>{property.property_city}</td>}
+                            {showgovernorate && <td>{property.governorate}</td>}
+                            {showCity && <td>{property.city}</td>}
                             {showNeighborhood && (
-                              <td>{property.property_neighborhood}</td>
+                              <td>{property.neighborhood}</td>
                             )}
-                            {showRent && <td>{property.property_rent}</td>}
-                            <td>{property.branch_name}</td>
-                            <td>{property.mosque_name}</td>
-                            <td>{property.property_statue}</td>
-                            <td>{property.property_type}</td>
-                            <td>{property.property_number}</td>
+                            {showRent && <td>{property.rent}</td>}
+                            <td>
+                              {(() => {
+                                const mosque = mosques.find(
+                                  (m) =>
+                                    String(m.id) === String(property.mosque_id)
+                                );
+                                const branch = branches.find(
+                                  (b) =>
+                                    String(b.id) === String(mosque?.branch_id)
+                                );
+                                return branch?.name || "";
+                              })()}
+                            </td>
+                            <td>
+                              {mosques.find((m) => m.id === property.mosque_id)
+                                ?.name || ""}
+                            </td>
+                            <td>{property.statue}</td>
+                            <td>
+                              {propertyTypes.find(
+                                (t) => t.id === property.type_id
+                              )?.type || ""}
+                            </td>
+                            <td>{property.number}</td>
                           </tr>
                         ))
                       ) : (

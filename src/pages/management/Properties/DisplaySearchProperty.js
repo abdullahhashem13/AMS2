@@ -43,7 +43,7 @@ export default function DisplaySearchProperty() {
     }
 
     const filtered = properties.filter((property) =>
-      property.property_number.toString().includes(searchTerm)
+      property.number.toString().includes(searchTerm)
     );
     setFilteredProperties(filtered);
   };
@@ -122,9 +122,9 @@ export default function DisplaySearchProperty() {
                     <PropertyCard
                       key={property.id}
                       id={property.id}
-                      number={property.property_number}
-                      type={property.property_type}
-                      status={property.property_statue}
+                      number={property.number}
+                      type={property.type}
+                      status={property.statue}
                       onDelete={handleDeleteProperty}
                     />
                   ))
