@@ -3,7 +3,7 @@ import Inputwithlabel from "../../../components/Inputwithlabel";
 import Mainbutton from "../../../components/Mainbutton";
 import Managementdata from "../../../components/managementdata";
 import Managmenttitle from "../../../components/Managmenttitle";
-import Saidbar from "../../../components/Saidbar";
+import Saidbar from "../../../components/saidbar";
 import SelectWithLabel3 from "../../../components/SelectWithLabel3";
 import Submitinput from "../../../components/submitinput";
 import InputDate from "../../../components/InputDate";

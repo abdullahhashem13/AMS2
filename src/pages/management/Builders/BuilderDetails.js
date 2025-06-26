@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 // @ts-ignore
 import { useParams, useNavigate } from "react-router-dom";
-import Saidbar from "../../../components/Saidbar";
+import Saidbar from "../../../components/saidbar";
 import Managmenttitle from "../../../components/Managmenttitle";
 
 export default function BuilderDetails() {

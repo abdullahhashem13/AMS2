@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Saidbar from "../../../components/Saidbar";
+import Saidbar from "../../../components/saidbar";
 import Managmenttitle from "../../../components/Managmenttitle";
 import Mainbutton from "../../../components/Mainbutton";
 import "../../../style/Table.css";

@@ -3,7 +3,7 @@ import Inputwithlabel from "../../../components/Inputwithlabel";
 import Mainbutton from "../../../components/Mainbutton";
 import Managementdata from "../../../components/managementdata";
 import Managmenttitle from "../../../components/Managmenttitle";
-import Saidbar from "../../../components/Saidbar";
+import Saidbar from "../../../components/saidbar";
 import Submitinput from "../../../components/submitinput";
 import InputDate from "../../../components/InputDate";
 import Bigbutton from "../../../components/Bigbutton";
@@ -641,18 +641,20 @@ export default function AddEmployee() {
                 </button>
               </div>
             ))}
-            {// @ts-ignore
-            error.mosque_assignments && (
-              <div
-                className="error-message"
-                style={{ textAlign: "center", marginTop: "10px" }}
-              >
-                {
-                  // @ts-ignore
-                  error.mosque_assignments
-                }
-              </div>
-            )}
+            {
+              // @ts-ignore
+              error.mosque_assignments && (
+                <div
+                  className="error-message"
+                  style={{ textAlign: "center", marginTop: "10px" }}
+                >
+                  {
+                    // @ts-ignore
+                    error.mosque_assignments
+                  }
+                </div>
+              )
+            }
 
             <div
               className="RowForInsertinputs"

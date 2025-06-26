@@ -1,4 +1,4 @@
-import Saidbar from "../components/Saidbar";
+import Saidbar from "../components/saidbar";
 
 export default function Notfigation() {
   return (

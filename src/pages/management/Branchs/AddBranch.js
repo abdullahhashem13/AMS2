@@ -6,7 +6,7 @@ import Inputwithlabel from "../../../components/Inputwithlabel";
 import Mainbutton from "../../../components/Mainbutton";
 // @ts-ignore
 import Managmenttitle from "../../../components/Managmenttitle";
-import Saidbar from "../../../components/Saidbar";
+import Saidbar from "../../../components/saidbar";
 import Submitinput from "../../../components/submitinput";
 import "../../../style/deblicateError.css";
 import "../../../style/sucsefulMessage.css"; // استيراد ملف CSS الخاص برسالة النجاح

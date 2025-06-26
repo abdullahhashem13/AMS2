@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Mainbutton from "../../../components/Mainbutton";
 import Managmenttitle from "../../../components/Managmenttitle";
-import Saidbar from "../../../components/Saidbar";
+import Saidbar from "../../../components/saidbar";
 import Submitinput from "../../../components/submitinput";
 import "../../../style/Table.css";
 import ButtonInput from "../../../components/ButtonInput";

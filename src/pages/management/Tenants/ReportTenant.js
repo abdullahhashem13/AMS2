@@ -3,7 +3,7 @@ import Bigbutton from "../../../components/Bigbutton";
 import Checkpoint from "../../../components/checkpoint";
 import Mainbutton from "../../../components/Mainbutton";
 import Managmenttitle from "../../../components/Managmenttitle";
-import Saidbar from "../../../components/Saidbar";
+import Saidbar from "../../../components/saidbar";
 import SelectWithLabel from "../../../components/SelectWithLabel";
 import Submitinput from "../../../components/submitinput";
 import "../../../style/Table.css";

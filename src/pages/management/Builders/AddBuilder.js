@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Mainbutton from "../../../components/Mainbutton";
 import Managmenttitle from "../../../components/Managmenttitle";
-import Saidbar from "../../../components/Saidbar";
+import Saidbar from "../../../components/saidbar";
 import Inputwithlabel from "../../../components/Inputwithlabel";
 import InputDate from "../../../components/InputDate";
 import Submitinput from "../../../components/submitinput";

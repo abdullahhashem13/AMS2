@@ -6,7 +6,7 @@ import Inputwithlabel from "../../../components/Inputwithlabel";
 import Mainbutton from "../../../components/Mainbutton";
 import Managementdata from "../../../components/managementdata";
 import Managmenttitle from "../../../components/Managmenttitle";
-import Saidbar from "../../../components/Saidbar";
+import Saidbar from "../../../components/saidbar";
 // @ts-ignore
 import Swal from "sweetalert2"; // إضافة Swal للرسائل
 import SearchableSelect from "../../../components/SearchableSelect";

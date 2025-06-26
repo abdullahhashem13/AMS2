@@ -5,7 +5,7 @@ import Inputwithlabel from "../../../components/Inputwithlabel";
 import Mainbutton from "../../../components/Mainbutton";
 import Managementdata from "../../../components/managementdata";
 import Managmenttitle from "../../../components/Managmenttitle";
-import Saidbar from "../../../components/Saidbar";
+import Saidbar from "../../../components/saidbar";
 import SearchableSelect from "../../../components/SearchableSelect";
 // @ts-ignore
 import "../../../style/searchableSelect.css"; // إضافة ملف CSS للتنسيق

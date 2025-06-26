@@ -6,7 +6,7 @@ import Inputwithlabel from "../../../components/Inputwithlabel";
 import Mainbutton from "../../../components/Mainbutton";
 import Managementdata from "../../../components/managementdata";
 import Managmenttitle from "../../../components/Managmenttitle";
-import Saidbar from "../../../components/Saidbar";
+import Saidbar from "../../../components/saidbar";
 import SelectWithLabel3 from "../../../components/SelectWithLabel3";
 import SelectWithLabelDynamic from "../../../components/SelectWithLabelDynamic";
 import Submitinput from "../../../components/submitinput";
@@ -334,15 +334,17 @@ export default function EditMosque() {
                     change={handleChange}
                     placeholder="اختر الفرع"
                   />
-                  {// @ts-ignore
-                  errors.branch_id && (
-                    <div className="error-message">
-                      {
-                        // @ts-ignore
-                        errors.branch_id
-                      }
-                    </div>
-                  )}
+                  {
+                    // @ts-ignore
+                    errors.branch_id && (
+                      <div className="error-message">
+                        {
+                          // @ts-ignore
+                          errors.branch_id
+                        }
+                      </div>
+                    )
+                  }
                 </div>
                 <div className="widthbetween"></div>
                 <div className="input-container">
@@ -396,15 +398,17 @@ export default function EditMosque() {
                     value2="قيد البناء"
                     value3="موقف"
                   />
-                  {// @ts-ignore
-                  errors.statue && (
-                    <div className="error-message">
-                      {
-                        // @ts-ignore
-                        errors.statue
-                      }
-                    </div>
-                  )}
+                  {
+                    // @ts-ignore
+                    errors.statue && (
+                      <div className="error-message">
+                        {
+                          // @ts-ignore
+                          errors.statue
+                        }
+                      </div>
+                    )
+                  }
                 </div>
                 <div className="widthbetween"></div>
                 <div className="input-container">
@@ -414,15 +418,17 @@ export default function EditMosque() {
                     change={handleChange}
                     text="عدد الأعين"
                   />
-                  {// @ts-ignore
-                  errors.numberOfProperty && (
-                    <div className="error-message">
-                      {
-                        // @ts-ignore
-                        errors.numberOfProperty
-                      }
-                    </div>
-                  )}
+                  {
+                    // @ts-ignore
+                    errors.numberOfProperty && (
+                      <div className="error-message">
+                        {
+                          // @ts-ignore
+                          errors.numberOfProperty
+                        }
+                      </div>
+                    )
+                  }
                 </div>
                 <div className="widthbetween"></div>
                 <div className="input-container">
@@ -436,15 +442,17 @@ export default function EditMosque() {
                     valueKey="id"
                     displayKey="type"
                   />
-                  {// @ts-ignore
-                  errors.type_id && (
-                    <div className="error-message">
-                      {
-                        // @ts-ignore
-                        errors.type_id
-                      }
-                    </div>
-                  )}
+                  {
+                    // @ts-ignore
+                    errors.type_id && (
+                      <div className="error-message">
+                        {
+                          // @ts-ignore
+                          errors.type_id
+                        }
+                      </div>
+                    )
+                  }
                 </div>
               </div>
               <div

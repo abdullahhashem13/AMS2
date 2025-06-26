@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Mainbutton from "../../../components/Mainbutton";
 import Managementdata from "../../../components/managementdata";
 import Managmenttitle from "../../../components/Managmenttitle";
-import Saidbar from "../../../components/Saidbar";
+import Saidbar from "../../../components/saidbar";
 import Inputwithlabelcustom from "../../../components/Inputwithlabelcustom";
 // @ts-ignore
 import InputDatecustom from "../../../components/InputDatecustom";

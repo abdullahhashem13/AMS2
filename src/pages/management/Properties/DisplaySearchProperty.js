@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Bigbutton from "../../../components/Bigbutton";
 import Mainbutton from "../../../components/Mainbutton";
 import Managmenttitle from "../../../components/Managmenttitle";
-import Saidbar from "../../../components/Saidbar";
+import Saidbar from "../../../components/saidbar";
 import Searchsection from "../../../components/Searchsection";
 import PropertyCard from "../../../components/PropertyCard";
 // @ts-ignore

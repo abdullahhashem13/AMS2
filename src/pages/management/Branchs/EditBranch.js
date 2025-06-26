@@ -11,7 +11,7 @@ import Inputwithlabel from "../../../components/Inputwithlabel";
 import Mainbutton from "../../../components/Mainbutton";
 import Managementdata from "../../../components/managementdata";
 import Managmenttitle from "../../../components/Managmenttitle";
-import Saidbar from "../../../components/Saidbar";
+import Saidbar from "../../../components/saidbar";
 import "../../../style/deblicateError.css";
 import "../../../style/sucsefulMessage.css";
 import ButtonInput from "../../../components/ButtonInput";

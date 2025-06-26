@@ -5,7 +5,7 @@ import Inputwithlabel from "../../../components/Inputwithlabel";
 import Mainbutton from "../../../components/Mainbutton";
 import Managementdata from "../../../components/managementdata";
 import Managmenttitle from "../../../components/Managmenttitle";
-import Saidbar from "../../../components/Saidbar";
+import Saidbar from "../../../components/saidbar";
 import Submitinput from "../../../components/submitinput";
 // @ts-ignore
 import Swal from "sweetalert2";
@@ -193,15 +193,17 @@ export default function TypesOfEmployee() {
                     value={formData.employee_type}
                     change={handleChange}
                   />
-                  {// @ts-ignore
-                  error.employee_type && (
-                    <div className="error-message">
-                      {
-                        // @ts-ignore
-                        error.employee_type
-                      }
-                    </div>
-                  )}
+                  {
+                    // @ts-ignore
+                    error.employee_type && (
+                      <div className="error-message">
+                        {
+                          // @ts-ignore
+                          error.employee_type
+                        }
+                      </div>
+                    )
+                  }
                   {showDuplicateError && (
                     <div className="error-message">هذا النوع موجود بالفعل</div>
                   )}

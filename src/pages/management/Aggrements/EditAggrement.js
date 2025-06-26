@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Mainbutton from "../../../components/Mainbutton";
 import Managementdata from "../../../components/managementdata";
 import Managmenttitle from "../../../components/Managmenttitle";
-import Saidbar from "../../../components/Saidbar";
+import Saidbar from "../../../components/saidbar";
 import Submitinput from "../../../components/submitinput";
 import InputDate from "../../../components/InputDate";
 import SelectWithLabel3 from "../../../components/SelectWithLabel3";
@@ -382,15 +382,17 @@ export default function EditAggrement() {
                     change={handleChange}
                     text="الشاهد الثاني"
                   />
-                  {// @ts-ignore
-                  error.aggrement_secondWitness && (
-                    <div className="error-message">
-                      {
-                        // @ts-ignore
-                        error.aggrement_secondWitness
-                      }
-                    </div>
-                  )}
+                  {
+                    // @ts-ignore
+                    error.aggrement_secondWitness && (
+                      <div className="error-message">
+                        {
+                          // @ts-ignore
+                          error.aggrement_secondWitness
+                        }
+                      </div>
+                    )
+                  }
                 </div>
                 <div className="widthbetween"></div>
                 <div className="input-container">
@@ -400,15 +402,17 @@ export default function EditAggrement() {
                     change={handleChange}
                     text="الشاهد الاول"
                   />
-                  {// @ts-ignore
-                  error.aggrement_firstWitness && (
-                    <div className="error-message">
-                      {
-                        // @ts-ignore
-                        error.aggrement_firstWitness
-                      }
-                    </div>
-                  )}
+                  {
+                    // @ts-ignore
+                    error.aggrement_firstWitness && (
+                      <div className="error-message">
+                        {
+                          // @ts-ignore
+                          error.aggrement_firstWitness
+                        }
+                      </div>
+                    )
+                  }
                 </div>
                 <div className="widthbetween"></div>
                 <div className="input-container">
@@ -418,15 +422,17 @@ export default function EditAggrement() {
                     change={handleChange}
                     text="فترة البناء"
                   />
-                  {// @ts-ignore
-                  error.aggrement_timeToBuild && (
-                    <div className="error-message">
-                      {
-                        // @ts-ignore
-                        error.aggrement_timeToBuild
-                      }
-                    </div>
-                  )}
+                  {
+                    // @ts-ignore
+                    error.aggrement_timeToBuild && (
+                      <div className="error-message">
+                        {
+                          // @ts-ignore
+                          error.aggrement_timeToBuild
+                        }
+                      </div>
+                    )
+                  }
                 </div>
               </div>
               <div className="RowForInsertinputs">
@@ -449,15 +455,17 @@ export default function EditAggrement() {
                     change={handleChange}
                     text="العرض"
                   />
-                  {// @ts-ignore
-                  error.aggrement_width && (
-                    <div className="error-message">
-                      {
-                        // @ts-ignore
-                        error.aggrement_width
-                      }
-                    </div>
-                  )}
+                  {
+                    // @ts-ignore
+                    error.aggrement_width && (
+                      <div className="error-message">
+                        {
+                          // @ts-ignore
+                          error.aggrement_width
+                        }
+                      </div>
+                    )
+                  }
                 </div>
                 <div className="widthbetween"></div>
                 <div className="input-container">
@@ -467,15 +475,17 @@ export default function EditAggrement() {
                     change={handleChange}
                     text="الطول"
                   />
-                  {// @ts-ignore
-                  error.aggrement_height && (
-                    <div className="error-message">
-                      {
-                        // @ts-ignore
-                        error.aggrement_height
-                      }
-                    </div>
-                  )}
+                  {
+                    // @ts-ignore
+                    error.aggrement_height && (
+                      <div className="error-message">
+                        {
+                          // @ts-ignore
+                          error.aggrement_height
+                        }
+                      </div>
+                    )
+                  }
                 </div>
               </div>
               {/* حقل اسم الباني فقط */}
@@ -531,15 +541,17 @@ export default function EditAggrement() {
                       change={handleChange}
                       text="جنوب"
                     />
-                    {// @ts-ignore
-                    error.aggrement_south && (
-                      <div className="error-message">
-                        {
-                          // @ts-ignore
-                          error.aggrement_south
-                        }
-                      </div>
-                    )}
+                    {
+                      // @ts-ignore
+                      error.aggrement_south && (
+                        <div className="error-message">
+                          {
+                            // @ts-ignore
+                            error.aggrement_south
+                          }
+                        </div>
+                      )
+                    }
                   </div>
                   <div className="widthbetween"></div>
                   <div className="widthbetween"></div>
@@ -551,15 +563,17 @@ export default function EditAggrement() {
                       change={handleChange}
                       text="شمال"
                     />
-                    {// @ts-ignore
-                    error.aggrement_north && (
-                      <div className="error-message">
-                        {
-                          // @ts-ignore
-                          error.aggrement_north
-                        }
-                      </div>
-                    )}
+                    {
+                      // @ts-ignore
+                      error.aggrement_north && (
+                        <div className="error-message">
+                          {
+                            // @ts-ignore
+                            error.aggrement_north
+                          }
+                        </div>
+                      )
+                    }
                   </div>
                 </div>
                 <div style={{ height: 20 }}></div>
@@ -571,15 +585,17 @@ export default function EditAggrement() {
                       change={handleChange}
                       text="غرب"
                     />
-                    {// @ts-ignore
-                    error.aggrement_west && (
-                      <div className="error-message">
-                        {
-                          // @ts-ignore
-                          error.aggrement_west
-                        }
-                      </div>
-                    )}
+                    {
+                      // @ts-ignore
+                      error.aggrement_west && (
+                        <div className="error-message">
+                          {
+                            // @ts-ignore
+                            error.aggrement_west
+                          }
+                        </div>
+                      )
+                    }
                   </div>
                   <div className="widthbetween"></div>
                   <div className="widthbetween"></div>
@@ -591,15 +607,17 @@ export default function EditAggrement() {
                       change={handleChange}
                       text="شرق"
                     />
-                    {// @ts-ignore
-                    error.aggrement_east && (
-                      <div className="error-message">
-                        {
-                          // @ts-ignore
-                          error.aggrement_east
-                        }
-                      </div>
-                    )}
+                    {
+                      // @ts-ignore
+                      error.aggrement_east && (
+                        <div className="error-message">
+                          {
+                            // @ts-ignore
+                            error.aggrement_east
+                          }
+                        </div>
+                      )
+                    }
                   </div>
                 </div>
               </div>

@@ -1,6 +1,6 @@
 // import Managmenttitle from "../components/Managmenttitle";
 // @ts-ignore
-import Saidbar from "../components/Saidbar";
+import Saidbar from "../components/saidbar";
 import Sectionmanagment from "../components/Sectionmanagment";
 import "../style/home.css";
 
