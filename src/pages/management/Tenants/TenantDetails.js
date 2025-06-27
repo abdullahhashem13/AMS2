@@ -5,8 +5,7 @@ export default function TenantDetails({ tenant, onClose }) {
   const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
-    // لم نعد بحاجة لجلب بيانات الفروع أو branchName
-    // fetchBranches();
+    // حذف كل ما يتعلق بالفروع
   }, [tenant]);
 
   if (!tenant) return null;
@@ -32,7 +31,7 @@ export default function TenantDetails({ tenant, onClose }) {
 
           <div className="details-row">
             <div className="details-label">رقم الهوية:</div>
-            <div className="details-value">{tenant.IDnumber}</div>
+            <div className="details-value">{tenant.IdNumber}</div>
           </div>
 
           <div className="details-row">

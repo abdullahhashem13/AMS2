@@ -16,18 +16,18 @@ export default function AddTenant() {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
-    IDnumber: "",
+    IdNumber: "",
     gender: "",
     type: "",
     governorate: "",
     city: "",
     neighborhood: "",
   });
-  const [error, setErrors] = useState({});
+  const [error, setErrors] = useState({
+    IdNumber: "",
+  });
   const [existingTenants, setExistingTenants] = useState([]);
   const [showDuplicateError, setShowDuplicateError] = useState(false);
-  // حذف كل ما يتعلق بالفروع
-
   // إضافة متغير حالة جديد لعرض خطأ تكرار رقم الهوية
   // إضافة متغيرات حالة للتحكم في الانيميشن
   const [isClosingDuplicateError, setIsClosingDuplicateError] = useState(false);
@@ -97,24 +97,24 @@ export default function AddTenant() {
     }
 
     // التحقق من رقم الهوية (أرقام فقط)
-    if (!formData.IDnumber) {
-      errors.IDnumber = "يجب تعبئة الحقل";
+    if (!formData.IdNumber) {
+      errors.IdNumber = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^\d+$/.test(formData.IDnumber)) {
-      errors.IDnumber = "يجب أن يحتوي رقم الهوية على أرقام فقط";
+    } else if (!/^\d+$/.test(formData.IdNumber)) {
+      errors.IdNumber = "يجب أن يحتوي رقم الهوية على أرقام فقط";
       isValid = false;
     } else if (
       (typeof originalIDNumber !== "undefined" &&
-        formData.IDnumber !== originalIDNumber) ||
+        formData.IdNumber !== originalIDNumber) ||
       typeof originalIDNumber === "undefined"
     ) {
       // تحقق من التكرار فقط إذا كان في التعديل وتم تغيير الرقم أو إذا كان في الإضافة
       const isDuplicateID = existingTenants.some(
         (tenant) =>
-          tenant.IDnumber === formData.IDnumber && (!id || tenant.id !== id)
+          tenant.IdNumber === formData.IdNumber && (!id || tenant.id !== id)
       );
       if (isDuplicateID) {
-        errors.IDnumber = "رقم الهوية مكرر";
+        errors.IdNumber = "رقم الهوية مكرر";
         isValid = false;
       }
     }
@@ -263,20 +263,15 @@ export default function AddTenant() {
             >
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.IDnumber}
-                  name="IDnumber"
+                  value={formData.IdNumber}
+                  name="IdNumber"
                   change={handleChange}
                   text="رقم الهوية"
                 />
                 {
                   // @ts-ignore
-                  error.IDnumber && (
-                    <div className="error-message">
-                      {
-                        // @ts-ignore
-                        error.IDnumber
-                      }
-                    </div>
+                  error.IdNumber && (
+                    <div className="error-message">{error.IdNumber}</div>
                   )
                 }
               </div>

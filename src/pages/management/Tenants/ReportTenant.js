@@ -13,16 +13,14 @@ import SelectWithLabel3 from "../../../components/SelectWithLabel3";
 export default function ReportTenant() {
   const [formData, setFormData] = useState({
     gender: "الجميع(الذكر والأنثى)",
-    branch_id: "الجميع",
     type: "الجميع(الحاليين والسابقين)",
   });
   const [error, setErrors] = useState({});
   const [tenants, setTenants] = useState([]);
   const [filteredTenants, setFilteredTenants] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [branches, setBranches] = useState([]);
 
-  // جلب بيانات المستأجرين والفروع عند تحميل الصفحة
+  // جلب بيانات المستأجرين عند تحميل الصفحة
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -35,15 +33,7 @@ export default function ReportTenant() {
         }
         const tenantsData = await tenantsResponse.json();
         setTenants(tenantsData);
-        setFilteredTenants(tenantsData); // عرض جميع المستأجرين افتراض<|im_start|>
-
-        // جلب بيانات الفروع
-        const branchesResponse = await fetch("http://localhost:3001/Branches");
-        if (!branchesResponse.ok) {
-          throw new Error("فشل في جلب بيانات الفروع");
-        }
-        const branchesData = await branchesResponse.json();
-        setBranches(branchesData);
+        setFilteredTenants(tenantsData); // عرض جميع المستأجرين افتراضياً
 
         setLoading(false);
       } catch (error) {
@@ -74,13 +64,6 @@ export default function ReportTenant() {
         );
       }
 
-      // فلترة حسب الفرع
-      if (formData.branch_id && formData.branch_id !== "الجميع") {
-        filtered = filtered.filter(
-          (tenant) => tenant.branch_id === formData.branch_id
-        );
-      }
-
       // فلترة حسب نوع المستأجر
       if (formData.type && formData.type !== "الجميع(الحاليين والسابقين)") {
         filtered = filtered.filter((tenant) => tenant.type === formData.type);
@@ -91,12 +74,6 @@ export default function ReportTenant() {
       setErrors({ ...error, general: "حدث خطأ أثناء الفلترة." });
       console.error(err);
     }
-  };
-
-  // دالة للحصول على اسم الفرع من معرفه
-  const getBranchName = (branchId) => {
-    const branch = branches.find((b) => b.id === branchId);
-    return branch ? branch.name : "غير محدد";
   };
 
   // الأعمدة القابلة للاضافة
@@ -250,7 +227,7 @@ export default function ReportTenant() {
                               <td>{tenant.neighborhood || "غير محدد"}</td>
                             )}
                             {showIDnumber && (
-                              <td>{tenant.IDnumber || "غير محدد"}</td>
+                              <td>{tenant.IdNumber || "غير محدد"}</td>
                             )}
                             <td>{tenant.type || "غير محدد"}</td>
                             <td>{tenant.gender || "غير محدد"}</td>

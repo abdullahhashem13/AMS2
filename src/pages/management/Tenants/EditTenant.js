@@ -23,20 +23,24 @@ export default function EditTenant() {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
-    IDnumber: "",
+    IdNumber: "",
     gender: "",
     type: "",
     governorate: "",
     city: "",
     neighborhood: "",
   });
-  const [error, setErrors] = useState({});
+  const [error, setErrors] = useState({
+    IdNumber: "",
+    general: "",
+    // ...existing code...
+  });
   const [showDuplicateError, setShowDuplicateError] = useState(false);
   const [existingTenants, setExistingTenants] = useState([]);
   const [originalTenantName, setOriginalTenantName] = useState("");
   // إضافة متغير حالة جديد لعرض خطأ تكرار رقم الهوية
   const [showDuplicateIDError, setShowDuplicateIDError] = useState(false);
-  const [originalIDNumber, setOriginalIDNumber] = useState("");
+  const [originalIdNumber, setOriginalIdNumber] = useState("");
   // إضافة متغيرات حالة للتحكم في الانيميشن
   const [isClosingDuplicateError, setIsClosingDuplicateError] = useState(false);
   const [isClosingDuplicateIDError, setIsClosingDuplicateIDError] =
@@ -61,7 +65,7 @@ export default function EditTenant() {
           if (tenant) {
             setFormData(tenant);
             setOriginalTenantName(tenant.name);
-            setOriginalIDNumber(tenant.IDnumber); // حفظ رقم الهوية الأصلي
+            setOriginalIdNumber(tenant.IdNumber); // حفظ رقم الهوية الأصلي
           } else {
             throw new Error("لم يتم العثور على المستأجر");
           }
@@ -88,7 +92,7 @@ export default function EditTenant() {
       formData,
       setErrors,
       existingTenants,
-      originalIDNumber,
+      originalIdNumber,
       id
     );
 
@@ -182,23 +186,23 @@ export default function EditTenant() {
           </div>
           <form className="divforconten" onSubmit={handleSubmit}>
             <Managementdata dataname="تعديل بيانات المستأجر" />
-            <div className="RowForInsertinputs">
+            <div
+              className="RowForInsertinputs"
+              style={{
+                marginBottom: 15,
+              }}
+            >
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.IDnumber}
-                  name="IDnumber"
+                  value={formData.IdNumber}
+                  name="IdNumber"
                   change={handleChange}
                   text="رقم الهوية"
                 />
                 {
                   // @ts-ignore
-                  error.IDnumber && (
-                    <div className="error-message">
-                      {
-                        // @ts-ignore
-                        error.IDnumber
-                      }
-                    </div>
+                  error.IdNumber && (
+                    <div className="error-message">{error.IdNumber}</div>
                   )
                 }
               </div>
@@ -427,7 +431,7 @@ function validateTenantForm(
   formData,
   setErrors,
   existingTenants,
-  originalIDNumber,
+  originalIdNumber,
   id
 ) {
   let isValid = true;
@@ -461,24 +465,24 @@ function validateTenantForm(
   }
 
   // التحقق من رقم الهوية (أرقام فقط)
-  if (!formData.IDnumber) {
-    errors.IDnumber = "يجب تعبئة الحقل";
+  if (!formData.IdNumber) {
+    errors.IdNumber = "يجب تعبئة الحقل";
     isValid = false;
-  } else if (!/^\d+$/.test(formData.IDnumber)) {
-    errors.IDnumber = "يجب أن يحتوي رقم الهوية على أرقام فقط";
+  } else if (!/^\d+$/.test(formData.IdNumber)) {
+    errors.IdNumber = "يجب أن يحتوي رقم الهوية على أرقام فقط";
     isValid = false;
   } else if (
-    (typeof originalIDNumber !== "undefined" &&
-      formData.IDnumber !== originalIDNumber) ||
-    typeof originalIDNumber === "undefined"
+    (typeof originalIdNumber !== "undefined" &&
+      formData.IdNumber !== originalIdNumber) ||
+    typeof originalIdNumber === "undefined"
   ) {
     // تحقق من التكرار فقط إذا كان في التعديل وتم تغيير الرقم أو إذا كان في الإضافة
     const isDuplicateID = existingTenants.some(
       (tenant) =>
-        tenant.IDnumber === formData.IDnumber && (!id || tenant.id !== id)
+        tenant.IdNumber === formData.IdNumber && (!id || tenant.id !== id)
     );
     if (isDuplicateID) {
-      errors.IDnumber = "رقم الهوية مكرر";
+      errors.IdNumber = "رقم الهوية مكرر";
       isValid = false;
     }
   }
