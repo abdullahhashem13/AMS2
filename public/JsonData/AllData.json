@@ -117,7 +117,69 @@
     }
   ],
   "Gauidnces": [],
-  "Expenses": [],
+  "Expenses": [
+    {
+      "id": "0ff1",
+      "description": "متأخرات",
+      "recipient": "محمد عمر علي العمودي",
+      "date": "2025-06-27",
+      "amount": "80000",
+      "writtenAmount": "ثمانون ألف ريال فقط لا غير",
+      "bondNumber": "655822",
+      "mosque_id": "e587",
+      "name": "الروضة"
+    },
+    {
+      "id": "90a8",
+      "description": "متأخرات",
+      "recipient": "صالح حامد ابوبكر الحامد",
+      "date": "2025-06-27",
+      "amount": "90000",
+      "writtenAmount": "تسعون ألف ريال فقط لا غير",
+      "bondNumber": "2525",
+      "mosque_id": "e587"
+    },
+    {
+      "id": "a261",
+      "description": "متأخرات",
+      "recipient": "محمد عمر علي الحامد",
+      "date": "2025-06-27",
+      "amount": "65000",
+      "writtenAmount": "خمسة وستون ألف ريال فقط لا غير",
+      "bondNumber": "65482",
+      "mosque_id": "a1fc"
+    },
+    {
+      "id": "5f15",
+      "description": "شراء اغراض مسجد",
+      "recipient": "صالح عمر خالد الاحمدي",
+      "date": "2025-06-27",
+      "amount": "600000",
+      "writtenAmount": "ستمائة ألف ريال فقط لا غير",
+      "bondNumber": "6656",
+      "mosque_id": "e587"
+    },
+    {
+      "id": "19e1",
+      "description": "متأخرات",
+      "recipient": "نتاس شسنتا شىتنش شنم",
+      "date": "2025-06-27",
+      "amount": "40000",
+      "writtenAmount": "أربعون ألف ريال فقط لا غير",
+      "bondNumber": "25258",
+      "mosque_id": "e587"
+    },
+    {
+      "id": "acea",
+      "description": "متأخرات",
+      "recipient": "نتصاي شنيا ضشينتنت ضنت",
+      "date": "2025-06-27",
+      "amount": "20000",
+      "writtenAmount": "عشرون ألف ريال فقط لا غير",
+      "bondNumber": "25452",
+      "mosque_id": "e587"
+    }
+  ],
   "Revenues": [],
   "Aggrements": [],
   "Builder": [],

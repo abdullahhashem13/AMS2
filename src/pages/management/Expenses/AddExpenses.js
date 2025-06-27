@@ -7,23 +7,25 @@ import Inputwithlabelcustom from "../../../components/Inputwithlabelcustom";
 import InputDatecustom from "../../../components/InputDatecustom";
 import SearchableSelect from "../../../components/SearchableSelect";
 import ButtonInput from "../../../components/ButtonInput";
+import { useNavigate } from "react-router-dom";
 
 export default function AddExpenses() {
   // تحديد تاريخ اليوم بالتنسيق المناسب (YYYY-MM-DD)
   const today = new Date().toISOString().split("T")[0];
 
   const [formData, setFormData] = useState({
-    paymentVoucher_description: "",
-    paymentVoucher_recipient: "",
-    paymentVoucher_date: today,
-    paymentVoucher_amount: "",
-    paymentVoucher_writtenAmount: "",
-    paymentVoucher_bondNumber: "",
+    description: "",
+    recipient: "",
+    date: today,
+    amount: "",
+    writtenAmount: "",
+    bondNumber: "",
     mosque_id: "",
   });
   const [error, setErrors] = useState({});
   const [mosques, setMosques] = useState([]);
   const [existingBondNumbers, setExistingBondNumbers] = useState([]);
+  const navigate = useNavigate();
 
   // جلب المساجد وأرقام السندات الموجودة عند تحميل الصفحة
   useEffect(() => {
@@ -40,9 +42,7 @@ export default function AddExpenses() {
         const expensesResponse = await fetch("http://localhost:3001/Expenses");
         if (expensesResponse.ok) {
           const expensesData = await expensesResponse.json();
-          const bondNumbers = expensesData.map(
-            (expense) => expense.paymentVoucher_bondNumber
-          );
+          const bondNumbers = expensesData.map((expense) => expense.bondNumber);
           setExistingBondNumbers(bondNumbers);
         }
       } catch (err) {
@@ -222,18 +222,18 @@ export default function AddExpenses() {
     const updatedFormData = { ...formData, [name]: value };
 
     // إذا كان الحقل هو المبلغ رقمًا، قم بتحديث المبلغ كتابة تلقائيًا
-    if (name === "paymentVoucher_amount") {
+    if (name === "amount") {
       if (value) {
-        updatedFormData.paymentVoucher_writtenAmount = `${convertNumberToArabicWords(
+        updatedFormData.writtenAmount = `${convertNumberToArabicWords(
           value
         )} ريال فقط لا غير`;
       } else {
-        updatedFormData.paymentVoucher_writtenAmount = ""; // إفراغ حقل المبلغ كتابة إذا كان المبلغ رقمًا فارغًا
+        updatedFormData.writtenAmount = ""; // إفراغ حقل المبلغ كتابة إذا كان المبلغ رقمًا فارغًا
       }
     }
 
     // تجاهل التغييرات المباشرة على حقل المبلغ كتابة
-    if (name === "paymentVoucher_writtenAmount") {
+    if (name === "writtenAmount") {
       return; // الخروج من الدالة دون تحديث الحالة
     }
 
@@ -244,55 +244,52 @@ export default function AddExpenses() {
     delete newErrors[name];
 
     // التحقق من رقم السند
-    if (name === "paymentVoucher_bondNumber") {
+    if (name === "bondNumber") {
       if (!value) {
         // @ts-ignore
-        newErrors.paymentVoucher_bondNumber = "يجب تعبئة الحقل";
+        newErrors.bondNumber = "يجب تعبئة الحقل";
       } else if (!/^\d+$/.test(value)) {
         // @ts-ignore
-        newErrors.paymentVoucher_bondNumber =
-          "يجب أن يحتوي رقم السند على أرقام فقط";
+        newErrors.bondNumber = "يجب أن يحتوي رقم السند على أرقام فقط";
       } else if (existingBondNumbers.includes(value)) {
         // @ts-ignore
-        newErrors.paymentVoucher_bondNumber = "رقم السند موجود بالفعل";
+        newErrors.bondNumber = "رقم السند موجود بالفعل";
       }
     }
 
     // التحقق من المبلغ (أرقام فقط)
-    if (name === "paymentVoucher_amount") {
+    if (name === "amount") {
       if (!value) {
         // @ts-ignore
-        newErrors.paymentVoucher_amount = "يجب تعبئة الحقل";
+        newErrors.amount = "يجب تعبئة الحقل";
       } else if (!/^\d+$/.test(value)) {
         // @ts-ignore
-        newErrors.paymentVoucher_amount = "يجب أن يحتوي المبلغ على أرقام فقط";
+        newErrors.amount = "يجب أن يحتوي المبلغ على أرقام فقط";
       }
     }
 
     // التحقق من المستلم (أحرف عربية فقط واسم رباعي)
-    if (name === "paymentVoucher_recipient") {
+    if (name === "recipient") {
       if (!value) {
         // @ts-ignore
-        newErrors.paymentVoucher_recipient = "يجب تعبئة الحقل";
+        newErrors.recipient = "يجب تعبئة الحقل";
       } else if (!/^[\u0600-\u06FF\s]+$/.test(value)) {
         // @ts-ignore
-        newErrors.paymentVoucher_recipient =
-          "يجب أن يحتوي اسم المستلم على أحرف عربية فقط";
+        newErrors.recipient = "يجب أن يحتوي اسم المستلم على أحرف عربية فقط";
       } else {
         const words = value.trim().split(/\s+/);
         if (words.length < 4) {
           // @ts-ignore
-          newErrors.paymentVoucher_recipient =
-            "يجب أن يكون اسم المستلم رباعي على الأقل";
+          newErrors.recipient = "يجب أن يكون اسم المستلم رباعي على الأقل";
         }
       }
     }
 
     // التحقق من الوصف (أحرف عربية وأرقام ورموز)
-    if (name === "paymentVoucher_description") {
+    if (name === "description") {
       if (!value) {
         // @ts-ignore
-        newErrors.paymentVoucher_description = "يجب تعبئة الحقل";
+        newErrors.description = "يجب تعبئة الحقل";
       }
       // لا نضيف تحقق إضافي لنسمح بالأحرف العربية والأرقام والرموز
     }
@@ -305,16 +302,14 @@ export default function AddExpenses() {
     let errors = {};
 
     // التحقق من رقم السند
-    if (!formData.paymentVoucher_bondNumber) {
-      errors.paymentVoucher_bondNumber = "يجب تعبئة الحقل";
+    if (!formData.bondNumber) {
+      errors.bondNumber = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^\d+$/.test(formData.paymentVoucher_bondNumber)) {
-      errors.paymentVoucher_bondNumber = "يجب أن يحتوي رقم السند على أرقام فقط";
+    } else if (!/^\d+$/.test(formData.bondNumber)) {
+      errors.bondNumber = "يجب أن يحتوي رقم السند على أرقام فقط";
       isValid = false;
-    } else if (
-      existingBondNumbers.includes(formData.paymentVoucher_bondNumber)
-    ) {
-      errors.paymentVoucher_bondNumber = "رقم السند موجود بالفعل";
+    } else if (existingBondNumbers.includes(formData.bondNumber)) {
+      errors.bondNumber = "رقم السند موجود بالفعل";
       isValid = false;
     }
 
@@ -325,42 +320,38 @@ export default function AddExpenses() {
     }
 
     // التحقق من المبلغ
-    if (!formData.paymentVoucher_amount) {
-      errors.paymentVoucher_amount = "يجب تعبئة الحقل";
+    if (!formData.amount) {
+      errors.amount = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^\d+$/.test(formData.paymentVoucher_amount)) {
-      errors.paymentVoucher_amount = "يجب أن يحتوي المبلغ على أرقام فقط";
+    } else if (!/^\d+$/.test(formData.amount)) {
+      errors.amount = "يجب أن يحتوي المبلغ على أرقام فقط";
       isValid = false;
     }
 
     // التحقق من المستلم (أحرف عربية فقط واسم رباعي)
-    if (!formData.paymentVoucher_recipient) {
-      errors.paymentVoucher_recipient = "يجب تعبئة الحقل";
+    if (!formData.recipient) {
+      errors.recipient = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (
-      !/^[\u0600-\u06FF\s]+$/.test(formData.paymentVoucher_recipient)
-    ) {
-      errors.paymentVoucher_recipient =
-        "يجب أن يحتوي اسم المستلم على أحرف عربية فقط";
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.recipient)) {
+      errors.recipient = "يجب أن يحتوي اسم المستلم على أحرف عربية فقط";
       isValid = false;
     } else {
-      const words = formData.paymentVoucher_recipient.trim().split(/\s+/);
+      const words = formData.recipient.trim().split(/\s+/);
       if (words.length < 4) {
-        errors.paymentVoucher_recipient =
-          "يجب أن يكون اسم المستلم رباعي على الأقل";
+        errors.recipient = "يجب أن يكون اسم المستلم رباعي على الأقل";
         isValid = false;
       }
     }
 
     // التحقق من الوصف (فقط التحقق من أنه غير فارغ)
-    if (!formData.paymentVoucher_description) {
-      errors.paymentVoucher_description = "يجب تعبئة الحقل";
+    if (!formData.description) {
+      errors.description = "يجب تعبئة الحقل";
       isValid = false;
     }
 
     // التحقق من المبلغ كتابة
-    if (!formData.paymentVoucher_writtenAmount) {
-      errors.paymentVoucher_writtenAmount = "يجب تعبئة الحقل";
+    if (!formData.writtenAmount) {
+      errors.writtenAmount = "يجب تعبئة الحقل";
       isValid = false;
     }
 
@@ -387,28 +378,9 @@ export default function AddExpenses() {
       });
 
       if (response.ok) {
-        // إظهار رسالة نجاح
-
-        // إعادة تعيين النموذج أو التوجيه إلى صفحة أخرى
-        setFormData({
-          paymentVoucher_description: "",
-          paymentVoucher_recipient: "",
-          paymentVoucher_date: today,
-          paymentVoucher_amount: "",
-          paymentVoucher_writtenAmount: "",
-          paymentVoucher_bondNumber: "",
-          mosque_id: "",
-        });
-
-        // تحديث قائمة أرقام السندات الموجودة
-        const expensesResponse = await fetch("http://localhost:3001/Expenses");
-        if (expensesResponse.ok) {
-          const expensesData = await expensesResponse.json();
-          const bondNumbers = expensesData.map(
-            (expense) => expense.paymentVoucher_bondNumber
-          );
-          setExistingBondNumbers(bondNumbers);
-        }
+        // الانتقال مباشرة إلى صفحة العرض بعد الحفظ
+        navigate("/management/Expenses/DisplaySearchExpenses");
+        return;
       } else {
         const data = await response.json();
         if (data && data.message) {
@@ -450,288 +422,8 @@ export default function AddExpenses() {
 
       if (response.ok) {
         console.log("تم الحفظ بنجاح!");
-
-        // جلب اسم المسجد إذا كان هناك معرف مسجد
-        let mosqueName = "غير محدد";
-        if (formData.mosque_id) {
-          try {
-            const mosqueResponse = await fetch(
-              `http://localhost:3001/Mosques/${formData.mosque_id}`
-            );
-            if (mosqueResponse.ok) {
-              const mosqueData = await mosqueResponse.json();
-              // إضافة كلمة "مسجد" قبل اسم المسجد إذا لم تكن موجودة
-              mosqueName = mosqueData.mosque_name || "غير محدد";
-              if (mosqueName && !mosqueName.startsWith("مسجد")) {
-                mosqueName = "مسجد " + mosqueName;
-              }
-            }
-          } catch (err) {
-            console.error("خطأ في جلب بيانات المسجد:", err);
-          }
-        }
-
-        // إنشاء محتوى الطباعة
-        const printContent = `
-          <!DOCTYPE html>
-          <html dir="rtl">
-            <head>
-              <title>سند صرف</title>
-              <style>
-                @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap');
-                
-                body {
-                  font-family: 'Amiri', Arial, sans-serif;
-                  direction: rtl;
-                  margin: 0;
-                  padding: 0;
-                  background-color: white;
-                  font-size: 11px;
-                  color: black;
-                }
-                
-                .voucher-container {
-                  width: 170mm; /* تصغير عرض السند */
-                  height: 120mm; /* تصغير ارتفاع السند */
-                  margin: 0 auto;
-                  padding: 10px;
-                  background-color: white;
-                  border: 1px solid #333;
-                  box-sizing: border-box;
-                }
-                
-                .header {
-                  text-align: center;
-                  margin-bottom: 6px;
-                  border-bottom: 1.5px solid #333;
-                  padding-bottom: 6px;
-                  display: flex;
-                  flex-direction: column;
-                  align-items: center;
-                }
-                
-                .header h1 {
-                  font-size: 14px;
-                  margin: 5px 0 0 0;
-                  color: black;
-                }
-                
-                .logo {
-                  width: 60px;
-                  height: 80px; /* زيادة طول الشعار */
-                  margin-bottom: 3px;
-                  object-fit: contain; /* للحفاظ على نسبة العرض إلى الارتفاع */
-                }
-                
-                .voucher-title {
-                  text-align: center;
-                  font-size: 14px;
-                  font-weight: bold;
-                  margin: 6px 0;
-                  color: black;
-                  padding: 3px;
-                }
-                
-                .field-row {
-                  display: flex;
-                  margin-bottom: 8px;
-                  align-items: center;
-                }
-                
-                .field {
-                  display: flex;
-                  align-items: center;
-                  margin-left: 12px;
-                }
-                
-                .label {
-                  font-weight: bold;
-                  margin-left: 6px;
-                  color: black;
-                  font-size: 11px;
-                  min-width: 65px;
-                }
-                
-                .value {
-                  border-bottom: 1px solid #777;
-                  padding: 2px 5px;
-                  min-width: 120px;
-                  font-size: 11px;
-                  color: black;
-                }
-                
-                .full-width-field {
-                  width: 100%;
-                  display: flex;
-                  align-items: center;
-                }
-                
-                .full-width-value {
-                  flex: 1;
-                  border-bottom: 1px solid #777;
-                  padding: 2px 5px;
-                  font-size: 11px;
-                  color: black;
-                }
-                
-                .signatures {
-                  display: flex;
-                  margin-top: 15px;
-                  justify-content: space-between;
-                }
-                
-                .signature {
-                  flex: 1;
-                  text-align: center;
-                  padding: 5px;
-                }
-                
-                .signature-line {
-                  border-top: 1px solid #333;
-                  margin-top: 15px;
-                  padding-top: 3px;
-                }
-                
-                .footer {
-                  margin-top: 15px;
-                  display: flex;
-                  justify-content: space-between;
-                  font-size: 9px;
-                  color: black;
-                  border-top: 1px solid #ddd;
-                  padding-top: 5px;
-                }
-                
-                .employee-info {
-                  text-align: left;
-                  font-size: 9px;
-                  color: black;
-                }
-                
-                @media print {
-                  body {
-                    margin: 0;
-                    padding: 0;
-                    color: black !important;
-                  }
-                  
-                  .voucher-container {
-                    border: none;
-                    width: 100%;
-                    height: auto;
-                    padding: 0;
-                  }
-                  
-                  @page {
-                    size: A5 landscape;
-                    margin: 6mm;
-                  }
-                }
-              </style>
-              <script>
-                // تنفيذ الطباعة مباشرة بعد تحميل الصفحة
-                window.onload = function() {
-                  window.print();
-                  window.onafterprint = function() {
-                    window.close();
-                  };
-                };
-              </script>
-            </head>
-            <body>
-              <div class="voucher-container">
-                <div class="header">
-                  <img src="/logo.jpg" alt="شعار الأوقاف" class="logo">
-                  <h1>مكتب وزارة الأوقاف والإرشاد بساحل حضرموت</h1>
-                </div>
-                
-                <div class="voucher-title">سند صرف</div>
-                
-                <div class="field-row">
-                  <div class="field">
-                    <span class="label">رقم السند:</span>
-                    <span class="value">${formData.paymentVoucher_bondNumber}</span>
-                  </div>
-                  <div class="field">
-                    <span class="label">التاريخ:</span>
-                    <span class="value">${formData.paymentVoucher_date}</span>
-                  </div>
-                </div>
-                
-                <div class="field-row">
-                  <div class="field">
-                    <span class="label">المبلغ رقماً:</span>
-                    <span class="value">${formData.paymentVoucher_amount} ريال</span>
-                  </div>
-                </div>
-                
-                <div class="field-row">
-                  <div class="full-width-field">
-                    <span class="label">المبلغ كتابة:</span>
-                    <span class="full-width-value">${formData.paymentVoucher_writtenAmount}</span>
-                  </div>
-                </div>
-                
-                <div class="field-row">
-                  <div class="full-width-field">
-                    <span class="label">اسم المستلم:</span>
-                    <span class="full-width-value">${formData.paymentVoucher_recipient}</span>
-                  </div>
-                </div>
-                
-                <div class="field-row">
-                  <div class="full-width-field">
-                    <span class="label">الجهة المستفيدة:</span>
-                    <span class="full-width-value">${mosqueName}</span>
-                  </div>
-                </div>
-                
-                <div class="field-row">
-                  <div class="full-width-field">
-                    <span class="label">وذلك مقابل:</span>
-                    <span class="full-width-value">${formData.paymentVoucher_description}</span>
-                  </div>
-                </div>
-                
-                <div class="signatures">
-                  <div class="signature">
-                    <div class="label">توقيع المستلم</div>
-                    <div class="signature-line"></div>
-                  </div>
-                  <div class="signature">
-                    <div class="label">ختم المدير</div>
-                    <div class="signature-line"></div>
-                  </div>
-                </div>
-                
-                <div class="footer">
-                  <div></div>
-                  <div class="employee-info">الموظف: عبدالله الحامد</div>
-                </div>
-              </div>
-            </body>
-          </html>
-        `;
-
-        // فتح نافذة الطباعة مباشرة بعد الحفظ
-        const printWindow = window.open("", "_blank");
-
-        if (printWindow) {
-          printWindow.document.open();
-          printWindow.document.write(printContent);
-          printWindow.document.close();
-
-          // استخدام دالة onafterprint بعد الطباعة
-          printWindow.onafterprint = onafterprint;
-        } else {
-          console.error("لم يتم فتح نافذة الطباعة");
-        }
-
-        // إعادة تعيين النموذج بعد الحفظ والطباعة
-        resetForm();
-
-        // تحديث قائمة أرقام السندات الموجودة
-        fetchBondNumbers();
+        navigate("/management/Expenses/DisplaySearchExpenses");
+        return;
       } else {
         console.error("فشل في الحفظ");
         const data = await response.json();
@@ -750,40 +442,6 @@ export default function AddExpenses() {
     } catch (err) {
       console.error("خطأ في الحفظ:", err);
       setErrors({ ...error, general: "حدث خطأ ما." });
-    }
-  };
-
-  // دالة لإعادة تعيين النموذج
-  const resetForm = () => {
-    setFormData({
-      paymentVoucher_description: "",
-      paymentVoucher_recipient: "",
-      paymentVoucher_date: today,
-      paymentVoucher_amount: "",
-      paymentVoucher_writtenAmount: "",
-      paymentVoucher_bondNumber: "",
-      mosque_id: "",
-    });
-
-    // تحديث قائمة أرقام السندات الموجودة
-    fetchBondNumbers();
-  };
-
-  // دالة لتحديث الصفحة بعد الطباعة
-
-  // إضافة دالة لجلب أرقام السندات الموجودة
-  const fetchBondNumbers = async () => {
-    try {
-      const expensesResponse = await fetch("http://localhost:3001/Expenses");
-      if (expensesResponse.ok) {
-        const expensesData = await expensesResponse.json();
-        const bondNumbers = expensesData.map(
-          (expense) => expense.paymentVoucher_bondNumber
-        );
-        setExistingBondNumbers(bondNumbers);
-      }
-    } catch (err) {
-      console.error("خطأ في جلب أرقام السندات:", err);
     }
   };
 
@@ -818,22 +476,24 @@ export default function AddExpenses() {
           >
             <Managementdata dataname="سند صرف" />
             <div className="RowForInsertinputs">
-              <div style={{ width: "27%", marginRight: "auto" }}>
+              <div
+                style={{ width: "27%", marginRight: "auto", marginBottom: 15 }}
+              >
                 <Inputwithlabelcustom
                   widthinput="74%"
                   widthlabel="26%"
-                  value={formData.paymentVoucher_bondNumber}
-                  name="paymentVoucher_bondNumber"
+                  value={formData.bondNumber}
+                  name="bondNumber"
                   change={handleChange}
                   text="رقم السند"
                 />
                 {
                   // @ts-ignore
-                  error.paymentVoucher_bondNumber && (
+                  error.bondNumber && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.paymentVoucher_bondNumber
+                        error.bondNumber
                       }
                     </div>
                   )
@@ -842,14 +502,14 @@ export default function AddExpenses() {
             </div>
             <div
               className="RowForInsertinputs"
-              style={{ justifyContent: "space-between" }}
+              style={{ justifyContent: "space-between", marginBottom: 20 }}
             >
               <div style={{ width: "75%" }}>
                 <InputDatecustom
                   widthinput="27%"
                   widthlabel="7%"
-                  value={formData.paymentVoucher_date}
-                  name="paymentVoucher_date"
+                  value={formData.date}
+                  name="date"
                   change={handleChange}
                   text="تاريخ"
                   disabled={true} // جعل حقل التاريخ غير قابل للتعديل
@@ -859,18 +519,18 @@ export default function AddExpenses() {
                 <Inputwithlabelcustom
                   widthinput="100%"
                   widthlabel="48%"
-                  value={formData.paymentVoucher_amount}
-                  name="paymentVoucher_amount"
+                  value={formData.amount}
+                  name="amount"
                   change={handleChange}
                   text="المبلغ رقمًا"
                 />
                 {
                   // @ts-ignore
-                  error.paymentVoucher_amount && (
+                  error.amount && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.paymentVoucher_amount
+                        error.amount
                       }
                     </div>
                   )
@@ -879,7 +539,7 @@ export default function AddExpenses() {
             </div>
             <div
               className="RowForInsertinputs"
-              style={{ justifyContent: "space-between" }}
+              style={{ justifyContent: "space-between", marginBottom: 20 }}
             >
               <div style={{ width: "28%" }}>
                 <div className="input-container">
@@ -888,7 +548,7 @@ export default function AddExpenses() {
                     text="المسجد"
                     options={mosques.map((mosque) => ({
                       value: mosque.id,
-                      label: mosque.mosque_name,
+                      label: mosque.name,
                     }))}
                     value={formData.mosque_id}
                     change={handleChange}
@@ -910,18 +570,18 @@ export default function AddExpenses() {
                 <Inputwithlabelcustom
                   widthinput="100%"
                   widthlabel="25%"
-                  value={formData.paymentVoucher_recipient}
-                  name="paymentVoucher_recipient"
+                  value={formData.recipient}
+                  name="recipient"
                   change={handleChange}
                   text="بيد المحترم"
                 />
                 {
                   // @ts-ignore
-                  error.paymentVoucher_recipient && (
+                  error.recipient && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.paymentVoucher_recipient
+                        error.recipient
                       }
                     </div>
                   )
@@ -930,25 +590,25 @@ export default function AddExpenses() {
             </div>
             <div
               className="RowForInsertinputs"
-              style={{ justifyContent: "space-between" }}
+              style={{ justifyContent: "space-between", marginBottom: 20 }}
             >
               <div style={{ width: "25%" }}></div>
               <div style={{ width: "75%" }}>
                 <Inputwithlabelcustom
                   widthinput="100%"
                   widthlabel="12%"
-                  value={formData.paymentVoucher_description}
-                  name="paymentVoucher_description"
+                  value={formData.description}
+                  name="description"
                   change={handleChange}
                   text="ذلك بمقابل"
                 />
                 {
                   // @ts-ignore
-                  error.paymentVoucher_description && (
+                  error.description && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.paymentVoucher_description
+                        error.description
                       }
                     </div>
                   )
@@ -964,45 +624,26 @@ export default function AddExpenses() {
                 <Inputwithlabelcustom
                   widthinput="100%"
                   widthlabel="15%"
-                  value={formData.paymentVoucher_writtenAmount}
-                  name="paymentVoucher_writtenAmount"
+                  value={formData.writtenAmount}
+                  name="writtenAmount"
                   change={handleChange}
                   text="المبلغ كتابة"
                   disabled={true} // جعل حقل المبلغ كتابة غير قابل للتعديل
                 />
                 {
                   // @ts-ignore
-                  error.paymentVoucher_writtenAmount && (
+                  error.writtenAmount && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.paymentVoucher_writtenAmount
+                        error.writtenAmount
                       }
                     </div>
                   )
                 }
               </div>
             </div>
-            <div className="RowForInsertinputs">
-              <h4
-                style={{
-                  width: "70%",
-                  textAlign: "center",
-                  fontFamily: "amiri",
-                }}
-              >
-                ختم المدير
-              </h4>
-              <h4
-                style={{
-                  width: "30%",
-                  textAlign: "center",
-                  fontFamily: "amiri",
-                }}
-              >
-                توقيع المستلم
-              </h4>
-            </div>
+
             <div className="RowForInsertinputs"></div>
             <div className="RowForInsertinputs">
               <h5

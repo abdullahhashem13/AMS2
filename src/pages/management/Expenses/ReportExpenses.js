@@ -34,7 +34,7 @@ export default function ReportExpenses() {
 
     return filteredExpenses.reduce((total, expense) => {
       // تحويل المبلغ إلى رقم إذا كان نصًا
-      const amount = parseFloat(expense.paymentVoucher_amount) || 0;
+      const amount = parseFloat(expense.amount) || 0;
       return total + amount;
     }, 0);
   };
@@ -65,7 +65,7 @@ export default function ReportExpenses() {
             const mosque = mosquesData.find((m) => m.id === expense.mosque_id);
             return {
               ...expense,
-              mosqueName: mosque ? mosque.mosque_name : "غير محدد",
+              mosqueName: mosque ? mosque.name : "غير محدد",
             };
           }
           return {
@@ -82,12 +82,12 @@ export default function ReportExpenses() {
           const sortedExpenses = [...expensesWithMosqueNames].sort((a, b) => {
             return (
               // @ts-ignore
-              new Date(a.paymentVoucher_date) - new Date(b.paymentVoucher_date)
+              new Date(a.date) - new Date(b.date)
             );
           });
 
           // الحصول على أقدم تاريخ
-          const oldest = sortedExpenses[0].paymentVoucher_date;
+          const oldest = sortedExpenses[0].date;
           setOldestDate(oldest);
 
           // تحديث نموذج البيانات بأقدم تاريخ
@@ -138,7 +138,7 @@ export default function ReportExpenses() {
       const startDate = new Date(filterCriteria.startofdate);
       startDate.setHours(0, 0, 0, 0);
       filtered = filtered.filter((expense) => {
-        const expenseDate = new Date(expense.paymentVoucher_date);
+        const expenseDate = new Date(expense.date);
         return expenseDate >= startDate;
       });
     }
@@ -148,7 +148,7 @@ export default function ReportExpenses() {
       const endDate = new Date(filterCriteria.endofdate);
       endDate.setHours(23, 59, 59, 999);
       filtered = filtered.filter((expense) => {
-        const expenseDate = new Date(expense.paymentVoucher_date);
+        const expenseDate = new Date(expense.date);
         return expenseDate <= endDate;
       });
     }
@@ -214,7 +214,7 @@ export default function ReportExpenses() {
               />
             </div>
           </div>
-          <div className="divforconten">
+          <div>
             <form className="divforconten" onSubmit={handleSubmit}>
               <div className="RowForInsertinputs">
                 <InputDate
@@ -238,7 +238,7 @@ export default function ReportExpenses() {
                     { value: "الجميع", label: "الجميع" },
                     ...mosques.map((mosque) => ({
                       value: mosque.id,
-                      label: mosque.mosque_name,
+                      label: mosque.name,
                     })),
                   ]}
                   value={formData.mosque_id}
@@ -257,6 +257,7 @@ export default function ReportExpenses() {
                       <th>مقابل</th>
                       <th>المبلغ</th>
                       <th>اسم المسجد</th>
+                      <th>بيد المحترم</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -264,7 +265,7 @@ export default function ReportExpenses() {
                       <tr>
                         <td
                           // @ts-ignore
-                          colSpan="5"
+                          colSpan="6"
                         >
                           جاري تحميل البيانات...
                         </td>
@@ -273,7 +274,7 @@ export default function ReportExpenses() {
                       <tr>
                         <td
                           // @ts-ignore
-                          colSpan="5"
+                          colSpan="6"
                         >
                           لا توجد بيانات متطابقة مع معايير البحث
                         </td>
@@ -282,15 +283,12 @@ export default function ReportExpenses() {
                       <>
                         {filteredExpenses.map((expense) => (
                           <tr key={expense.id}>
-                            <td>
-                              {expense.paymentVoucher_bondNumber || "غير محدد"}
-                            </td>
-                            <td>{expense.paymentVoucher_date || "غير محدد"}</td>
-                            <td>
-                              {expense.paymentVoucher_description || "غير محدد"}
-                            </td>
-                            <td>{expense.paymentVoucher_amount || "0"}</td>
+                            <td>{expense.bondNumber || "غير محدد"}</td>
+                            <td>{expense.date || "غير محدد"}</td>
+                            <td>{expense.description || "غير محدد"}</td>
+                            <td>{expense.amount || "0"}</td>
                             <td>{expense.mosqueName || "غير محدد"}</td>
+                            <td>{expense.recipient || "غير محدد"}</td>
                           </tr>
                         ))}
                         {/* سطر المجموع */}
@@ -303,6 +301,7 @@ export default function ReportExpenses() {
                           <td style={{ fontWeight: "bold" }}>
                             {calculateTotalAmount().toLocaleString()}
                           </td>
+                          <td></td>
                           <td></td>
                         </tr>
                       </>

@@ -23,12 +23,12 @@ export default function EditExpense() {
 
   // تهيئة حالة formData
   const [formData, setFormData] = useState({
-    paymentVoucher_description: "",
-    paymentVoucher_recipient: "",
-    paymentVoucher_date: "",
-    paymentVoucher_amount: "",
-    paymentVoucher_writtenAmount: "",
-    paymentVoucher_bondNumber: "",
+    description: "",
+    recipient: "",
+    date: "",
+    amount: "",
+    writtenAmount: "",
+    bondNumber: "",
     mosque_id: "",
   });
 
@@ -47,9 +47,9 @@ export default function EditExpense() {
           console.log("Expense data loaded:", expenseData);
 
           // تطبيق وظيفة التحويل على المبلغ كتابة
-          if (expenseData.paymentVoucher_amount) {
-            expenseData.paymentVoucher_writtenAmount = `${convertNumberToArabicWords(
-              expenseData.paymentVoucher_amount
+          if (expenseData.amount) {
+            expenseData.writtenAmount = `${convertNumberToArabicWords(
+              expenseData.amount
             )} ريال فقط لا غير`;
           }
 
@@ -61,12 +61,12 @@ export default function EditExpense() {
             if (mosqueResponse.ok) {
               const mosqueData = await mosqueResponse.json();
               // إضافة اسم المسجد إلى بيانات السند
-              expenseData.mosque_name = mosqueData.mosque_name;
+              expenseData.name = mosqueData.name;
             }
           }
 
           setFormData(expenseData);
-          setOriginalBondNumber(expenseData.paymentVoucher_bondNumber);
+          setOriginalBondNumber(expenseData.bondNumber);
         } else {
           console.error("Failed to fetch expense:", expenseResponse.status);
           Swal.fire("خطأ", "لم يتم العثور على بيانات السند", "error");
@@ -85,7 +85,7 @@ export default function EditExpense() {
           const expensesData = await expensesResponse.json();
           const bondNumbers = expensesData
             .filter((expense) => expense.id !== parseInt(id))
-            .map((expense) => expense.paymentVoucher_bondNumber);
+            .map((expense) => expense.bondNumber);
           setExistingBondNumbers(bondNumbers);
         }
       } catch (err) {
@@ -97,8 +97,7 @@ export default function EditExpense() {
     if (id) {
       fetchData();
     }
-  }); // فقط id كتابع
-
+  }, [id]);
   // إضافة وظيفة تحويل الأرقام إلى كلمات باللغة العربية (نسخها من صفحة الإضافة)
   const convertNumberToArabicWords = (number) => {
     if (!number) return "";
@@ -269,18 +268,18 @@ export default function EditExpense() {
     const updatedFormData = { ...formData, [name]: value };
 
     // إذا كان الحقل هو المبلغ رقمًا، قم بتحديث المبلغ كتابة تلقائيًا
-    if (name === "paymentVoucher_amount") {
+    if (name === "amount") {
       if (value) {
-        updatedFormData.paymentVoucher_writtenAmount = `${convertNumberToArabicWords(
+        updatedFormData.writtenAmount = `${convertNumberToArabicWords(
           value
         )} ريال فقط لا غير`;
       } else {
-        updatedFormData.paymentVoucher_writtenAmount = ""; // إفراغ حقل المبلغ كتابة إذا كان المبلغ رقمًا فارغًا
+        updatedFormData.writtenAmount = ""; // إفراغ حقل المبلغ كتابة إذا كان المبلغ رقمًا فارغًا
       }
     }
 
     // تجاهل التغييرات المباشرة على حقل المبلغ كتابة
-    if (name === "paymentVoucher_writtenAmount") {
+    if (name === "writtenAmount") {
       return; // الخروج من الدالة دون تحديث الحالة
     }
 
@@ -351,15 +350,15 @@ export default function EditExpense() {
         // استخدام اسم المسجد المخزن في formData إذا كان موجودًا
         let mosqueName = "";
         // @ts-ignore
-        if (formData.mosque_name) {
+        if (formData.name) {
           // @ts-ignore
-          mosqueName = formData.mosque_name;
+          mosqueName = formData.name;
         } else {
           // البحث عن اسم المسجد في مصفوفة المساجد
           const mosque = mosques.find(
             (m) => m.id === parseInt(formData.mosque_id)
           );
-          mosqueName = mosque ? mosque.mosque_name : "";
+          mosqueName = mosque ? mosque.name : "";
         }
 
         console.log(
@@ -546,22 +545,18 @@ export default function EditExpense() {
                 <div class="field-row">
                   <div class="field">
                     <span class="label">رقم السند:</span>
-                    <span class="value">${
-                      formData.paymentVoucher_bondNumber
-                    }</span>
+                    <span class="value">${formData.bondNumber}</span>
                   </div>
                   <div class="field">
                     <span class="label">التاريخ:</span>
-                    <span class="value">${formData.paymentVoucher_date}</span>
+                    <span class="value">${formData.date}</span>
                   </div>
                 </div>
                 
                 <div class="field-row">
                   <div class="field">
                     <span class="label">المبلغ رقماً:</span>
-                    <span class="value">${
-                      formData.paymentVoucher_amount
-                    } ريال</span>
+                    <span class="value">${formData.amount} ريال</span>
                   </div>
                 </div>
                 
@@ -569,7 +564,7 @@ export default function EditExpense() {
                   <div class="full-width-field">
                     <span class="label">المبلغ كتابة:</span>
                     <span class="full-width-value">${
-                      formData.paymentVoucher_writtenAmount
+                      formData.writtenAmount
                     }</span>
                   </div>
                 </div>
@@ -577,9 +572,7 @@ export default function EditExpense() {
                 <div class="field-row">
                   <div class="full-width-field">
                     <span class="label">اسم المستلم:</span>
-                    <span class="full-width-value">${
-                      formData.paymentVoucher_recipient
-                    }</span>
+                    <span class="full-width-value">${formData.recipient}</span>
                   </div>
                 </div>
                 
@@ -596,7 +589,7 @@ export default function EditExpense() {
                   <div class="full-width-field">
                     <span class="label">وذلك مقابل:</span>
                     <span class="full-width-value">${
-                      formData.paymentVoucher_description
+                      formData.description
                     }</span>
                   </div>
                 </div>
@@ -649,29 +642,29 @@ export default function EditExpense() {
     const newErrors = {};
 
     // التحقق من رقم السند
-    if (!formData.paymentVoucher_bondNumber) {
-      newErrors.paymentVoucher_bondNumber = "رقم السند مطلوب";
+    if (!formData.bondNumber) {
+      newErrors.bondNumber = "رقم السند مطلوب";
     } else if (
       // التحقق من تكرار رقم السند فقط إذا تم تغييره
-      formData.paymentVoucher_bondNumber !== originalBondNumber &&
-      existingBondNumbers.includes(formData.paymentVoucher_bondNumber)
+      formData.bondNumber !== originalBondNumber &&
+      existingBondNumbers.includes(formData.bondNumber)
     ) {
-      newErrors.paymentVoucher_bondNumber = "رقم السند موجود بالفعل";
+      newErrors.bondNumber = "رقم السند موجود بالفعل";
     }
 
-    if (!formData.paymentVoucher_amount) {
-      newErrors.paymentVoucher_amount = "المبلغ مطلوب";
-      // @ts-ignore
-    } else if (isNaN(formData.paymentVoucher_amount)) {
-      newErrors.paymentVoucher_amount = "المبلغ يجب أن يكون رقمًا";
+    // التحقق من المبلغ
+    if (!formData.amount) {
+      newErrors.amount = "المبلغ مطلوب";
+    } else if (isNaN(Number(formData.amount))) {
+      newErrors.amount = "المبلغ يجب أن يكون رقمًا";
     }
 
-    if (!formData.paymentVoucher_recipient) {
-      newErrors.paymentVoucher_recipient = "اسم المستلم مطلوب";
+    if (!formData.recipient) {
+      newErrors.recipient = "اسم المستلم مطلوب";
     }
 
-    if (!formData.paymentVoucher_description) {
-      newErrors.paymentVoucher_description = "وصف السند مطلوب";
+    if (!formData.description) {
+      newErrors.description = "وصف السند مطلوب";
     }
 
     if (!formData.mosque_id) {
@@ -681,18 +674,6 @@ export default function EditExpense() {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
-  // إزالة useEffect الثاني الذي يستدعي updateWrittenAmount
-  // لا تستخدم هذا الكود:
-  // useEffect(() => {
-  //   if (id) {
-  //     updateWrittenAmount();
-  //   }
-  // }, [id]);
-
-  // إزالة وظيفة updateWrittenAmount
-  // لا تستخدم هذه الوظيفة:
-  // const updateWrittenAmount = async () => { ... }
 
   return (
     <div className="displayflexhome">
@@ -725,22 +706,24 @@ export default function EditExpense() {
           >
             <Managementdata dataname=" تعديل بيانات سند صرف" />
             <div className="RowForInsertinputs">
-              <div style={{ width: "27%", marginRight: "auto" }}>
+              <div
+                style={{ width: "27%", marginRight: "auto", marginBottom: 20 }}
+              >
                 <Inputwithlabelcustom
                   widthinput="74%"
                   widthlabel="26%"
-                  value={formData.paymentVoucher_bondNumber}
-                  name="paymentVoucher_bondNumber"
+                  value={formData.bondNumber}
+                  name="bondNumber"
                   change={handleChange}
                   text="رقم السند"
                 />
                 {
                   // @ts-ignore
-                  error.paymentVoucher_bondNumber && (
+                  error.bondNumber && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.paymentVoucher_bondNumber
+                        error.bondNumber
                       }
                     </div>
                   )
@@ -749,14 +732,14 @@ export default function EditExpense() {
             </div>
             <div
               className="RowForInsertinputs"
-              style={{ justifyContent: "space-between" }}
+              style={{ justifyContent: "space-between", marginBottom: 20 }}
             >
               <div style={{ width: "75%" }}>
                 <InputDatecustom
                   widthinput="27%"
                   widthlabel="7%"
-                  value={formData.paymentVoucher_date}
-                  name="paymentVoucher_date"
+                  value={formData.date}
+                  name="date"
                   change={handleChange}
                   text="تاريخ"
                   disabled={true} // جعل حقل التاريخ غير قابل للتعديل
@@ -766,18 +749,18 @@ export default function EditExpense() {
                 <Inputwithlabelcustom
                   widthinput="100%"
                   widthlabel="48%"
-                  value={formData.paymentVoucher_amount}
-                  name="paymentVoucher_amount"
+                  value={formData.amount}
+                  name="amount"
                   change={handleChange}
                   text="المبلغ رقمًا"
                 />
                 {
                   // @ts-ignore
-                  error.paymentVoucher_amount && (
+                  error.amount && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.paymentVoucher_amount
+                        error.amount
                       }
                     </div>
                   )
@@ -786,7 +769,7 @@ export default function EditExpense() {
             </div>
             <div
               className="RowForInsertinputs"
-              style={{ justifyContent: "space-between" }}
+              style={{ justifyContent: "space-between", marginBottom: 20 }}
             >
               <div style={{ width: "28%" }}>
                 <div className="input-container">
@@ -795,7 +778,7 @@ export default function EditExpense() {
                     text="المسجد"
                     options={mosques.map((mosque) => ({
                       value: mosque.id,
-                      label: mosque.mosque_name,
+                      label: mosque.name, // توحيد اسم الحقل إلى name بدلاً من mosque_name
                     }))}
                     value={formData.mosque_id}
                     change={handleChange}
@@ -817,18 +800,18 @@ export default function EditExpense() {
                 <Inputwithlabelcustom
                   widthinput="100%"
                   widthlabel="25%"
-                  value={formData.paymentVoucher_recipient}
-                  name="paymentVoucher_recipient"
+                  value={formData.recipient}
+                  name="recipient"
                   change={handleChange}
                   text="بيد المحترم"
                 />
                 {
                   // @ts-ignore
-                  error.paymentVoucher_recipient && (
+                  error.recipient && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.paymentVoucher_recipient
+                        error.recipient
                       }
                     </div>
                   )
@@ -837,25 +820,25 @@ export default function EditExpense() {
             </div>
             <div
               className="RowForInsertinputs"
-              style={{ justifyContent: "space-between" }}
+              style={{ justifyContent: "space-between", marginBottom: 20 }}
             >
               <div style={{ width: "25%" }}></div>
               <div style={{ width: "75%" }}>
                 <Inputwithlabelcustom
                   widthinput="100%"
                   widthlabel="12%"
-                  value={formData.paymentVoucher_description}
-                  name="paymentVoucher_description"
+                  value={formData.description}
+                  name="description"
                   change={handleChange}
                   text="ذلك بمقابل"
                 />
                 {
                   // @ts-ignore
-                  error.paymentVoucher_description && (
+                  error.description && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.paymentVoucher_description
+                        error.description
                       }
                     </div>
                   )
@@ -871,44 +854,24 @@ export default function EditExpense() {
                 <Inputwithlabelcustom
                   widthinput="100%"
                   widthlabel="15%"
-                  value={formData.paymentVoucher_writtenAmount}
-                  name="paymentVoucher_writtenAmount"
+                  value={formData.writtenAmount}
+                  name="writtenAmount"
                   change={handleChange}
                   text="المبلغ كتابة"
                   disabled={true} // جعل حقل المبلغ كتابة غير قابل للتعديل
                 />
                 {
                   // @ts-ignore
-                  error.paymentVoucher_writtenAmount && (
+                  error.writtenAmount && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.paymentVoucher_writtenAmount
+                        error.writtenAmount
                       }
                     </div>
                   )
                 }
               </div>
-            </div>
-            <div className="RowForInsertinputs">
-              <h4
-                style={{
-                  width: "70%",
-                  textAlign: "center",
-                  fontFamily: "amiri",
-                }}
-              >
-                ختم المدير
-              </h4>
-              <h4
-                style={{
-                  width: "30%",
-                  textAlign: "center",
-                  fontFamily: "amiri",
-                }}
-              >
-                توقيع المستلم
-              </h4>
             </div>
             <div className="RowForInsertinputs"></div>
             <div className="RowForInsertinputs">

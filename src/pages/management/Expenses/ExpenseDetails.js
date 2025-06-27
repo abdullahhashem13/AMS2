@@ -14,43 +14,31 @@ export default function ExpenseDetails({ expense, onClose }) {
         <div className="details-content">
           <div className="details-row">
             <div className="details-label">رقم السند:</div>
-            <div className="details-value">
-              {expense.paymentVoucher_bondNumber}
-            </div>
+            <div className="details-value">{expense.bondNumber}</div>
           </div>
           <div className="details-row">
             <div className="details-label">التاريخ:</div>
-            <div className="details-value">{expense.paymentVoucher_date}</div>
+            <div className="details-value">{expense.date}</div>
           </div>
           <div className="details-row">
             <div className="details-label">المبلغ:</div>
-            <div className="details-value">
-              {expense.paymentVoucher_amount} ريال
-            </div>
+            <div className="details-value">{expense.amount} ريال</div>
           </div>
           <div className="details-row">
             <div className="details-label">المبلغ كتابة:</div>
-            <div className="details-value">
-              {expense.paymentVoucher_writtenAmount}
-            </div>
+            <div className="details-value">{expense.writtenAmount}</div>
           </div>
           <div className="details-row">
             <div className="details-label">اسم المستلم:</div>
-            <div className="details-value">
-              {expense.paymentVoucher_recipient}
-            </div>
+            <div className="details-value">{expense.recipient}</div>
           </div>
           <div className="details-row">
             <div className="details-label">الجهة المستفيدة:</div>
-            <div className="details-value">
-              {expense.mosque_name || "غير محدد"}
-            </div>
+            <div className="details-value">{expense.name || "غير محدد"}</div>
           </div>
           <div className="details-row">
             <div className="details-label">وصف المصروف:</div>
-            <div className="details-value">
-              {expense.paymentVoucher_description}
-            </div>
+            <div className="details-value">{expense.description}</div>
           </div>
         </div>
         <div className="details-footer">

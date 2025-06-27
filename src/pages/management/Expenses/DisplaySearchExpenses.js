@@ -34,35 +34,27 @@ function ExpenseDetails({ expense, onClose }) {
         <div className="details-container">
           <div className="details-row">
             <span className="details-label">رقم السند:</span>
-            <span className="details-value">
-              {expense.paymentVoucher_bondNumber}
-            </span>
+            <span className="details-value">{expense.bondNumber}</span>
           </div>
 
           <div className="details-row">
             <span className="details-label">التاريخ:</span>
-            <span className="details-value">{expense.paymentVoucher_date}</span>
+            <span className="details-value">{expense.date}</span>
           </div>
 
           <div className="details-row">
             <span className="details-label">المبلغ:</span>
-            <span className="details-value">
-              {expense.paymentVoucher_amount} ريال
-            </span>
+            <span className="details-value">{expense.amount} ريال</span>
           </div>
 
           <div className="details-row">
             <span className="details-label">المبلغ كتابة:</span>
-            <span className="details-value">
-              {expense.paymentVoucher_writtenAmount}
-            </span>
+            <span className="details-value">{expense.writtenAmount}</span>
           </div>
 
           <div className="details-row">
             <span className="details-label">اسم المستلم:</span>
-            <span className="details-value">
-              {expense.paymentVoucher_recipient}
-            </span>
+            <span className="details-value">{expense.recipient}</span>
           </div>
 
           <div className="details-row">
@@ -74,9 +66,7 @@ function ExpenseDetails({ expense, onClose }) {
 
           <div className="details-row">
             <span className="details-label">وصف المصروف:</span>
-            <span className="details-value">
-              {expense.paymentVoucher_description}
-            </span>
+            <span className="details-value">{expense.description}</span>
           </div>
         </div>
 
@@ -125,7 +115,7 @@ export default function DisplaySearchExpenses() {
           const mosque = mosquesData.find((m) => m.id === expense.mosque_id);
           return {
             ...expense,
-            mosqueName: mosque ? mosque.mosque_name : "غير محدد",
+            mosqueName: mosque ? mosque.name : "غير محدد",
           };
         }
         return {
@@ -156,7 +146,7 @@ export default function DisplaySearchExpenses() {
     }
 
     const filtered = expenses.filter((expense) =>
-      expense.paymentVoucher_bondNumber.toString().includes(term)
+      expense.bondNumber.toString().includes(term)
     );
     setFilteredExpenses(filtered);
   };
@@ -283,9 +273,7 @@ export default function DisplaySearchExpenses() {
                     >
                       {/* رقم السند */}
                       <div>
-                        <p>
-                          {expense.paymentVoucher_bondNumber || "رقم السند"}
-                        </p>
+                        <p>{expense.bondNumber || "رقم السند"}</p>
                       </div>
                       {/* اسم المسجد والأيقونات */}
                       <div className="displayflexjust alinmentcenter">
