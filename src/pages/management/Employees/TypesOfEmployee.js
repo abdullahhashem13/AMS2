@@ -12,7 +12,7 @@ import Swal from "sweetalert2";
 
 export default function TypesOfEmployee() {
   const [formData, setFormData] = useState({
-    employee_type: "",
+    name: "",
   });
   const [error, setErrors] = useState({});
   const [existingTypes, setExistingTypes] = useState([]);
@@ -44,19 +44,19 @@ export default function TypesOfEmployee() {
     const newErrors = {};
     let isValid = true;
 
-    if (!formData.employee_type.trim()) {
-      newErrors.employee_type = "يرجى إدخال نوع الموظف";
+    if (!formData.name.trim()) {
+      newErrors.name = "يرجى إدخال نوع الموظف";
       isValid = false;
-    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.employee_type)) {
-      newErrors.employee_type = "يجب أن يحتوي نوع الموظف على أحرف عربية فقط";
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.name)) {
+      newErrors.name = "يجب أن يحتوي نوع الموظف على أحرف عربية فقط";
       isValid = false;
     }
 
     // التحقق من وجود نوع مكرر
     const isDuplicate = existingTypes.some(
       (type) =>
-        type.employee_type.toLowerCase() ===
-        formData.employee_type.toLowerCase()
+        (type.name || type.employee_type || "").toLowerCase() ===
+        formData.name.toLowerCase()
     );
 
     if (isDuplicate) {
@@ -81,14 +81,14 @@ export default function TypesOfEmployee() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ name: formData.name }),
       });
 
       if (response.ok) {
         // إضافة النوع الجديد إلى القائمة المحلية
-        setExistingTypes([...existingTypes, formData]);
+        setExistingTypes([...existingTypes, { name: formData.name }]);
         // إعادة تعيين النموذج
-        setFormData({ employee_type: "" });
+        setFormData({ name: "" });
         console.log("تمت الإضافة بنجاح!");
       } else {
         const data = await response.json();
@@ -153,7 +153,7 @@ export default function TypesOfEmployee() {
       <Saidbar />
       <div className="sizeboxUnderSaidbar"></div>
       <div className="homepage">
-        <Managmenttitle title="إدارة الموظفين" />
+        <Managmenttitle title="القائمين بالمساجد" />
         <div className="subhomepage">
           <div className="divforbuttons">
             <div>
@@ -188,18 +188,18 @@ export default function TypesOfEmployee() {
                 <Submitinput text="إضافة" />
                 <div>
                   <Inputwithlabel
-                    name="employee_type"
+                    name="name"
                     text="نوع الموظف"
-                    value={formData.employee_type}
+                    value={formData.name}
                     change={handleChange}
                   />
                   {
                     // @ts-ignore
-                    error.employee_type && (
+                    error.name && (
                       <div className="error-message">
                         {
                           // @ts-ignore
-                          error.employee_type
+                          error.name
                         }
                       </div>
                     )
@@ -227,8 +227,10 @@ export default function TypesOfEmployee() {
               {existingTypes.map((type, index) => (
                 <CardForTypesOfManagement
                   key={type.id || index}
-                  text={type.employee_type}
-                  onDelete={() => handleDeleteType(type.id, type.employee_type)}
+                  text={type.name || type.employee_type}
+                  onDelete={() =>
+                    handleDeleteType(type.id, type.name || type.employee_type)
+                  }
                 />
               ))}
             </div>

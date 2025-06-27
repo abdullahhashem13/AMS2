@@ -22,13 +22,15 @@ export default function EmployeeDetails({ employee, onClose }) {
                   (m) => m.id === assignment.mosque_id
                 );
                 const employeeType = data.TypesOfEmployee?.find(
-                  (t) => t.id === assignment.employee_type_id
+                  (t) => t.id === assignment.type_id
                 );
 
                 return {
-                  mosque_name: mosque ? mosque.mosque_name : "غير معروف",
-                  employee_type: employeeType
-                    ? employeeType.employee_type
+                  mosque_name: mosque
+                    ? mosque.name || mosque.mosque_name
+                    : "غير معروف",
+                  type: employeeType
+                    ? employeeType.name || employeeType.type
                     : "غير معروف",
                 };
               }
@@ -50,9 +52,7 @@ export default function EmployeeDetails({ employee, onClose }) {
   // تنسيق التعيينات للعرض (مثال: "إمام المحضار و خطيب الرحمة")
   const formattedAssignments =
     assignments.length > 0
-      ? assignments
-          .map((a) => `${a.employee_type} ${a.mosque_name}`)
-          .join(" و ")
+      ? assignments.map((a) => `${a.type} ${a.mosque_name}`).join(" و ")
       : "لا توجد تعيينات";
 
   return (
@@ -63,42 +63,42 @@ export default function EmployeeDetails({ employee, onClose }) {
         <div className="details-container">
           <div className="details-row">
             <div className="details-label">اسم الموظف:</div>
-            <div className="details-value">{employee.employee_name}</div>
+            <div className="details-value">{employee.name}</div>
           </div>
 
           <div className="details-row">
             <div className="details-label">رقم التلفون:</div>
-            <div className="details-value">{employee.employee_phone}</div>
+            <div className="details-value">{employee.phone}</div>
           </div>
 
           <div className="details-row">
             <div className="details-label">الجنس:</div>
-            <div className="details-value">{employee.employee_gender}</div>
+            <div className="details-value">{employee.gender}</div>
           </div>
 
           <div className="details-row">
             <div className="details-label">تاريخ الميلاد:</div>
-            <div className="details-value">{employee.employee_birthDate}</div>
+            <div className="details-value">{employee.birthDate}</div>
           </div>
 
           <div className="details-row">
             <div className="details-label">يعمل كـ:</div>
-            <div className="details-value">{employee.employee_workAs}</div>
+            <div className="details-value">{employee.workAs}</div>
           </div>
 
           <div className="details-row">
             <div className="details-label">الحالة:</div>
-            <div className="details-value">{employee.employee_statue}</div>
+            <div className="details-value">{employee.statue}</div>
           </div>
 
           <div className="details-row">
             <div className="details-label">الراتب:</div>
-            <div className="details-value">{employee.employee_salary}</div>
+            <div className="details-value">{employee.salary}</div>
           </div>
 
           <div className="details-row">
             <div className="details-label">المؤهل:</div>
-            <div className="details-value">{employee.employee_abilities}</div>
+            <div className="details-value">{employee.abilities}</div>
           </div>
 
           <div className="details-row">
@@ -108,19 +108,17 @@ export default function EmployeeDetails({ employee, onClose }) {
 
           <div className="details-row">
             <div className="details-label">المحافظة:</div>
-            <div className="details-value">{employee.employee_governorate}</div>
+            <div className="details-value">{employee.governorate}</div>
           </div>
 
           <div className="details-row">
             <div className="details-label">المدينة:</div>
-            <div className="details-value">{employee.employee_city}</div>
+            <div className="details-value">{employee.city}</div>
           </div>
 
           <div className="details-row">
             <div className="details-label">الحي:</div>
-            <div className="details-value">
-              {employee.employee_neighborhood}
-            </div>
+            <div className="details-value">{employee.neighborhood}</div>
           </div>
         </div>
 

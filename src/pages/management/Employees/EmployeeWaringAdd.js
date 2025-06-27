@@ -101,15 +101,33 @@ export default function EmployeeWaringAdd() {
     }
 
     // التحقق من وجود إنذار مماثل للموظف نفسه
+    let newErrorsObj = { ...newErrors };
     const existingWarning = warnings.find(
       (warning) =>
         warning.employee_id === formData.employee_id &&
         warning.typeOfWarning === formData.typeOfWarning
     );
-
     if (existingWarning) {
-      setWarningErrorMessage("هذا الموظف لديه بالفعل إنذار من هذا النوع");
-      setShowWarningError(true);
+      newErrorsObj.typeOfWarning = "هذا الموظف لديه بالفعل إنذار من هذا النوع";
+    }
+    // التحقق من تسلسل الإنذارات
+    const employeeWarnings = warnings.filter(
+      (warning) => warning.employee_id === formData.employee_id
+    );
+    const hasFirst = employeeWarnings.some(
+      (w) => w.typeOfWarning === "إنذار أول"
+    );
+    const hasSecond = employeeWarnings.some(
+      (w) => w.typeOfWarning === "إنذار ثاني"
+    );
+    if (formData.typeOfWarning === "إنذار ثاني" && !hasFirst) {
+      newErrorsObj.typeOfWarning = "لا يمكن إنذار ثاني قبل إنذار أول للموظف";
+    }
+    if (formData.typeOfWarning === "إنذار نهائي" && !hasSecond) {
+      newErrorsObj.typeOfWarning = "لا يمكن إنذار نهائي قبل إنذار ثاني للموظف";
+    }
+    if (Object.keys(newErrorsObj).length > 0) {
+      setErrors(newErrorsObj);
       return;
     }
 
@@ -141,18 +159,8 @@ export default function EmployeeWaringAdd() {
       });
 
       if (response.ok) {
-        // إظهار رسالة نجاح
-        Swal.fire({
-          title: "تم بنجاح!",
-          text: "تم إضافة الإنذار بنجاح",
-          icon: "success",
-          confirmButtonText: "حسناً",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // إعادة توجيه المستخدم إلى صفحة البحث بعد الإضافة الناجحة
-            navigate("/management/Employee/EmployeeWaringDisplaySearch");
-          }
-        });
+        navigate("/management/Employee/EmployeeWaringDisplaySearch");
+        return;
       } else {
         const data = await response.json();
 
@@ -200,7 +208,12 @@ export default function EmployeeWaringAdd() {
           </div>
           <form className="divforconten" onSubmit={handleSubmit}>
             <Managementdata dataname="بيانات الإنذار" />
-            <div className="RowForInsertinputs">
+            <div
+              className="RowForInsertinputs"
+              style={{
+                marginBottom: 25,
+              }}
+            >
               <div className="input-container">
                 <InputDate
                   value={formData.date}
@@ -279,7 +292,6 @@ export default function EmployeeWaringAdd() {
                 }
               </div>
             </div>
-            <div className="RowForInsertinputs"></div>
             <div className="RowForInsertinputs"></div>
             <div className="RowForInsertinputs"></div>
             <div className="RowForInsertinputs"></div>

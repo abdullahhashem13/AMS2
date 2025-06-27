@@ -153,16 +153,43 @@ export default function EmployeeWaringEdit() {
     }
 
     // التحقق من وجود إنذار مماثل للموظف نفسه (باستثناء الإنذار الحالي)
+    let newErrorsObj = { ...error };
+    if (typeof newErrorsObj !== "object" || newErrorsObj === null)
+      newErrorsObj = {};
+    // يجب التحقق من التكرار فقط إذا كان هناك إنذار آخر بنفس النوع لنفس الموظف غير الإنذار الجاري تعديله
     const existingWarning = warnings.find(
       (warning) =>
         warning.employee_id === formData.employee_id &&
-        warning.typeOfWarning === formData.typeOfWarning &&
-        warning.id !== id // استبعاد الإنذار الحالي
+        warning.typeOfWarning === formData.typeOfWarning
     );
-
     if (existingWarning) {
-      setWarningErrorMessage("هذا الموظف لديه بالفعل إنذار من هذا النوع");
-      setShowWarningError(true);
+      newErrorsObj["typeOfWarning"] =
+        "هذا الموظف لديه بالفعل إنذار من هذا النوع";
+    }
+    // بناء قائمة إنذارات مؤقتة تتضمن التعديل الحالي
+    const tempWarnings = [
+      ...warnings.filter((w) => w.id !== id),
+      { ...formData, id },
+    ];
+    const employeeWarnings = tempWarnings.filter(
+      (warning) => warning.employee_id === formData.employee_id
+    );
+    const hasFirst = employeeWarnings.some(
+      (w) => w.typeOfWarning === "إنذار أول"
+    );
+    const hasSecond = employeeWarnings.some(
+      (w) => w.typeOfWarning === "إنذار ثاني"
+    );
+    // تحقق تسلسل الإنذارات بشكل صحيح: لا يمكن "ثاني" إلا إذا كان يوجد "أول"، ولا يمكن "نهائي" إلا إذا كان يوجد "أول" و"ثاني"
+    if (formData.typeOfWarning === "إنذار ثاني" && !hasFirst) {
+      newErrorsObj["typeOfWarning"] = "لا يمكن إنذار ثاني قبل إنذار أول للموظف";
+    }
+    if (formData.typeOfWarning === "إنذار نهائي" && (!hasFirst || !hasSecond)) {
+      newErrorsObj["typeOfWarning"] =
+        "لا يمكن إنذار نهائي قبل إنذار أول وإنذار ثاني للموظف";
+    }
+    if (Object.keys(newErrorsObj).length > 0) {
+      setErrors(newErrorsObj);
       return;
     }
 
@@ -180,6 +207,7 @@ export default function EmployeeWaringEdit() {
 
       if (response.ok) {
         navigate("/management/Employee/EmployeeWaringDisplaySearch");
+        return;
       } else {
         const data = await response.json();
         setErrors({
@@ -219,7 +247,12 @@ export default function EmployeeWaringEdit() {
           </div>
           <form className="divforconten" onSubmit={handleSubmit}>
             <Managementdata dataname="تعديل بيانات الإنذار" />
-            <div className="RowForInsertinputs">
+            <div
+              className="RowForInsertinputs"
+              style={{
+                marginBottom: 25,
+              }}
+            >
               <div className="input-container">
                 <InputDate
                   value={formData.date}
@@ -298,7 +331,6 @@ export default function EmployeeWaringEdit() {
                 }
               </div>
             </div>
-            <div className="RowForInsertinputs"></div>
             <div className="RowForInsertinputs"></div>
             <div className="RowForInsertinputs"></div>
             <div className="RowForInsertinputs"></div>

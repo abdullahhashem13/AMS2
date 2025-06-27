@@ -21,29 +21,26 @@ export default function EditEmployee() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    employee_name: "",
-    employee_phone: "",
-    employee_abilities: "",
-    employee_birthDate: "",
-    employee_gender: "",
-    employee_workAs: "",
-    employee_statue: "",
-    employee_salary: "",
-    employee_governorate: "",
-    employee_city: "",
-    employee_neighborhood: "",
+    name: "",
+    phone: "",
+    abilities: "",
+    birthDate: "",
+    gender: "",
+    workAs: "",
+    statue: "",
+    salary: "",
+    governorate: "",
+    city: "",
+    neighborhood: "",
     mosque_assignments: [
       {
         id: Date.now(), // معرف فريد للتعيين الافتراضي
         mosque_id: "",
-        employee_type_id: "",
+        type_id: "",
       },
     ], // مصفوفة لتخزين تعيينات المساجد مع تعيين افتراضي واحد
   });
   const [error, setErrors] = useState({});
-  const [existingEmployees, setExistingEmployees] = useState([]);
-  const [showDuplicateError, setShowDuplicateError] = useState(false);
-  const [isClosingDuplicateError, setIsClosingDuplicateError] = useState(false);
   const [mosques, setMosques] = useState([]);
   const [employeeTypes, setEmployeeTypes] = useState([]);
   // @ts-ignore
@@ -60,24 +57,11 @@ export default function EditEmployee() {
         if (employeeResponse.ok) {
           const employeeData = await employeeResponse.json();
           setFormData(employeeData);
-          setOriginalEmployeeName(employeeData.employee_name);
+          setOriginalEmployeeName(employeeData.name);
           console.log("Employee data loaded:", employeeData);
         } else {
           console.error("Failed to fetch employee:", employeeResponse.status);
           Swal.fire("خطأ", "لم يتم العثور على بيانات الموظف", "error");
-        }
-
-        // جلب قائمة الموظفين للتحقق من عدم تكرار الأسماء
-        const employeesResponse = await fetch(
-          "http://localhost:3001/Employees"
-        );
-        if (employeesResponse.ok) {
-          const employeesData = await employeesResponse.json();
-          setExistingEmployees(
-            employeesData.filter((employee) => employee.id !== id)
-          );
-        } else {
-          console.error("Failed to fetch employees:", employeesResponse.status);
         }
 
         // جلب بيانات المساجد
@@ -114,7 +98,6 @@ export default function EditEmployee() {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrors({ ...error, [e.target.name]: "" });
-    setShowDuplicateError(false);
   };
 
   // إضافة دوال إدارة التعيينات
@@ -122,7 +105,7 @@ export default function EditEmployee() {
     const newAssignment = {
       id: Date.now(), // معرف فريد للتعيين
       mosque_id: "",
-      employee_type_id: "",
+      type_id: "",
     };
     setFormData({
       ...formData,
@@ -164,70 +147,58 @@ export default function EditEmployee() {
     let errors = {};
 
     // التحقق من اسم الموظف (أحرف عربية فقط واسم رباعي)
-    if (!formData.employee_name) {
-      errors.employee_name = "يجب تعبئة الحقل";
+    if (!formData.name) {
+      errors.name = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.employee_name)) {
-      errors.employee_name = "يجب أن يحتوي اسم الموظف على أحرف عربية فقط";
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.name)) {
+      errors.name = "يجب أن يحتوي اسم الموظف على أحرف عربية فقط";
       isValid = false;
     } else {
       // التحقق من أن الاسم يتكون من أربع كلمات على الأقل (اسم رباعي)
-      const words = formData.employee_name.trim().split(/\s+/);
+      const words = formData.name.trim().split(/\s+/);
       if (words.length < 4) {
-        errors.employee_name = "يجب أن يكون الاسم رباعي";
+        errors.name = "يجب أن يكون الاسم رباعي";
         isValid = false;
-      } else {
-        // التحقق من تكرار اسم الموظف
-        const isDuplicate = existingEmployees.some(
-          (employee) => employee.employee_name === formData.employee_name
-        );
-        if (isDuplicate) {
-          setShowDuplicateError(true);
-          isValid = false;
-        }
       }
     }
 
     // التحقق من رقم الهاتف (9 أرقام ويبدأ بـ 7)
-    if (!formData.employee_phone) {
-      errors.employee_phone = "يجب تعبئة الحقل";
+    if (!formData.phone) {
+      errors.phone = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^\d+$/.test(formData.employee_phone)) {
-      errors.employee_phone = "يجب أن يحتوي رقم الهاتف على أرقام فقط";
+    } else if (!/^\d+$/.test(formData.phone)) {
+      errors.phone = "يجب أن يحتوي رقم الهاتف على أرقام فقط";
       isValid = false;
-    } else if (formData.employee_phone.length !== 9) {
-      errors.employee_phone = "يجب أن يتكون رقم الهاتف من 9 أرقام";
+    } else if (formData.phone.length !== 9) {
+      errors.phone = "يجب أن يتكون رقم الهاتف من 9 أرقام";
       isValid = false;
-    } else if (!formData.employee_phone.startsWith("7")) {
-      errors.employee_phone = "يجب أن يبدأ رقم الهاتف بالرقم 7";
+    } else if (!formData.phone.startsWith("7")) {
+      errors.phone = "يجب أن يبدأ رقم الهاتف بالرقم 7";
       isValid = false;
     }
 
     // التحقق من المؤهل (أحرف عربية فقط)
-    if (!formData.employee_abilities) {
-      errors.employee_abilities = "يجب تعبئة الحقل";
+    if (!formData.abilities) {
+      errors.abilities = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.employee_abilities)) {
-      errors.employee_abilities = "يجب أن يحتوي المؤهل على أحرف عربية فقط";
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.abilities)) {
+      errors.abilities = "يجب أن يحتوي المؤهل على أحرف عربية فقط";
       isValid = false;
     }
 
     // التحقق من الراتب (أرقام فقط)
-    if (!formData.employee_salary) {
-      errors.employee_salary = "يجب تعبئة الحقل";
+    if (!formData.salary) {
+      errors.salary = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^\d+$/.test(formData.employee_salary)) {
-      errors.employee_salary = "يجب أن يحتوي الراتب على أرقام فقط";
+    } else if (!/^\d+$/.test(formData.salary)) {
+      errors.salary = "يجب أن يحتوي الراتب على أرقام فقط";
       isValid = false;
     }
 
-    // التحقق من تاريخ الميلاد (يجب أن يكون الموظف 18 سنة أو أكثر)
-    if (!formData.employee_birthDate) {
-      errors.employee_birthDate = "يجب تعبئة الحقل";
-      isValid = false;
-    } else {
+    // التحقق من تاريخ الميلاد (يجب أن يكون الموظف 18 سنة أو أكثر إذا تم إدخاله)
+    if (formData.birthDate) {
       // حساب العمر
-      const birthDate = new Date(formData.employee_birthDate);
+      const birthDate = new Date(formData.birthDate);
       const today = new Date();
       let age = today.getFullYear() - birthDate.getFullYear();
       const monthDiff = today.getMonth() - birthDate.getMonth();
@@ -241,53 +212,53 @@ export default function EditEmployee() {
       }
 
       if (age < 18) {
-        errors.employee_birthDate = "يجب أن يكون عمر الموظف 18 سنة أو أكثر";
+        errors.birthDate = "يجب أن يكون عمر الموظف 18 سنة أو أكثر";
         isValid = false;
       }
     }
 
     // التحقق من الجنس
-    if (!formData.employee_gender) {
-      errors.employee_gender = "يجب اختيار الجنس";
+    if (!formData.gender) {
+      errors.gender = "يجب اختيار الجنس";
       isValid = false;
     }
 
     // التحقق من يعمل كـ
-    if (!formData.employee_workAs) {
-      errors.employee_workAs = "يجب اختيار نوع العمل";
+    if (!formData.workAs) {
+      errors.workAs = "يجب اختيار نوع العمل";
       isValid = false;
     }
 
     // التحقق من الحالة
-    if (!formData.employee_statue) {
-      errors.employee_statue = "يجب اختيار الحالة";
+    if (!formData.statue) {
+      errors.statue = "يجب اختيار الحالة";
       isValid = false;
     }
 
     // التحقق من المحافظة (أحرف عربية فقط)
-    if (!formData.employee_governorate) {
-      errors.employee_governorate = "يجب تعبئة الحقل";
+    if (!formData.governorate) {
+      errors.governorate = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.employee_governorate)) {
-      errors.employee_governorate = "يجب أن تحتوي المحافظة على أحرف عربية فقط";
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.governorate)) {
+      errors.governorate = "يجب أن تحتوي المحافظة على أحرف عربية فقط";
       isValid = false;
     }
 
     // التحقق من المدينة (أحرف عربية فقط)
-    if (!formData.employee_city) {
-      errors.employee_city = "يجب تعبئة الحقل";
+    if (!formData.city) {
+      errors.city = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.employee_city)) {
-      errors.employee_city = "يجب أن تحتوي المدينة على أحرف عربية فقط";
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.city)) {
+      errors.city = "يجب أن تحتوي المدينة على أحرف عربية فقط";
       isValid = false;
     }
 
     // التحقق من الحي (أحرف عربية فقط)
-    if (!formData.employee_neighborhood) {
-      errors.employee_neighborhood = "يجب تعبئة الحقل";
+    if (!formData.neighborhood) {
+      errors.neighborhood = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.employee_neighborhood)) {
-      errors.employee_neighborhood = "يجب أن يحتوي الحي على أحرف عربية فقط";
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.neighborhood)) {
+      errors.neighborhood = "يجب أن يحتوي الحي على أحرف عربية فقط";
       isValid = false;
     }
 
@@ -298,7 +269,7 @@ export default function EditEmployee() {
     } else {
       // التحقق من أن التعيين الأول مكتمل
       const firstAssignment = formData.mosque_assignments[0];
-      if (!firstAssignment.mosque_id || !firstAssignment.employee_type_id) {
+      if (!firstAssignment.mosque_id || !firstAssignment.type_id) {
         errors.mosque_assignments = "يجب تعبئة بيانات التعيين بشكل كامل";
         isValid = false;
       }
@@ -341,14 +312,6 @@ export default function EditEmployee() {
     }
   };
 
-  const closeDuplicateError = () => {
-    setIsClosingDuplicateError(true);
-    setTimeout(() => {
-      setShowDuplicateError(false);
-      setIsClosingDuplicateError(false);
-    }, 300); // مدة الانيميشن
-  };
-
   return (
     <div className="displayflexhome">
       <Saidbar />
@@ -358,7 +321,7 @@ export default function EditEmployee() {
       {/* المحتوى الخاص بالصفحة */}
       <div className="homepage">
         {/* عنوان الصفحة */}
-        <Managmenttitle title="إدارة الموظفين" />
+        <Managmenttitle title="القائمين بالمساجد" />
         {/*  */}
         {/* يحمل ما تحت العنوان */}
         <div className="subhomepage">
@@ -399,21 +362,26 @@ export default function EditEmployee() {
             // action="/management/Properties/AddProperty"
           >
             <Managementdata dataname=" تعديل بيانات الموظف" />
-            <div className="RowForInsertinputs">
+            <div
+              className="RowForInsertinputs"
+              style={{
+                marginBottom: 20,
+              }}
+            >
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.employee_abilities}
-                  name="employee_abilities"
+                  value={formData.abilities}
+                  name="abilities"
                   change={handleChange}
                   text="المؤهل"
                 />
                 {
                   // @ts-ignore
-                  error.employee_abilities && (
+                  error.abilities && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.employee_abilities
+                        error.abilities
                       }
                     </div>
                   )
@@ -422,18 +390,18 @@ export default function EditEmployee() {
               <div className="widthbetween"></div>
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.employee_phone}
-                  name="employee_phone"
+                  value={formData.phone}
+                  name="phone"
                   change={handleChange}
                   text="رقم التلفون"
                 />
                 {
                   // @ts-ignore
-                  error.employee_phone && (
+                  error.phone && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.employee_phone
+                        error.phone
                       }
                     </div>
                   )
@@ -442,46 +410,44 @@ export default function EditEmployee() {
               <div className="widthbetween"></div>
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.employee_name}
-                  name="employee_name"
+                  value={formData.name}
+                  name="name"
                   change={handleChange}
                   text="اسم الموظف"
                 />
                 {
                   // @ts-ignore
-                  error.employee_name && (
+                  error.name && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.employee_name
+                        error.name
                       }
                     </div>
                   )
                 }
-                {showDuplicateError &&
-                  !(
-                    // @ts-ignore
-                    error.employee_name
-                  ) && (
-                    <div className="error-message">هذا الاسم موجود بالفعل</div>
-                  )}
               </div>
             </div>
-            <div className="RowForInsertinputs">
+            <div
+              className="RowForInsertinputs"
+              style={{
+                marginBottom: 20,
+              }}
+            >
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.employee_salary}
-                  name="employee_salary"
+                  value={formData.salary}
+                  name="salary"
                   change={handleChange}
                   text="الراتب"
                 />
                 {
                   // @ts-ignore
-                  error.employee_salary && (
+                  error.salary && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.employee_salary
+                        error.salary
                       }
                     </div>
                   )
@@ -490,18 +456,18 @@ export default function EditEmployee() {
               <div className="widthbetween"></div>
               <div className="input-container">
                 <InputDate
-                  value={formData.employee_birthDate}
-                  name="employee_birthDate"
+                  value={formData.birthDate}
+                  name="birthDate"
                   change={handleChange}
                   text="تاريخ الميلاد"
                 />
                 {
                   // @ts-ignore
-                  error.employee_birthDate && (
+                  error.birthDate && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.employee_birthDate
+                        error.birthDate
                       }
                     </div>
                   )
@@ -510,8 +476,8 @@ export default function EditEmployee() {
               <div className="widthbetween"></div>
               <div className="input-container">
                 <SelectWithLabel
-                  value={formData.employee_gender}
-                  name="employee_gender"
+                  value={formData.gender}
+                  name="gender"
                   change={handleChange}
                   // values
                   value1="ذكر"
@@ -520,11 +486,11 @@ export default function EditEmployee() {
                 />
                 {
                   // @ts-ignore
-                  error.employee_gender && (
+                  error.gender && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.employee_gender
+                        error.gender
                       }
                     </div>
                   )
@@ -536,8 +502,8 @@ export default function EditEmployee() {
               <div className="widthbetween"></div>
               <div className="input-container">
                 <SelectWithLabel
-                  value={formData.employee_statue}
-                  name="employee_statue"
+                  value={formData.statue}
+                  name="statue"
                   change={handleChange}
                   // values
                   value1="فعال"
@@ -546,11 +512,11 @@ export default function EditEmployee() {
                 />
                 {
                   // @ts-ignore
-                  error.employee_statue && (
+                  error.statue && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.employee_statue
+                        error.statue
                       }
                     </div>
                   )
@@ -559,8 +525,8 @@ export default function EditEmployee() {
               <div className="widthbetween"></div>
               <div className="input-container">
                 <SelectWithLabel3
-                  value={formData.employee_workAs}
-                  name="employee_workAs"
+                  value={formData.workAs}
+                  name="workAs"
                   change={handleChange}
                   // values
                   value1="اوقافي"
@@ -570,11 +536,11 @@ export default function EditEmployee() {
                 />
                 {
                   // @ts-ignore
-                  error.employee_workAs && (
+                  error.workAs && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.employee_workAs
+                        error.workAs
                       }
                     </div>
                   )
@@ -595,22 +561,22 @@ export default function EditEmployee() {
               <div className="RowForInsertinputs" key={assignment.id}>
                 <div className="input-container">
                   <SearchableSelect
-                    id={`employee_type_id_${assignment.id}`}
-                    name="employee_type_id"
+                    id={`type_id_${assignment.id}`}
+                    name="type_id"
                     text="نوع الموظف"
                     options={
                       employeeTypes && employeeTypes.length > 0
                         ? employeeTypes.map((type) => ({
                             value: type.id,
-                            label: type.employee_type,
+                            label: type.name,
                           }))
                         : []
                     }
-                    value={assignment.employee_type_id}
+                    value={assignment.type_id}
                     change={(e) =>
                       handleAssignmentChange(
                         assignment.id,
-                        "employee_type_id",
+                        "type_id",
                         e.target.value
                       )
                     }
@@ -624,7 +590,7 @@ export default function EditEmployee() {
                     text="تابع لمسجد"
                     options={mosques.map((mosque) => ({
                       value: mosque.id,
-                      label: mosque.mosque_name,
+                      label: mosque.name,
                     }))}
                     value={assignment.mosque_id}
                     change={(e) =>
@@ -709,18 +675,18 @@ export default function EditEmployee() {
             <div className="RowForInsertinputs">
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.employee_neighborhood}
-                  name="employee_neighborhood"
+                  value={formData.neighborhood}
+                  name="neighborhood"
                   change={handleChange}
                   text="الحي"
                 />
                 {
                   // @ts-ignore
-                  error.employee_neighborhood && (
+                  error.neighborhood && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.employee_neighborhood
+                        error.neighborhood
                       }
                     </div>
                   )
@@ -729,18 +695,18 @@ export default function EditEmployee() {
               <div className="widthbetween"></div>
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.employee_city}
-                  name="employee_city"
+                  value={formData.city}
+                  name="city"
                   change={handleChange}
                   text="المدينة"
                 />
                 {
                   // @ts-ignore
-                  error.employee_city && (
+                  error.city && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.employee_city
+                        error.city
                       }
                     </div>
                   )
@@ -749,18 +715,18 @@ export default function EditEmployee() {
               <div className="widthbetween"></div>
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.employee_governorate}
-                  name="employee_governorate"
+                  value={formData.governorate}
+                  name="governorate"
                   change={handleChange}
                   text="المحافظة"
                 />
                 {
                   // @ts-ignore
-                  error.employee_governorate && (
+                  error.governorate && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.employee_governorate
+                        error.governorate
                       }
                     </div>
                   )
@@ -837,27 +803,6 @@ export default function EditEmployee() {
         }
       `}
       </style>
-      {showDuplicateError && (
-        <div
-          className={`error-notification ${
-            isClosingDuplicateError ? "closing" : ""
-          }`}
-        >
-          <div
-            className={`error-content ${
-              isClosingDuplicateError ? "closing" : ""
-            }`}
-          >
-            <div className="error-message-title">اسم الموظف مكرر</div>
-            <div className="error-message-body">
-              اسم الموظف الذي أدخلته موجود بالفعل. يرجى اختيار اسم آخر.
-            </div>
-            <button className="error-button" onClick={closeDuplicateError}>
-              حسناً
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

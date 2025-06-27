@@ -32,7 +32,7 @@ export default function DisplaySearchEmployee() {
           const formattedEmployees = data.Employees.map((employee) => {
             return {
               id: employee.id,
-              name: employee.employee_name,
+              name: employee.name,
               // نمرر فقط المعرف، وسيقوم المكون بجلب التعيينات
             };
           });
@@ -115,7 +115,7 @@ export default function DisplaySearchEmployee() {
       <Saidbar />
       <div className="sizeboxUnderSaidbar"></div>
       <div className="homepage">
-        <Managmenttitle title="إدارة الموظفين" />
+        <Managmenttitle title="القائمين بالمساجد" />
         <div className="subhomepage">
           <div className="divforbuttons">
             <div>

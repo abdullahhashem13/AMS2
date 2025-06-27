@@ -47,12 +47,16 @@ export default function EmployeeCard(props) {
 
                 // البحث عن نوع الوظيفة
                 const employeeType = data.TypesOfEmployee?.find(
-                  (type) => type.id === assignment.employee_type_id
+                  (type) => type.id === assignment.type_id
                 );
 
                 return {
-                  type: employeeType ? employeeType.employee_type : "؟",
-                  mosque: mosque ? mosque.mosque_name : "؟",
+                  type: employeeType
+                    ? employeeType.name || employeeType.employee_type
+                    : "غير محدد",
+                  mosque: mosque
+                    ? mosque.name || mosque.mosque_name
+                    : "غير محدد",
                 };
               })
             );
@@ -88,21 +92,9 @@ export default function EmployeeCard(props) {
 
   const handleDelete = (e) => {
     e.stopPropagation(); // منع انتشار الحدث
-    Swal.fire({
-      title: "هل أنت متأكد؟",
-      text: "لن تتمكن من التراجع عن هذا!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "نعم، احذفه!",
-      cancelButtonText: "إلغاء",
-    }).then((result) => {
-      if (result.isConfirmed)
-        if (props.onDelete) {
-          props.onDelete(props.id);
-        }
-    });
+    if (props.onDelete) {
+      props.onDelete(props.id);
+    }
   };
 
   // تنسيق التعيينات للعرض (مثال: "إمام المحضار و خطيب الرحمة")

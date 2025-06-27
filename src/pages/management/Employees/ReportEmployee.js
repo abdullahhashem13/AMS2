@@ -10,14 +10,15 @@ import SearchableSelect from "../../../components/SearchableSelect";
 import Submitinput from "../../../components/submitinput";
 import "../../../style/Table.css";
 import ButtonInput from "../../../components/ButtonInput";
+import SelectWithLabel3 from "../../../components/SelectWithLabel3";
 
 export default function ReportEmployee() {
   const [formData, setFormData] = useState({
-    employee_gender: "الجميع",
+    gender: "الجميع",
     mosque_id: "الجميع",
-    employee_type_id: "الجميع",
-    employee_statue: "الجميع",
-    employee_workAs: "الجميع",
+    type_id: "الجميع",
+    statue: "الجميع",
+    workAs: "الجميع",
   });
   const [error, setErrors] = useState({});
   const [employees, setEmployees] = useState([]);
@@ -27,14 +28,12 @@ export default function ReportEmployee() {
   const [employeeTypes, setEmployeeTypes] = useState([]);
 
   // الأعمدة القابلة للاضافة - جميعها مخفية افتراض<|im_start|>
-  const [showemployee_salary, setshowemployee_salary] = useState(false);
-  const [showemployee_birthDate, setShowemployee_birthDate] = useState(false);
-  const [showemployee_abilities, setShowemployee_abilities] = useState(false);
-  const [showemployee_governorate, setShowemployee_governorate] =
-    useState(false);
-  const [showemployee_city, setShowemployee_city] = useState(false);
-  const [showemployee_neighborhood, setShowemployee_neighborhood] =
-    useState(false);
+  const [showsalary, setshowsalary] = useState(false);
+  const [showbirthDate, setShowbirthDate] = useState(false);
+  const [showabilities, setShowabilities] = useState(false);
+  const [showgovernorate, setShowgovernorate] = useState(false);
+  const [showcity, setShowcity] = useState(false);
+  const [showneighborhood, setShowneighborhood] = useState(false);
 
   // جلب البيانات عند تحميل الصفحة
   useEffect(() => {
@@ -89,10 +88,8 @@ export default function ReportEmployee() {
       // تطبيق الفلترة على البيانات المحلية
       let filtered = [...employees];
 
-      if (formData.employee_gender && formData.employee_gender !== "الجميع") {
-        filtered = filtered.filter(
-          (emp) => emp.employee_gender === formData.employee_gender
-        );
+      if (formData.gender && formData.gender !== "الجميع") {
+        filtered = filtered.filter((emp) => emp.gender === formData.gender);
       }
 
       if (formData.mosque_id && formData.mosque_id !== "الجميع") {
@@ -106,28 +103,23 @@ export default function ReportEmployee() {
         });
       }
 
-      if (formData.employee_type_id && formData.employee_type_id !== "الجميع") {
+      if (formData.type_id && formData.type_id !== "الجميع") {
         filtered = filtered.filter((emp) => {
           if (emp.mosque_assignments && emp.mosque_assignments.length > 0) {
             return emp.mosque_assignments.some(
-              (assignment) =>
-                assignment.employee_type_id === formData.employee_type_id
+              (assignment) => assignment.type_id === formData.type_id
             );
           }
           return false;
         });
       }
 
-      if (formData.employee_statue && formData.employee_statue !== "الجميع") {
-        filtered = filtered.filter(
-          (emp) => emp.employee_statue === formData.employee_statue
-        );
+      if (formData.statue && formData.statue !== "الجميع") {
+        filtered = filtered.filter((emp) => emp.statue === formData.statue);
       }
 
-      if (formData.employee_workAs && formData.employee_workAs !== "الجميع") {
-        filtered = filtered.filter(
-          (emp) => emp.employee_workAs === formData.employee_workAs
-        );
+      if (formData.workAs && formData.workAs !== "الجميع") {
+        filtered = filtered.filter((emp) => emp.workAs === formData.workAs);
       }
 
       setFilteredEmployees(filtered);
@@ -147,17 +139,19 @@ export default function ReportEmployee() {
     ) {
       return "لا توجد تعيينات";
     }
-
     return employee.mosque_assignments
       .map((assignment) => {
         const mosque = mosques.find((m) => m.id === assignment.mosque_id);
         const employeeType = employeeTypes.find(
-          (t) => t.id === assignment.employee_type_id
+          (t) => t.id === assignment.type_id
         );
-
-        return `${employeeType ? employeeType.employee_type : "غير معروف"} ${
-          mosque ? mosque.mosque_name : "غير معروف"
-        }`;
+        const mosqueName = mosque
+          ? mosque.name || mosque.mosque_name
+          : "غير معروف";
+        const typeName = employeeType
+          ? employeeType.name || employeeType.type
+          : "غير معروف";
+        return `${typeName} ${mosqueName}`;
       })
       .join(" و ");
   };
@@ -190,12 +184,12 @@ export default function ReportEmployee() {
     let count = 6; // اسم الموظف، رقم التلفون، الجنس، يعمل كـ، الحالة، التعيينات
 
     // الأعمدة الاختيارية
-    if (showemployee_abilities) count++;
-    if (showemployee_salary) count++;
-    if (showemployee_birthDate) count++;
-    if (showemployee_neighborhood) count++;
-    if (showemployee_city) count++;
-    if (showemployee_governorate) count++;
+    if (showabilities) count++;
+    if (showsalary) count++;
+    if (showbirthDate) count++;
+    if (showneighborhood) count++;
+    if (showcity) count++;
+    if (showgovernorate) count++;
 
     return count;
   };
@@ -235,13 +229,13 @@ export default function ReportEmployee() {
               />
             </div>
           </div>
-          <div className="divforconten">
+          <div>
             <form className="divforconten" onSubmit={handleSubmit}>
               <div className="RowForInsertinputs">
-                <SelectWithLabel
-                  name="employee_gender"
+                <SelectWithLabel3
+                  name="gender"
                   text="الجنس"
-                  value={formData.employee_gender}
+                  value={formData.gender}
                   change={handleChange}
                   // values
                   value1="الجميع"
@@ -257,7 +251,7 @@ export default function ReportEmployee() {
                     { value: "الجميع", label: "الجميع" },
                     ...mosques.map((mosque) => ({
                       value: mosque.id,
-                      label: mosque.mosque_name,
+                      label: mosque.name,
                     })),
                   ]}
                   value={formData.mosque_id}
@@ -265,17 +259,17 @@ export default function ReportEmployee() {
                 />
                 <div className="widthbetween"></div>
                 <SearchableSelect
-                  id="employee_type_id"
-                  name="employee_type_id"
+                  id="type_id"
+                  name="type_id"
                   text="نوع الموظف"
                   options={[
                     { value: "الجميع", label: "الجميع" },
                     ...employeeTypes.map((type) => ({
                       value: type.id,
-                      label: type.employee_type,
+                      label: type.name,
                     })),
                   ]}
-                  value={formData.employee_type_id}
+                  value={formData.type_id}
                   change={handleChange}
                 />
               </div>
@@ -286,10 +280,10 @@ export default function ReportEmployee() {
                     width: "64.6%",
                   }}
                 >
-                  <SelectWithLabel
-                    name="employee_statue"
+                  <SelectWithLabel3
+                    name="statue"
                     text="الحالة"
-                    value={formData.employee_statue}
+                    value={formData.statue}
                     change={handleChange}
                     // values
                     value1="الجميع"
@@ -298,9 +292,9 @@ export default function ReportEmployee() {
                   />
                   <div className="widthbetween"></div>
                   <SelectWithLabel4
-                    name="employee_workAs"
+                    name="workAs"
                     text="يعمل كـ"
-                    value={formData.employee_workAs}
+                    value={formData.workAs}
                     change={handleChange}
                     // values
                     value1="الجميع"
@@ -321,37 +315,33 @@ export default function ReportEmployee() {
                 >
                   <Checkpoint
                     text="الحي"
-                    change={(e) =>
-                      setShowemployee_neighborhood(e.target.checked)
-                    }
-                    checked={showemployee_neighborhood}
+                    change={(e) => setShowneighborhood(e.target.checked)}
+                    checked={showneighborhood}
                   />
                   <Checkpoint
                     text="المدينة"
-                    change={(e) => setShowemployee_city(e.target.checked)}
-                    checked={showemployee_city}
+                    change={(e) => setShowcity(e.target.checked)}
+                    checked={showcity}
                   />
                   <Checkpoint
                     text="المحافظة"
-                    change={(e) =>
-                      setShowemployee_governorate(e.target.checked)
-                    }
-                    checked={showemployee_governorate}
+                    change={(e) => setShowgovernorate(e.target.checked)}
+                    checked={showgovernorate}
                   />
                   <Checkpoint
                     text="المؤهل"
-                    change={(e) => setShowemployee_abilities(e.target.checked)}
-                    checked={showemployee_abilities}
+                    change={(e) => setShowabilities(e.target.checked)}
+                    checked={showabilities}
                   />
                   <Checkpoint
                     text="تاريخ الميلاد"
-                    change={(e) => setShowemployee_birthDate(e.target.checked)}
-                    checked={showemployee_birthDate}
+                    change={(e) => setShowbirthDate(e.target.checked)}
+                    checked={showbirthDate}
                   />
                   <Checkpoint
                     text="الراتب"
-                    change={(e) => setshowemployee_salary(e.target.checked)}
-                    checked={showemployee_salary}
+                    change={(e) => setshowsalary(e.target.checked)}
+                    checked={showsalary}
                   />
                 </div>
               </div>
@@ -367,16 +357,16 @@ export default function ReportEmployee() {
                 <table id="propertyreport">
                   <thead>
                     <tr>
-                      {showemployee_governorate && <th>المحافظة</th>}
-                      {showemployee_city && <th>المدينة</th>}
-                      {showemployee_neighborhood && <th>الحي</th>}
-                      {showemployee_birthDate && <th>تاريخ الميلاد</th>}
-                      {showemployee_salary && <th>الراتب</th>}
+                      {showgovernorate && <th>المحافظة</th>}
+                      {showcity && <th>المدينة</th>}
+                      {showneighborhood && <th>الحي</th>}
+                      {showbirthDate && <th>تاريخ الميلاد</th>}
+                      {showsalary && <th>الراتب</th>}
                       <th>التعيينات</th>
                       <th>الحالة</th>
                       <th>يعمل كـ</th>
                       <th>الجنس</th>
-                      {showemployee_abilities && <th>المؤهل</th>}
+                      {showabilities && <th>المؤهل</th>}
                       <th>رقم التلفون</th>
                       <th>اسم الموظف</th>
                     </tr>
@@ -403,42 +393,32 @@ export default function ReportEmployee() {
                     ) : (
                       filteredEmployees.map((employee) => (
                         <tr key={employee.id}>
-                          {showemployee_governorate && (
-                            <td>
-                              {employee.employee_governorate || "غير متوفر"}
-                            </td>
+                          {showgovernorate && (
+                            <td>{employee.governorate || "غير متوفر"}</td>
                           )}
-                          {showemployee_city && (
-                            <td>{employee.employee_city || "غير متوفر"}</td>
+                          {showcity && <td>{employee.city || "غير متوفر"}</td>}
+                          {showneighborhood && (
+                            <td>{employee.neighborhood || "غير متوفر"}</td>
                           )}
-                          {showemployee_neighborhood && (
-                            <td>
-                              {employee.employee_neighborhood || "غير متوفر"}
-                            </td>
+                          {showbirthDate && (
+                            <td>{employee.birthDate || "غير متوفر"}</td>
                           )}
-                          {showemployee_birthDate && (
+                          {showsalary && (
                             <td>
-                              {employee.employee_birthDate || "غير متوفر"}
-                            </td>
-                          )}
-                          {showemployee_salary && (
-                            <td>
-                              {employee.employee_salary
-                                ? `${employee.employee_salary} ريال`
+                              {employee.salary
+                                ? `${employee.salary} ريال`
                                 : "غير متوفر"}
                             </td>
                           )}
                           <td>{formatAssignments(employee)}</td>
-                          <td>{employee.employee_statue || "غير متوفر"}</td>
-                          <td>{employee.employee_workAs || "غير متوفر"}</td>
-                          <td>{employee.employee_gender || "غير متوفر"}</td>
-                          {showemployee_abilities && (
-                            <td>
-                              {employee.employee_abilities || "غير متوفر"}
-                            </td>
+                          <td>{employee.statue || "غير متوفر"}</td>
+                          <td>{employee.workAs || "غير متوفر"}</td>
+                          <td>{employee.gender || "غير متوفر"}</td>
+                          {showabilities && (
+                            <td>{employee.abilities || "غير متوفر"}</td>
                           )}
-                          <td>{employee.employee_phone || "غير متوفر"}</td>
-                          <td>{employee.employee_name || "غير متوفر"}</td>
+                          <td>{employee.phone || "غير متوفر"}</td>
+                          <td>{employee.name || "غير متوفر"}</td>
                         </tr>
                       ))
                     )}

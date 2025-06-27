@@ -34,7 +34,7 @@ export default function Home() {
             namepage="/management/Branchs/DisplaySearchBranch"
           />
           <Sectionmanagment
-            text="إدارة الموظفين"
+            text="القائمين بالمساجد"
             image="employees.png"
             namepage="/management/Employee/DisplaySearchEmployee"
           />

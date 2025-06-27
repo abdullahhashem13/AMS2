@@ -30,17 +30,6 @@
       "governorate": "حضرموت",
       "city": "المكلا",
       "neighborhood": "السلام"
-    },
-    {
-      "id": "946e",
-      "name": "محمد علي احمد الحامد",
-      "phone": "777000111",
-      "IdNumber": "58554",
-      "gender": "ذكر",
-      "type": "حالي",
-      "governorate": "حضرموت",
-      "city": "الشحر",
-      "neighborhood": "السده"
     }
   ],
   "TenantWaring": [
@@ -86,8 +75,35 @@
       "numberOfProperty": "6"
     }
   ],
-  "TypesOfEmployee": [],
-  "Employees": [],
+  "TypesOfEmployee": [
+    {
+      "id": "3bff",
+      "name": "امام"
+    }
+  ],
+  "Employees": [
+    {
+      "id": "7c4a",
+      "name": "عبدالله هاشم أحمد الحامد",
+      "phone": "777000111",
+      "abilities": "جامعي",
+      "birthDate": "",
+      "gender": "ذكر",
+      "workAs": "اوقافي",
+      "statue": "فعال",
+      "salary": "20000",
+      "governorate": "حضرموت",
+      "city": "المكلا",
+      "neighborhood": "السلام",
+      "mosque_assignments": [
+        {
+          "id": 1751042676837,
+          "mosque_id": "a1fc",
+          "type_id": "3bff"
+        }
+      ]
+    }
+  ],
   "EmployeeWaring": [],
   "Properties": [
     {
