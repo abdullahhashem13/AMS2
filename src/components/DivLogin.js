@@ -137,32 +137,7 @@ export default function DivLogin() {
               تـسـجـيـل
             </button>
             <div className="sizebox10"></div>
-            <div
-              style={{
-                display: "flex",
-                marginLeft: 60,
-              }}
-            >
-              <a
-                href="/Registrationpage"
-                style={{
-                  color: "black",
-                  fontWeight: "bold",
-                  fontFamily: "amiri",
-                }}
-              >
-                إنشاء حساب
-              </a>
-              <div className="sizeboxwidth4"></div>
-              <h5
-                style={{
-                  marginTop: 0,
-                  color: "white",
-                }}
-              >
-                اذا لم يكن لديك حساب فيمكنك
-              </h5>
-            </div>
+            {/* تم حذف رابط إنشاء الحساب وعبارة إذا لم يكن لديك حساب */}
             {/* </div>
           <div className="sizebox30"></div>
           <div className="divforloginword">

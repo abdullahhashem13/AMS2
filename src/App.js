@@ -1,6 +1,8 @@
 // @ts-ignore
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Loginpage from "./pages/Loginpage";
+// import EditUser from "./pages/EditUser";
+import EditUser from "./components/EditUser";
 import NoMatch from "./pages/NoMatch";
 import Registrationpage from "./pages/Registrationpage";
 import Home from "./pages/Home";
@@ -89,6 +91,7 @@ function App() {
           <Route path="*" element={<NoMatch />} />
           <Route path="/home" element={<Home />} />
           <Route path="/Dashboardfully/Dashboard" element={<Dashboard />} />
+          <Route path="/EditUser/:id" element={<EditUser />} />
           <Route path="/Setting" element={<Setting />} />
           <Route path="/Notfigation" element={<Notfigation />} />
           {/*  */}

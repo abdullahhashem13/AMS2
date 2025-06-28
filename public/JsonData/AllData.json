@@ -288,5 +288,40 @@
     }
   ],
   "WhiteLandContract": [],
-  "RenewlyContract": []
+  "RenewlyContract": [],
+  "Users": [
+    {
+      "username": "ssss",
+      "password": "009665717",
+      "confirmPassword": "009665717",
+      "fullName": "عبدالله هاشم الحامد",
+      "phoneNumber": "777315622",
+      "address": "الغويزي",
+      "educationalQualification": "بكلاريوس",
+      "gender": "ذكر",
+      "id": "3dce"
+    },
+    {
+      "username": "v5b9",
+      "password": "123321123321",
+      "confirmPassword": "123321123321",
+      "fullName": "عبدالله هاشم الحامد",
+      "phoneNumber": "777315622",
+      "address": "الغويزي",
+      "educationalQualification": "بكلاريوس",
+      "gender": "ذكر",
+      "id": "ed09"
+    },
+    {
+      "id": "6f74",
+      "username": "eeeee",
+      "password": "741147741147",
+      "confirmPassword": "741147741147",
+      "fullName": "محمد صالح الحامد",
+      "phoneNumber": "777315622",
+      "address": "الغويزي",
+      "educationalQualification": "بكلاريوس",
+      "gender": "ذكر"
+    }
+  ]
 }
