@@ -67,11 +67,18 @@ export default function ReportQuranCenter() {
           </div>
           <div
             className="divforconten"
-            style={{
-              paddingBottom: 0,
-            }}
+            style={{ margin: 0, padding: 0, minHeight: "auto", height: "80%" }}
           >
-            <div className="divfortable" style={{ marginTop: 30 }}>
+            <div
+              className="divfortable"
+              style={{
+                marginTop: 30,
+                marginBottom: 0,
+                paddingBottom: 0,
+                minHeight: "auto",
+                height: "80%",
+              }}
+            >
               <table id="qurancenterreport">
                 <thead>
                   <tr>
@@ -121,7 +128,12 @@ export default function ReportQuranCenter() {
             </div>
             <div
               className="RowForInsertinputs"
-              style={{ marginTop: 20, marginBottom: 0, paddingBottom: 0 }}
+              style={{
+                margin: 0,
+                padding: 0,
+                minHeight: "auto",
+                height: "auto",
+              }}
             >
               <ButtonInput text="طباعة" onClick={handlePrint} />
             </div>
