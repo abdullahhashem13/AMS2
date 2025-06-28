@@ -222,8 +222,50 @@
       "id": "3975"
     }
   ],
-  "Aggrements": [],
-  "Builder": [],
+  "Aggrements": [
+    {
+      "id": "cd2b",
+      "aggrementNo": "654654",
+      "agreementType": "بناء",
+      "date": "2025-06-28",
+      "timeToBuild": "3 سنوات",
+      "firstWitness": "محمد حسن علي العمودي",
+      "secondWitness": "علي عمر محمد بن سميدع",
+      "height": "20",
+      "width": "10",
+      "totalArea": "200",
+      "north": "دكان",
+      "south": "مزرعه",
+      "east": "مقبرة",
+      "west": "ارض",
+      "builderMosque_name": "عبدالله هاشم أحمد الحامد",
+      "mosque_id": "e587"
+    }
+  ],
+  "Builder": [
+    {
+      "id": "3313",
+      "name": "محمد علي احمد الحامد",
+      "NOIdentity": "5456456",
+      "phone": "777000111",
+      "governorate": "حضرموت",
+      "city": "المكلا",
+      "neighborhood": "السلام",
+      "issuedFrom": "حضرموت",
+      "issuedDate": "2025-06-28"
+    },
+    {
+      "id": "c4d6",
+      "name": "عبدالله هاشم أحمد الحامد",
+      "NOIdentity": "5888885",
+      "phone": "777000111",
+      "governorate": "حضرموت",
+      "city": "المكلا",
+      "neighborhood": "السلام",
+      "issuedFrom": "حضرموت",
+      "issuedDate": "2025-06-28"
+    }
+  ],
   "LandFarmingContract": [],
   "PropertyContract": [
     {

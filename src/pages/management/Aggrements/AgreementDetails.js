@@ -43,25 +43,19 @@ export default function AgreementDetailsModal({ id, onClose }) {
             <div className="details-container">
               <div className="details-row">
                 <div className="details-label">رقم الاتفاقية:</div>
-                <div className="details-value">
-                  {data.aggrement_aggrementNo}
-                </div>
+                <div className="details-value">{data.aggrementNo}</div>
               </div>
               <div className="details-row">
                 <div className="details-label">نوع الاتفاقية:</div>
-                <div className="details-value">
-                  {data.aggrement_agreementType}
-                </div>
+                <div className="details-value">{data.agreementType}</div>
               </div>
               <div className="details-row">
                 <div className="details-label">تاريخ الاتفاقية:</div>
-                <div className="details-value">{data.aggrement_date}</div>
+                <div className="details-value">{data.date}</div>
               </div>
               <div className="details-row">
                 <div className="details-label">فترة البناء:</div>
-                <div className="details-value">
-                  {data.aggrement_timeToBuild}
-                </div>
+                <div className="details-value">{data.timeToBuild}</div>
               </div>
               <div className="details-row">
                 <div className="details-label">اسم الباني:</div>
@@ -69,44 +63,40 @@ export default function AgreementDetailsModal({ id, onClose }) {
               </div>
               <div className="details-row">
                 <div className="details-label">الشاهد الأول:</div>
-                <div className="details-value">
-                  {data.aggrement_firstWitness}
-                </div>
+                <div className="details-value">{data.firstWitness}</div>
               </div>
               <div className="details-row">
                 <div className="details-label">الشاهد الثاني:</div>
-                <div className="details-value">
-                  {data.aggrement_secondWitness}
-                </div>
+                <div className="details-value">{data.secondWitness}</div>
               </div>
               <div className="details-row">
                 <div className="details-label">الطول:</div>
-                <div className="details-value">{data.aggrement_height}</div>
+                <div className="details-value">{data.height}</div>
               </div>
               <div className="details-row">
                 <div className="details-label">العرض:</div>
-                <div className="details-value">{data.aggrement_width}</div>
+                <div className="details-value">{data.width}</div>
               </div>
               <div className="details-row">
                 <div className="details-label">الإجمالي:</div>
-                <div className="details-value">{data.aggrement_totalArea}</div>
+                <div className="details-value">{data.totalArea}</div>
               </div>
               {/* حذف نص الحدود والديفايدر */}
               <div className="details-row">
                 <div className="details-label">شمال:</div>
-                <div className="details-value">{data.aggrement_north}</div>
+                <div className="details-value">{data.north}</div>
               </div>
               <div className="details-row">
                 <div className="details-label">جنوب:</div>
-                <div className="details-value">{data.aggrement_south}</div>
+                <div className="details-value">{data.south}</div>
               </div>
               <div className="details-row">
                 <div className="details-label">شرق:</div>
-                <div className="details-value">{data.aggrement_east}</div>
+                <div className="details-value">{data.east}</div>
               </div>
               <div className="details-row">
                 <div className="details-label">غرب:</div>
-                <div className="details-value">{data.aggrement_west}</div>
+                <div className="details-value">{data.west}</div>
               </div>
             </div>
             <div className="modal-actions">

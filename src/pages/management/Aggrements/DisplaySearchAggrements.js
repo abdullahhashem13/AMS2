@@ -124,8 +124,8 @@ export default function DisplaySearchAggrements() {
                   <AggrementCard
                     key={a.id}
                     builderMosque_name={a.builderMosque_name}
-                    aggrement_agreementType={a.aggrement_agreementType}
-                    aggrement_aggrementNo={a.aggrement_aggrementNo} // رقم الاتفاقية للعرض
+                    agreementType={a.agreementType}
+                    aggrementNo={a.aggrementNo} // رقم الاتفاقية للعرض
                     id={a.id} // id الحقيقي للحذف
                     onDelete={handleDeleteAggrement}
                     onDetails={handleCardDetails}

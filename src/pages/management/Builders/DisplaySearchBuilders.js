@@ -7,13 +7,14 @@ import BuilderCard from "../../../components/BuilderCard";
 import Swal from "sweetalert2";
 // @ts-ignore
 import { useNavigate } from "react-router-dom";
-import BuilderDetailsModal from "../../../components/BuilderDetailsModal";
+// import BuilderDetailsModal from "../../../components/BuilderDetailsModal";
+import BuilderDetails from "./BuilderDetails";
 
 export default function DisplaySearchBuilders() {
   const [builders, setBuilders] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [selectedBuilder, setSelectedBuilder] = useState(null);
-  const [selectedBranch, setSelectedBranch] = useState("");
+  // const [selectedBranch, setSelectedBranch] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,11 +33,7 @@ export default function DisplaySearchBuilders() {
       setFiltered(builders);
       return;
     }
-    setFiltered(
-      builders.filter(
-        (b) => b.builderMosque_name && b.builderMosque_name.includes(term)
-      )
-    );
+    setFiltered(builders.filter((b) => b.name && b.name.includes(term)));
   };
 
   // حذف باني من AllData.json (محليًا فقط، إذا كان لديك API احذف من السيرفر)
@@ -76,19 +73,6 @@ export default function DisplaySearchBuilders() {
   const handleShowDetails = (id) => {
     const builder = filtered.find((b) => b.id === id);
     setSelectedBuilder(builder);
-    // جلب اسم الفرع
-    fetch("/JsonData/AllData.json")
-      .then((res) => res.json())
-      .then((data) => {
-        if (builder && data.Branches) {
-          const branch = data.Branches.find(
-            (br) => br.id === builder.builderMosque_branch
-          );
-          setSelectedBranch(branch ? branch.name : "-");
-        } else {
-          setSelectedBranch("");
-        }
-      });
   };
 
   return (
@@ -158,23 +142,21 @@ export default function DisplaySearchBuilders() {
                 ) : (
                   filtered.map((b) => (
                     <BuilderCard
-                      key={
-                        b.id ||
-                        b.builderMosque_NOIdentity ||
-                        b.builderMosque_name
-                      }
-                      builderMosque_name={b.builderMosque_name}
+                      key={b.id || b.NOIdentity || b.name}
+                      name={b.name}
                       onEdit={() => handleEdit(b.id)}
                       onDelete={() => handleDelete(b.id)}
                       onClick={() => handleShowDetails(b.id)}
                     />
                   ))
                 )}
-                <BuilderDetailsModal
-                  builder={selectedBuilder}
-                  branchName={selectedBranch}
-                  onClose={() => setSelectedBuilder(null)}
-                />
+                {/* عرض التفاصيل في نافذة منبثقة فقط عند اختيار باني */}
+                {selectedBuilder && (
+                  <BuilderDetails
+                    builder={selectedBuilder}
+                    onClose={() => setSelectedBuilder(null)}
+                  />
+                )}
               </div>
             </div>
           </div>

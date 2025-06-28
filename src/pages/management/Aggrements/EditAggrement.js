@@ -13,26 +13,54 @@ import { useNavigate, useParams } from "react-router-dom";
 
 export default function EditAggrement() {
   const [formData, setFormData] = useState({
-    aggrement_aggrementNo: "",
-    aggrement_agreementType: "بناء",
-    aggrement_date: new Date().toISOString().split("T")[0],
-    aggrement_timeToBuild: "",
-    aggrement_firstWitness: "",
-    aggrement_secondWitness: "",
-    aggrement_height: "",
-    aggrement_width: "",
-    aggrement_totalArea: "",
-    aggrement_north: "",
-    aggrement_south: "",
-    aggrement_east: "",
-    aggrement_west: "",
+    aggrementNo: "",
+    agreementType: "بناء",
+    date: new Date().toISOString().split("T")[0],
+    timeToBuild: "",
+    firstWitness: "",
+    secondWitness: "",
+    height: "",
+    width: "",
+    totalArea: "",
+    north: "",
+    south: "",
+    east: "",
+    west: "",
     builderMosque_name: "",
+    mosque_id: "",
   });
   const [error, setErrors] = useState({
-    aggrement_aggrementNo: "",
+    aggrementNo: "",
     builderMosque_name: "",
+    mosque_id: "",
     general: "",
   });
+  const [mosques, setMosques] = useState([]);
+  // جلب المساجد
+  useEffect(() => {
+    const fetchMosques = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/Mosques");
+        if (response.ok) {
+          const data = await response.json();
+          setMosques(data);
+        } else {
+          setMosques([]);
+        }
+      } catch {
+        setMosques([]);
+      }
+    };
+    fetchMosques();
+  }, []);
+  // دالة اختيار المسجد
+  const handleMosqueSelect = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      mosque_id: e.target.value || "",
+    }));
+    setErrors((prev) => ({ ...prev, mosque_id: "" }));
+  };
   const [existingAgreementNumbers, setExistingAgreementNumbers] = useState([]);
   const [existingBuilders, setExistingBuilders] = useState([]);
   const navigate = useNavigate();
@@ -66,7 +94,7 @@ export default function EditAggrement() {
         if (aggrementResponse.ok) {
           const aggrementData = await aggrementResponse.json();
           const agreementNumbers = aggrementData.map(
-            (aggrement) => aggrement.aggrement_aggrementNo
+            (aggrement) => aggrement.aggrementNo
           );
           setExistingAgreementNumbers(agreementNumbers);
         }
@@ -104,45 +132,45 @@ export default function EditAggrement() {
 
   const validateField = (name, value) => {
     switch (name) {
-      case "aggrement_aggrementNo":
+      case "aggrementNo":
         if (!value) return "يجب تعبئة الحقل";
         if (!/^\d+$/.test(value))
           return "يجب أن يحتوي رقم الاتفاقية على أرقام فقط";
         // لا تتحقق من التكرار إذا كان نفس الرقم الحالي
         if (
-          value !== formData.aggrement_aggrementNo &&
+          value !== formData.aggrementNo &&
           existingAgreementNumbers.includes(value)
         )
           return "رقم الاتفاقية موجود بالفعل";
         return "";
-      case "aggrement_timeToBuild":
+      case "timeToBuild":
         if (!value) return "يجب تعبئة الحقل";
         if (!/^[\u0600-\u06FF\s0-9]+$/.test(value))
           return "يجب أن تحتوي فترة البناء على أحرف عربية وأرقام فقط";
         return "";
-      case "aggrement_firstWitness":
-      case "aggrement_secondWitness":
+      case "firstWitness":
+      case "secondWitness":
         if (!value) return "يجب تعبئة الحقل";
         if (!/^[\u0600-\u06FF\s]+$/.test(value))
           return "يجب أن يحتوي الاسم على أحرف عربية فقط";
         if (value.trim().split(/\s+/).length < 4)
           return "يجب أن يكون اسم الشاهد رباعي";
         return "";
-      case "aggrement_height":
+      case "height":
         if (!value) return "يجب تعبئة الحقل";
         if (!/^\d+$/.test(value)) return "يجب أن يحتوي الحقل على أرقام فقط";
         return "";
-      case "aggrement_width":
+      case "width":
         if (!value) return "يجب تعبئة الحقل";
         if (!/^\d+$/.test(value)) return "يجب أن يحتوي الحقل على أرقام فقط";
         return "";
       case "builderMosque_name":
         if (!value) return "يجب اختيار اسم الباني";
         return "";
-      case "aggrement_north":
-      case "aggrement_south":
-      case "aggrement_east":
-      case "aggrement_west":
+      case "north":
+      case "south":
+      case "east":
+      case "west":
         if (!value) return "يجب تعبئة الحقل";
         if (!/^[\u0600-\u06FF\s0-9]+$/.test(value))
           return "يجب أن يحتوي الحقل على أحرف عربية وأرقام فقط";
@@ -155,17 +183,13 @@ export default function EditAggrement() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     let updatedForm = { ...formData, [name]: value };
-    if (name === "aggrement_height" || name === "aggrement_width") {
-      const height =
-        name === "aggrement_height" ? value : formData.aggrement_height;
-      const width =
-        name === "aggrement_width" ? value : formData.aggrement_width;
+    if (name === "height" || name === "width") {
+      const height = name === "height" ? value : formData.height;
+      const width = name === "width" ? value : formData.width;
       if (/^\d+$/.test(height) && /^\d+$/.test(width)) {
-        updatedForm.aggrement_totalArea = (
-          parseInt(height) * parseInt(width)
-        ).toString();
+        updatedForm.totalArea = (parseInt(height) * parseInt(width)).toString();
       } else {
-        updatedForm.aggrement_totalArea = "";
+        updatedForm.totalArea = "";
       }
     }
     setFormData(updatedForm);
@@ -183,95 +207,89 @@ export default function EditAggrement() {
   const validateForm = () => {
     let isValid = true;
     let newErrors = {
-      aggrement_aggrementNo: "",
+      aggrementNo: "",
       builderMosque_name: "",
       general: "",
-      aggrement_timeToBuild: "",
-      aggrement_firstWitness: "",
-      aggrement_secondWitness: "",
-      aggrement_height: "",
-      aggrement_width: "",
-      aggrement_north: "",
-      aggrement_south: "",
-      aggrement_east: "",
-      aggrement_west: "",
+      timeToBuild: "",
+      firstWitness: "",
+      secondWitness: "",
+      height: "",
+      width: "",
+      north: "",
+      south: "",
+      east: "",
+      west: "",
     };
-    if (!formData.aggrement_aggrementNo) {
-      newErrors.aggrement_aggrementNo = "يجب تعبئة الحقل";
+    if (!formData.aggrementNo) {
+      newErrors.aggrementNo = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^\d+$/.test(formData.aggrement_aggrementNo)) {
-      newErrors.aggrement_aggrementNo =
-        "يجب أن يحتوي رقم الاتفاقية على أرقام فقط";
+    } else if (!/^\d+$/.test(formData.aggrementNo)) {
+      newErrors.aggrementNo = "يجب أن يحتوي رقم الاتفاقية على أرقام فقط";
       isValid = false;
     } else if (
-      formData.aggrement_aggrementNo !== formData.aggrement_aggrementNo &&
-      existingAgreementNumbers.includes(formData.aggrement_aggrementNo)
+      formData.aggrementNo !== formData.aggrementNo &&
+      existingAgreementNumbers.includes(formData.aggrementNo)
     ) {
-      newErrors.aggrement_aggrementNo = "رقم الاتفاقية موجود بالفعل";
+      newErrors.aggrementNo = "رقم الاتفاقية موجود بالفعل";
       isValid = false;
     }
-    if (!formData.aggrement_timeToBuild) {
-      newErrors.aggrement_timeToBuild = "يجب تعبئة الحقل";
+    if (!formData.timeToBuild) {
+      newErrors.timeToBuild = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (
-      !/^[\u0600-\u06FF\s0-9]+$/.test(formData.aggrement_timeToBuild)
-    ) {
-      newErrors.aggrement_timeToBuild =
+    } else if (!/^[\u0600-\u06FF\s0-9]+$/.test(formData.timeToBuild)) {
+      newErrors.timeToBuild =
         "يجب أن تحتوي فترة البناء على أحرف عربية وأرقام فقط";
       isValid = false;
     }
-    if (!formData.aggrement_firstWitness) {
-      newErrors.aggrement_firstWitness = "يجب تعبئة الحقل";
+    if (!formData.firstWitness) {
+      newErrors.firstWitness = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.aggrement_firstWitness)) {
-      newErrors.aggrement_firstWitness =
-        "يجب أن يحتوي الاسم على أحرف عربية فقط";
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.firstWitness)) {
+      newErrors.firstWitness = "يجب أن يحتوي الاسم على أحرف عربية فقط";
       isValid = false;
     } else {
-      const words = formData.aggrement_firstWitness.trim().split(/\s+/);
+      const words = formData.firstWitness.trim().split(/\s+/);
       if (words.length < 4) {
-        newErrors.aggrement_firstWitness = "يجب أن يكون اسم الشاهد رباعي";
+        newErrors.firstWitness = "يجب أن يكون اسم الشاهد رباعي";
         isValid = false;
       }
     }
-    if (!formData.aggrement_secondWitness) {
-      newErrors.aggrement_secondWitness = "يجب تعبئة الحقل";
+    if (!formData.secondWitness) {
+      newErrors.secondWitness = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.aggrement_secondWitness)) {
-      newErrors.aggrement_secondWitness =
-        "يجب أن يحتوي الاسم على أحرف عربية فقط";
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.secondWitness)) {
+      newErrors.secondWitness = "يجب أن يحتوي الاسم على أحرف عربية فقط";
       isValid = false;
     } else {
-      const words = formData.aggrement_secondWitness.trim().split(/\s+/);
+      const words = formData.secondWitness.trim().split(/\s+/);
       if (words.length < 4) {
-        newErrors.aggrement_secondWitness = "يجب أن يكون اسم الشاهد رباعي";
+        newErrors.secondWitness = "يجب أن يكون اسم الشاهد رباعي";
         isValid = false;
       }
     }
-    if (!formData.aggrement_height) {
-      newErrors.aggrement_height = "يجب تعبئة الحقل";
+    if (!formData.height) {
+      newErrors.height = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^\d+$/.test(formData.aggrement_height)) {
-      newErrors.aggrement_height = "يجب أن يحتوي الحقل على أرقام فقط";
+    } else if (!/^\d+$/.test(formData.height)) {
+      newErrors.height = "يجب أن يحتوي الحقل على أرقام فقط";
       isValid = false;
     }
-    if (!formData.aggrement_width) {
-      newErrors.aggrement_width = "يجب تعبئة الحقل";
+    if (!formData.width) {
+      newErrors.width = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^\d+$/.test(formData.aggrement_width)) {
-      newErrors.aggrement_width = "يجب أن يحتوي الحقل على أرقام فقط";
+    } else if (!/^\d+$/.test(formData.width)) {
+      newErrors.width = "يجب أن يحتوي الحقل على أرقام فقط";
       isValid = false;
     }
     if (!formData.builderMosque_name) {
       newErrors.builderMosque_name = "يجب اختيار اسم الباني";
       isValid = false;
     }
-    [
-      "aggrement_north",
-      "aggrement_south",
-      "aggrement_east",
-      "aggrement_west",
-    ].forEach((field) => {
+    if (!formData.mosque_id) {
+      newErrors.mosque_id = "يجب اختيار المسجد";
+      isValid = false;
+    }
+    ["north", "south", "east", "west"].forEach((field) => {
       if (!formData[field]) {
         newErrors[field] = "يجب تعبئة الحقل";
         isValid = false;
@@ -340,8 +358,8 @@ export default function EditAggrement() {
               >
                 <div className="input-container">
                   <InputDate
-                    value={formData.aggrement_date}
-                    name="aggrement_date"
+                    value={formData.date}
+                    name="date"
                     change={handleChange}
                     text="تاريخ"
                   />
@@ -349,8 +367,8 @@ export default function EditAggrement() {
                 <div className="widthbetween"></div>
                 <div className="input-container">
                   <SelectWithLabel3
-                    value={formData.aggrement_agreementType}
-                    name="aggrement_agreementType"
+                    value={formData.agreementType}
+                    name="agreementType"
                     change={handleChange}
                     value1="بناء"
                     value2="هدم واعادة بناء"
@@ -361,34 +379,32 @@ export default function EditAggrement() {
                 <div className="widthbetween"></div>
                 <div className="input-container">
                   <Inputwithlabel
-                    value={formData.aggrement_aggrementNo}
-                    name="aggrement_aggrementNo"
+                    value={formData.aggrementNo}
+                    name="aggrementNo"
                     change={handleChange}
                     text="رقم الاتفاقية"
                     className="inputwithlabel"
                   />
-                  {error.aggrement_aggrementNo && (
-                    <div className="error-message">
-                      {error.aggrement_aggrementNo}
-                    </div>
+                  {error.aggrementNo && (
+                    <div className="error-message">{error.aggrementNo}</div>
                   )}
                 </div>
               </div>
               <div className="RowForInsertinputs" style={{ marginBottom: 25 }}>
                 <div className="input-container">
                   <Inputwithlabel
-                    value={formData.aggrement_secondWitness}
-                    name="aggrement_secondWitness"
+                    value={formData.secondWitness}
+                    name="secondWitness"
                     change={handleChange}
                     text="الشاهد الثاني"
                   />
                   {
                     // @ts-ignore
-                    error.aggrement_secondWitness && (
+                    error.secondWitness && (
                       <div className="error-message">
                         {
                           // @ts-ignore
-                          error.aggrement_secondWitness
+                          error.secondWitness
                         }
                       </div>
                     )
@@ -397,18 +413,18 @@ export default function EditAggrement() {
                 <div className="widthbetween"></div>
                 <div className="input-container">
                   <Inputwithlabel
-                    value={formData.aggrement_firstWitness}
-                    name="aggrement_firstWitness"
+                    value={formData.firstWitness}
+                    name="firstWitness"
                     change={handleChange}
                     text="الشاهد الاول"
                   />
                   {
                     // @ts-ignore
-                    error.aggrement_firstWitness && (
+                    error.firstWitness && (
                       <div className="error-message">
                         {
                           // @ts-ignore
-                          error.aggrement_firstWitness
+                          error.firstWitness
                         }
                       </div>
                     )
@@ -417,18 +433,18 @@ export default function EditAggrement() {
                 <div className="widthbetween"></div>
                 <div className="input-container">
                   <Inputwithlabel
-                    value={formData.aggrement_timeToBuild}
-                    name="aggrement_timeToBuild"
+                    value={formData.timeToBuild}
+                    name="timeToBuild"
                     change={handleChange}
                     text="فترة البناء"
                   />
                   {
                     // @ts-ignore
-                    error.aggrement_timeToBuild && (
+                    error.timeToBuild && (
                       <div className="error-message">
                         {
                           // @ts-ignore
-                          error.aggrement_timeToBuild
+                          error.timeToBuild
                         }
                       </div>
                     )
@@ -438,8 +454,8 @@ export default function EditAggrement() {
               <div className="RowForInsertinputs">
                 <div className="input-container">
                   <Inputwithlabel
-                    value={formData.aggrement_totalArea}
-                    name="aggrement_totalArea"
+                    value={formData.totalArea}
+                    name="totalArea"
                     change={() => {}}
                     text="الإجمالي"
                     disabled={true}
@@ -450,18 +466,18 @@ export default function EditAggrement() {
                 <div className="widthbetween"></div>
                 <div className="input-container">
                   <Inputwithlabel
-                    value={formData.aggrement_width}
-                    name="aggrement_width"
+                    value={formData.width}
+                    name="width"
                     change={handleChange}
                     text="العرض"
                   />
                   {
                     // @ts-ignore
-                    error.aggrement_width && (
+                    error.width && (
                       <div className="error-message">
                         {
                           // @ts-ignore
-                          error.aggrement_width
+                          error.width
                         }
                       </div>
                     )
@@ -470,30 +486,34 @@ export default function EditAggrement() {
                 <div className="widthbetween"></div>
                 <div className="input-container">
                   <Inputwithlabel
-                    value={formData.aggrement_height}
-                    name="aggrement_height"
+                    value={formData.height}
+                    name="height"
                     change={handleChange}
                     text="الطول"
                   />
                   {
                     // @ts-ignore
-                    error.aggrement_height && (
+                    error.height && (
                       <div className="error-message">
                         {
                           // @ts-ignore
-                          error.aggrement_height
+                          error.height
                         }
                       </div>
                     )
                   }
                 </div>
               </div>
-              {/* حقل اسم الباني فقط */}
               <div
                 className="RowForInsertinputs"
-                style={{ marginTop: 30, width: "30%" }}
+                style={{
+                  marginTop: 30,
+                  width: "60%",
+                  display: "flex",
+                  gap: 18,
+                }}
               >
-                <div className="input-container">
+                <div className="input-container" style={{ flex: 1 }}>
                   <SearchableSelect
                     name="builderMosque_name"
                     text="اسم الباني"
@@ -524,6 +544,21 @@ export default function EditAggrement() {
                     </div>
                   )}
                 </div>
+                <div className="input-container" style={{ flex: 1 }}>
+                  <SearchableSelect
+                    name="mosque_id"
+                    text="تابع لمسجد"
+                    options={mosques.map((mosque) => ({
+                      value: mosque.id,
+                      label: mosque.name,
+                    }))}
+                    value={formData.mosque_id}
+                    change={handleMosqueSelect}
+                  />
+                  {error.mosque_id && (
+                    <div className="error-message">{error.mosque_id}</div>
+                  )}
+                </div>
               </div>
               <div className="RowForInsertinputs">
                 <div className="deviderwithword">
@@ -536,18 +571,18 @@ export default function EditAggrement() {
                 <div className="RowForInsertinputs">
                   <div className="input-container">
                     <Inputwithlabel
-                      value={formData.aggrement_south}
-                      name="aggrement_south"
+                      value={formData.south}
+                      name="south"
                       change={handleChange}
                       text="جنوب"
                     />
                     {
                       // @ts-ignore
-                      error.aggrement_south && (
+                      error.south && (
                         <div className="error-message">
                           {
                             // @ts-ignore
-                            error.aggrement_south
+                            error.south
                           }
                         </div>
                       )
@@ -558,18 +593,18 @@ export default function EditAggrement() {
                   <div className="widthbetween"></div>
                   <div className="input-container">
                     <Inputwithlabel
-                      value={formData.aggrement_north}
-                      name="aggrement_north"
+                      value={formData.north}
+                      name="north"
                       change={handleChange}
                       text="شمال"
                     />
                     {
                       // @ts-ignore
-                      error.aggrement_north && (
+                      error.north && (
                         <div className="error-message">
                           {
                             // @ts-ignore
-                            error.aggrement_north
+                            error.north
                           }
                         </div>
                       )
@@ -580,18 +615,18 @@ export default function EditAggrement() {
                 <div className="RowForInsertinputs">
                   <div className="input-container">
                     <Inputwithlabel
-                      value={formData.aggrement_west}
-                      name="aggrement_west"
+                      value={formData.west}
+                      name="west"
                       change={handleChange}
                       text="غرب"
                     />
                     {
                       // @ts-ignore
-                      error.aggrement_west && (
+                      error.west && (
                         <div className="error-message">
                           {
                             // @ts-ignore
-                            error.aggrement_west
+                            error.west
                           }
                         </div>
                       )
@@ -602,18 +637,18 @@ export default function EditAggrement() {
                   <div className="widthbetween"></div>
                   <div className="input-container">
                     <Inputwithlabel
-                      value={formData.aggrement_east}
-                      name="aggrement_east"
+                      value={formData.east}
+                      name="east"
                       change={handleChange}
                       text="شرق"
                     />
                     {
                       // @ts-ignore
-                      error.aggrement_east && (
+                      error.east && (
                         <div className="error-message">
                           {
                             // @ts-ignore
-                            error.aggrement_east
+                            error.east
                           }
                         </div>
                       )

@@ -1,104 +1,75 @@
-import React, { useEffect, useState } from "react";
-// @ts-ignore
-import { useParams, useNavigate } from "react-router-dom";
-import Saidbar from "../../../components/saidbar";
-import Managmenttitle from "../../../components/Managmenttitle";
+import React, { useState } from "react";
+import "../../../style/Modal.css";
 
-export default function BuilderDetails() {
-  const { id } = useParams();
-  const [builder, setBuilder] = useState(null);
-  const [branchName, setBranchName] = useState("");
-  const navigate = useNavigate();
+// مكون تفاصيل الباني - تنسيق شبيه بتفاصيل المستأجر
+export default function BuilderDetails({ builder, onClose }) {
+  const [isClosing, setIsClosing] = useState(false);
 
-  useEffect(() => {
-    fetch("/JsonData/AllData.json")
-      .then((res) => res.json())
-      .then((data) => {
-        const found = (data.Builder || []).find((b) => b.id === id);
-        setBuilder(found);
-        if (found && data.Branches) {
-          const branch = data.Branches.find(
-            (br) => br.id === found.builderMosque_branch
-          );
-          setBranchName(branch ? branch.name : "-");
-        }
-      });
-  }, [id]);
+  if (!builder) return null;
 
-  if (!builder) {
-    return (
-      <div style={{ textAlign: "center", marginTop: 50 }}>جاري التحميل...</div>
-    );
-  }
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      if (onClose) onClose();
+      setIsClosing(false);
+    }, 280); // وقت أقل قليلاً من مدة الانيميشن (300ms)
+  };
 
   return (
-    <div className="displayflexhome">
-      <Saidbar />
-      <div className="sizeboxUnderSaidbar"></div>
-      <div className="homepage">
-        <Managmenttitle title="تفاصيل الباني" />
-        <div className="subhomepage">
-          <div className="divforconten">
-            <div className="details-card">
-              <h2
-                style={{
-                  textAlign: "center",
-                  color: "#2a5d4d",
-                  marginBottom: 20,
-                }}
-              >
-                بيانات الباني
-              </h2>
-              <div className="details-row">
-                <span className="details-label">اسم الباني الرباعي:</span>
-                <span>{builder.builderMosque_name || "-"}</span>
-              </div>
-              <div className="details-row">
-                <span className="details-label">رقم الهوية:</span>
-                <span>{builder.builderMosque_NOIdentity || "-"}</span>
-              </div>
-              <div className="details-row">
-                <span className="details-label">رقم الهاتف:</span>
-                <span>{builder.builderMosque_phone || "-"}</span>
-              </div>
-              <div className="details-row">
-                <span className="details-label">الفرع:</span>
-                <span>{branchName}</span>
-              </div>
-              <div className="details-row">
-                <span className="details-label">المحافظة:</span>
-                <span>{builder.builderMosque_governorate || "-"}</span>
-              </div>
-              <div className="details-row">
-                <span className="details-label">المدينة:</span>
-                <span>{builder.builderMosque_city || "-"}</span>
-              </div>
-              <div className="details-row">
-                <span className="details-label">الحي:</span>
-                <span>{builder.builderMosque_neighborhood || "-"}</span>
-              </div>
-              <div className="details-row">
-                <span className="details-label">مكان الإصدار:</span>
-                <span>{builder.builderMosque_issuedFrom || "-"}</span>
-              </div>
-              <div className="details-row">
-                <span className="details-label">تاريخ الإصدار:</span>
-                <span>{builder.builderMosque_issuedDate || "-"}</span>
-              </div>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                gap: 16,
-                marginTop: 30,
-              }}
-            >
-              <button className="mainbutton" onClick={() => navigate(-1)}>
-                إغلاق
-              </button>
+    <div className={`modal-overlay ${isClosing ? "closing" : ""}`}>
+      <div
+        className={`modal-content ${isClosing ? "closing" : ""}`}
+        style={{ minWidth: 320, maxWidth: 500 }}
+      >
+        <h2 className="modal-title">معلومات الباني</h2>
+        <div className="details-container">
+          <div className="details-row">
+            <div className="details-label">اسم الباني:</div>
+            <div className="details-value">{builder.name || "غير محدد"}</div>
+          </div>
+          <div className="details-row">
+            <div className="details-label">رقم الهوية:</div>
+            <div className="details-value">
+              {builder.NOIdentity || "غير محدد"}
             </div>
           </div>
+          <div className="details-row">
+            <div className="details-label">رقم الهاتف:</div>
+            <div className="details-value">{builder.phone || "غير محدد"}</div>
+          </div>
+          <div className="details-row">
+            <div className="details-label">المحافظة:</div>
+            <div className="details-value">
+              {builder.governorate || "غير محدد"}
+            </div>
+          </div>
+          <div className="details-row">
+            <div className="details-label">المدينة:</div>
+            <div className="details-value">{builder.city || "غير محدد"}</div>
+          </div>
+          <div className="details-row">
+            <div className="details-label">الحي:</div>
+            <div className="details-value">
+              {builder.neighborhood || "غير محدد"}
+            </div>
+          </div>
+          <div className="details-row">
+            <div className="details-label">مكان الإصدار:</div>
+            <div className="details-value">
+              {builder.issuedFrom || "غير محدد"}
+            </div>
+          </div>
+          <div className="details-row">
+            <div className="details-label">تاريخ الإصدار:</div>
+            <div className="details-value">
+              {builder.issuedDate || "غير محدد"}
+            </div>
+          </div>
+        </div>
+        <div className="modal-actions">
+          <button className="modal-close-btn" onClick={handleClose}>
+            إغلاق
+          </button>
         </div>
       </div>
     </div>

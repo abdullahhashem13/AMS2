@@ -4,16 +4,11 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 // @ts-ignore
 import { FiEdit } from "react-icons/fi";
 
-export default function BuilderCard({
-  builderMosque_name,
-  onEdit,
-  onDelete,
-  onClick,
-}) {
+export default function BuilderCard({ name, onEdit, onDelete, onClick }) {
   return (
     <div className="cards" style={{ cursor: "pointer" }} onClick={onClick}>
       <div>
-        <p>{builderMosque_name}</p>
+        <p>{name}</p>
       </div>
       <div
         className="displayflexjust deleteAndEditicons"

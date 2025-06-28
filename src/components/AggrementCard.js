@@ -8,8 +8,8 @@ import { useNavigate } from "react-router-dom";
 
 export default function AggrementCard({
   builderMosque_name,
-  aggrement_agreementType,
-  aggrement_aggrementNo, // رقم الاتفاقية للعرض
+  agreementType,
+  aggrementNo, // رقم الاتفاقية للعرض
   id, // id الحقيقي للحذف
   onDelete,
   onDetails, // جديد: دالة فتح التفاصيل المنبثقة
@@ -49,8 +49,8 @@ export default function AggrementCard({
     >
       {/* تاخذ نوع الاتفاقية ورقم الاتفاقية */}
       <div>
-        <p>{aggrement_agreementType}</p>
-        <p>{aggrement_aggrementNo}</p> {/* عرض رقم الاتفاقية فقط */}
+        <p>{agreementType}</p>
+        <p>{aggrementNo}</p> {/* عرض رقم الاتفاقية فقط */}
       </div>
       {/* ياخذ اسم الباني و ايقونات */}
       <div className="displayflexjust alinmentcenter">

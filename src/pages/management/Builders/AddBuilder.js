@@ -8,36 +8,34 @@ import Inputwithlabel from "../../../components/Inputwithlabel";
 import InputDate from "../../../components/InputDate";
 import Submitinput from "../../../components/submitinput";
 import Managementdata from "../../../components/managementdata";
-import SearchableSelect from "../../../components/SearchableSelect";
+// import SearchableSelect from "../../../components/SearchableSelect";
 
 export default function AddBuilder() {
   // الحصول على تاريخ اليوم بصيغة yyyy-mm-dd
   const today = new Date().toISOString().slice(0, 10);
   const [form, setForm] = useState({
-    builderMosque_name: "",
-    builderMosque_NOIdentity: "",
-    builderMosque_phone: "",
-    builderMosque_governorate: "",
-    builderMosque_city: "",
-    builderMosque_neighborhood: "",
-    builderMosque_branch: "",
-    builderMosque_issuedFrom: "",
-    builderMosque_issuedDate: today,
+    name: "",
+    NOIdentity: "",
+    phone: "",
+    governorate: "",
+    city: "",
+    neighborhood: "",
+    issuedFrom: "",
+    issuedDate: today,
   });
   const [errors, setErrors] = useState({
-    builderMosque_name: "",
-    builderMosque_NOIdentity: "",
-    builderMosque_phone: "",
-    builderMosque_governorate: "",
-    builderMosque_city: "",
-    builderMosque_neighborhood: "",
-    builderMosque_branch: "",
-    builderMosque_issuedFrom: "",
-    builderMosque_issuedDate: "",
+    name: "",
+    NOIdentity: "",
+    phone: "",
+    governorate: "",
+    city: "",
+    neighborhood: "",
+    issuedFrom: "",
+    issuedDate: "",
   });
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState("");
-  const [branches, setBranches] = useState([]);
+  // const [branches, setBranches] = useState([]); // حذف جلب الفروع
   const [, setBuilders] = useState([]); // يمكن حذفه إذا لم يعد مستخدمًا
   const navigate = useNavigate();
 
@@ -45,11 +43,6 @@ export default function AddBuilder() {
     fetch("/JsonData/AllData.json")
       .then((res) => res.json())
       .then((data) => {
-        if (data && data.Branches) {
-          setBranches(
-            data.Branches.map((b) => ({ label: b.name, value: b.id }))
-          );
-        }
         if (data && data.Builder) {
           setBuilders(data.Builder);
         }
@@ -58,67 +51,61 @@ export default function AddBuilder() {
 
   const validate = () => {
     const errs = {
-      builderMosque_name: "",
-      builderMosque_NOIdentity: "",
-      builderMosque_phone: "",
-      builderMosque_governorate: "",
-      builderMosque_city: "",
-      builderMosque_neighborhood: "",
-      builderMosque_branch: "",
-      builderMosque_issuedFrom: "",
-      builderMosque_issuedDate: "",
+      name: "",
+      NOIdentity: "",
+      phone: "",
+      governorate: "",
+      city: "",
+      neighborhood: "",
+      issuedFrom: "",
+      issuedDate: "",
     };
     // اسم الباني: غير فارغ، أحرف عربية، رباعي
-    if (!form.builderMosque_name.trim()) {
-      errs.builderMosque_name = "الاسم مطلوب";
-    } else if (!/^[\u0600-\u06FF\s]+$/.test(form.builderMosque_name)) {
-      errs.builderMosque_name = "يجب أن يكون الاسم بالأحرف العربية فقط";
-    } else if (form.builderMosque_name.trim().split(/\s+/).length < 4) {
-      errs.builderMosque_name = "يجب أن يكون الاسم رباعياً";
+    if (!form.name.trim()) {
+      errs.name = "الاسم مطلوب";
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(form.name)) {
+      errs.name = "يجب أن يكون الاسم بالأحرف العربية فقط";
+    } else if (form.name.trim().split(/\s+/).length < 4) {
+      errs.name = "يجب أن يكون الاسم رباعياً";
     }
     // رقم الهوية: غير فارغ، أرقام فقط، غير مكرر (تحقق التكرار لاحقاً)
-    if (!form.builderMosque_NOIdentity.trim()) {
-      errs.builderMosque_NOIdentity = "رقم الهوية مطلوب";
-    } else if (!/^\d+$/.test(form.builderMosque_NOIdentity)) {
-      errs.builderMosque_NOIdentity = "رقم الهوية يجب أن يكون أرقام فقط";
+    if (!form.NOIdentity.trim()) {
+      errs.NOIdentity = "رقم الهوية مطلوب";
+    } else if (!/^\d+$/.test(form.NOIdentity)) {
+      errs.NOIdentity = "رقم الهوية يجب أن يكون أرقام فقط";
     }
     // رقم الهاتف: غير فارغ، أرقام فقط، يبدأ بـ7، 9 أرقام
-    if (!form.builderMosque_phone.trim()) {
-      errs.builderMosque_phone = "رقم الهاتف مطلوب";
-    } else if (!/^7\d{8}$/.test(form.builderMosque_phone)) {
-      errs.builderMosque_phone = "رقم الهاتف يجب أن يبدأ بـ7 ويتكون من 9 أرقام";
+    if (!form.phone.trim()) {
+      errs.phone = "رقم الهاتف مطلوب";
+    } else if (!/^7\d{8}$/.test(form.phone)) {
+      errs.phone = "رقم الهاتف يجب أن يبدأ بـ7 ويتكون من 9 أرقام";
     }
     // المحافظة، المدينة، الحي: غير فارغ، أحرف عربية فقط
-    if (!form.builderMosque_governorate.trim()) {
-      errs.builderMosque_governorate = "المحافظة مطلوبة";
-    } else if (!/^[\u0600-\u06FF\s]+$/.test(form.builderMosque_governorate)) {
-      errs.builderMosque_governorate =
-        "المحافظة يجب أن تكون بالأحرف العربية فقط";
+    if (!form.governorate.trim()) {
+      errs.governorate = "المحافظة مطلوبة";
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(form.governorate)) {
+      errs.governorate = "المحافظة يجب أن تكون بالأحرف العربية فقط";
     }
-    if (!form.builderMosque_city.trim()) {
-      errs.builderMosque_city = "المدينة مطلوبة";
-    } else if (!/^[\u0600-\u06FF\s]+$/.test(form.builderMosque_city)) {
-      errs.builderMosque_city = "المدينة يجب أن تكون بالأحرف العربية فقط";
+    if (!form.city.trim()) {
+      errs.city = "المدينة مطلوبة";
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(form.city)) {
+      errs.city = "المدينة يجب أن تكون بالأحرف العربية فقط";
     }
-    if (!form.builderMosque_neighborhood.trim()) {
-      errs.builderMosque_neighborhood = "الحي مطلوب";
-    } else if (!/^[\u0600-\u06FF\s]+$/.test(form.builderMosque_neighborhood)) {
-      errs.builderMosque_neighborhood = "الحي يجب أن يكون بالأحرف العربية فقط";
+    if (!form.neighborhood.trim()) {
+      errs.neighborhood = "الحي مطلوب";
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(form.neighborhood)) {
+      errs.neighborhood = "الحي يجب أن يكون بالأحرف العربية فقط";
     }
-    // الفرع: غير فارغ
-    if (!form.builderMosque_branch.trim()) {
-      errs.builderMosque_branch = "الفرع مطلوب";
-    }
+    // ... حذف التحقق من الفرع ...
     // مكان الإصدار: غير فارغ، أحرف عربية فقط
-    if (!form.builderMosque_issuedFrom.trim()) {
-      errs.builderMosque_issuedFrom = "مكان الإصدار مطلوب";
-    } else if (!/^[\u0600-\u06FF\s]+$/.test(form.builderMosque_issuedFrom)) {
-      errs.builderMosque_issuedFrom =
-        "مكان الإصدار يجب أن يكون بالأحرف العربية فقط";
+    if (!form.issuedFrom.trim()) {
+      errs.issuedFrom = "مكان الإصدار مطلوب";
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(form.issuedFrom)) {
+      errs.issuedFrom = "مكان الإصدار يجب أن يكون بالأحرف العربية فقط";
     }
     // تاريخ الإصدار: غير فارغ
-    if (!form.builderMosque_issuedDate.trim()) {
-      errs.builderMosque_issuedDate = "تاريخ الإصدار مطلوب";
+    if (!form.issuedDate.trim()) {
+      errs.issuedDate = "تاريخ الإصدار مطلوب";
     }
     setErrors(errs);
     return Object.values(errs).every((v) => !v);
@@ -128,47 +115,45 @@ export default function AddBuilder() {
   const validateField = (name, value) => {
     let error = "";
     switch (name) {
-      case "builderMosque_name":
+      case "name":
         if (!value.trim()) error = "الاسم مطلوب";
         else if (!/^[\u0600-\u06FF\s]+$/.test(value))
           error = "يجب أن يكون الاسم بالأحرف العربية فقط";
         else if (value.trim().split(/\s+/).length < 4)
           error = "يجب أن يكون الاسم رباعياً";
         break;
-      case "builderMosque_NOIdentity":
+      case "NOIdentity":
         if (!value.trim()) error = "رقم الهوية مطلوب";
         else if (!/^\d+$/.test(value))
           error = "رقم الهوية يجب أن يكون أرقام فقط";
         break;
-      case "builderMosque_phone":
+      case "phone":
         if (!value.trim()) error = "رقم الهاتف مطلوب";
         else if (!/^7\d{8}$/.test(value))
           error = "رقم الهاتف يجب أن يبدأ بـ7 ويتكون من 9 أرقام";
         break;
-      case "builderMosque_governorate":
+      case "governorate":
         if (!value.trim()) error = "المحافظة مطلوبة";
         else if (!/^[\u0600-\u06FF\s]+$/.test(value))
           error = "المحافظة يجب أن تكون بالأحرف العربية فقط";
         break;
-      case "builderMosque_city":
+      case "city":
         if (!value.trim()) error = "المدينة مطلوبة";
         else if (!/^[\u0600-\u06FF\s]+$/.test(value))
           error = "المدينة يجب أن تكون بالأحرف العربية فقط";
         break;
-      case "builderMosque_neighborhood":
+      case "neighborhood":
         if (!value.trim()) error = "الحي مطلوب";
         else if (!/^[\u0600-\u06FF\s]+$/.test(value))
           error = "الحي يجب أن يكون بالأحرف العربية فقط";
         break;
-      case "builderMosque_branch":
-        if (!value.trim()) error = "الفرع مطلوب";
-        break;
-      case "builderMosque_issuedFrom":
+      // حذف التحقق من الفرع نهائياً
+      case "issuedFrom":
         if (!value.trim()) error = "مكان الإصدار مطلوب";
         else if (!/^[\u0600-\u06FF\s]+$/.test(value))
           error = "مكان الإصدار يجب أن يكون بالأحرف العربية فقط";
         break;
-      case "builderMosque_issuedDate":
+      case "issuedDate":
         if (!value.trim()) error = "تاريخ الإصدار مطلوب";
         break;
       default:
@@ -195,7 +180,7 @@ export default function AddBuilder() {
     setServerError("");
     let hasValidationError = !validate();
     // إعادة تعيين رسالة الخطأ لرقم الهوية قبل التحقق الجديد
-    setErrors((prev) => ({ ...prev, builderMosque_NOIdentity: "" }));
+    setErrors((prev) => ({ ...prev, NOIdentity: "" }));
     if (hasValidationError) return;
     setLoading(true);
     try {
@@ -204,49 +189,43 @@ export default function AddBuilder() {
       const data = await res.json();
       const buildersList = data && data.Builder ? data.Builder : [];
       const isDuplicate = buildersList.some(
-        (b) => b.builderMosque_NOIdentity === form.builderMosque_NOIdentity
+        (b) => b.NOIdentity === form.NOIdentity
       );
       if (isDuplicate) {
         setErrors((prev) => ({
           ...prev,
-          builderMosque_NOIdentity: "رقم الهوية مستخدم مسبقًا",
+          NOIdentity: "رقم الهوية مستخدم مسبقًا",
         }));
         setLoading(false);
         return;
       }
-      // إرسال id الفرع فقط
-      const formToSend = {
-        ...form,
-        builderMosque_branch: form.builderMosque_branch,
-      };
+      // إرسال البيانات بدون الفرع
       await fetch("http://localhost:3001/Builder", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formToSend),
+        body: JSON.stringify(form),
       });
       setForm({
-        builderMosque_name: "",
-        builderMosque_NOIdentity: "",
-        builderMosque_phone: "",
-        builderMosque_governorate: "",
-        builderMosque_city: "",
-        builderMosque_neighborhood: "",
-        builderMosque_branch: "",
-        builderMosque_issuedFrom: "",
-        builderMosque_issuedDate: today,
+        name: "",
+        NOIdentity: "",
+        phone: "",
+        governorate: "",
+        city: "",
+        neighborhood: "",
+        issuedFrom: "",
+        issuedDate: today,
       });
       setErrors({
-        builderMosque_name: "",
-        builderMosque_NOIdentity: "",
-        builderMosque_phone: "",
-        builderMosque_governorate: "",
-        builderMosque_city: "",
-        builderMosque_neighborhood: "",
-        builderMosque_branch: "",
-        builderMosque_issuedFrom: "",
-        builderMosque_issuedDate: "",
+        name: "",
+        NOIdentity: "",
+        phone: "",
+        governorate: "",
+        city: "",
+        neighborhood: "",
+        issuedFrom: "",
+        issuedDate: "",
       });
       navigate("/management/Builders/DisplaySearchBuilders");
     } catch (err) {
@@ -290,89 +269,63 @@ export default function AddBuilder() {
             >
               <div className="input-container">
                 <Inputwithlabel
-                  name="builderMosque_phone"
-                  value={form.builderMosque_phone}
+                  name="phone"
+                  value={form.phone}
                   change={handleChange}
                   text="رقم الهاتف"
                 />
-                {errors.builderMosque_phone && (
-                  <div className="error-message">
-                    {errors.builderMosque_phone}
-                  </div>
+                {errors.phone && (
+                  <div className="error-message">{errors.phone}</div>
                 )}
               </div>
               <div className="widthbetween"></div>
               <div className="input-container">
                 <Inputwithlabel
-                  name="builderMosque_NOIdentity"
-                  value={form.builderMosque_NOIdentity}
+                  name="NOIdentity"
+                  value={form.NOIdentity}
                   change={handleChange}
                   text="رقم الهوية"
                 />
-                {errors.builderMosque_NOIdentity && (
-                  <div className="error-message">
-                    {errors.builderMosque_NOIdentity}
-                  </div>
+                {errors.NOIdentity && (
+                  <div className="error-message">{errors.NOIdentity}</div>
                 )}
               </div>
               <div className="widthbetween"></div>
               <div className="input-container">
                 <Inputwithlabel
-                  name="builderMosque_name"
-                  value={form.builderMosque_name}
+                  name="name"
+                  value={form.name}
                   change={handleChange}
                   text="اسم الباني"
                 />
-                {errors.builderMosque_name && (
-                  <div className="error-message">
-                    {errors.builderMosque_name}
-                  </div>
+                {errors.name && (
+                  <div className="error-message">{errors.name}</div>
                 )}
               </div>
             </div>
             <div className="RowForInsertinputs">
               <div style={{ flex: 1 }}></div>
               <div className="input-container">
-                <SearchableSelect
-                  name="builderMosque_branch"
-                  value={form.builderMosque_branch}
-                  change={handleChange}
-                  options={branches}
-                  placeholder="اختر الفرع"
-                  label="الفرع"
-                />
-                {errors.builderMosque_branch && (
-                  <div className="error-message">
-                    {errors.builderMosque_branch}
-                  </div>
-                )}
-              </div>
-              <div className="widthbetween"></div>
-              <div className="input-container">
                 <Inputwithlabel
-                  name="builderMosque_issuedFrom"
-                  value={form.builderMosque_issuedFrom}
+                  name="issuedFrom"
+                  value={form.issuedFrom}
                   change={handleChange}
                   text="مكان الإصدار"
                 />
-                {errors.builderMosque_issuedFrom && (
-                  <div className="error-message">
-                    {errors.builderMosque_issuedFrom}
-                  </div>
+                {errors.issuedFrom && (
+                  <div className="error-message">{errors.issuedFrom}</div>
                 )}
               </div>
               <div className="widthbetween"></div>
               <div className="input-container">
                 <InputDate
-                  name="builderMosque_issuedDate"
-                  value={form.builderMosque_issuedDate}
+                  name="issuedDate"
+                  value={form.issuedDate}
                   change={handleChange}
                   text="تاريخ الإصدار"
                 />
-                {errors.builderMosque_issuedDate && (
-                  <div className="error-message">
-                    {errors.builderMosque_issuedDate}
-                  </div>
+                {errors.issuedDate && (
+                  <div className="error-message">{errors.issuedDate}</div>
                 )}
               </div>
             </div>
@@ -392,43 +345,37 @@ export default function AddBuilder() {
             >
               <div className="input-container">
                 <Inputwithlabel
-                  name="builderMosque_neighborhood"
-                  value={form.builderMosque_neighborhood}
+                  name="neighborhood"
+                  value={form.neighborhood}
                   change={handleChange}
                   text="الحي"
                 />
-                {errors.builderMosque_neighborhood && (
-                  <div className="error-message">
-                    {errors.builderMosque_neighborhood}
-                  </div>
+                {errors.neighborhood && (
+                  <div className="error-message">{errors.neighborhood}</div>
                 )}
               </div>
               <div className="widthbetween"></div>
               <div className="input-container">
                 <Inputwithlabel
-                  name="builderMosque_city"
-                  value={form.builderMosque_city}
+                  name="city"
+                  value={form.city}
                   change={handleChange}
                   text="المدينة"
                 />
-                {errors.builderMosque_city && (
-                  <div className="error-message">
-                    {errors.builderMosque_city}
-                  </div>
+                {errors.city && (
+                  <div className="error-message">{errors.city}</div>
                 )}
               </div>
               <div className="widthbetween"></div>
               <div className="input-container">
                 <Inputwithlabel
-                  name="builderMosque_governorate"
-                  value={form.builderMosque_governorate}
+                  name="governorate"
+                  value={form.governorate}
                   change={handleChange}
                   text="المحافظة"
                 />
-                {errors.builderMosque_governorate && (
-                  <div className="error-message">
-                    {errors.builderMosque_governorate}
-                  </div>
+                {errors.governorate && (
+                  <div className="error-message">{errors.governorate}</div>
                 )}
               </div>
             </div>

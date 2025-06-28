@@ -66,15 +66,15 @@ export default function ReportBuilders() {
                   {builders.map((b, i) => (
                     <tr key={b.id || i}>
                       <td>{i + 1}</td>
-                      <td>{b.builderMosque_name || "-"}</td>
-                      <td>{b.builderMosque_phone || "-"}</td>
-                      <td>{b.builderMosque_NOIdentity || "-"}</td>
-                      <td>{getBranchName(b.builderMosque_branch)}</td>
-                      <td>{b.builderMosque_governorate || "-"}</td>
-                      <td>{b.builderMosque_city || "-"}</td>
-                      <td>{b.builderMosque_neighborhood || "-"}</td>
-                      <td>{b.builderMosque_issuedFrom || "-"}</td>
-                      <td>{b.builderMosque_issuedDate || "-"}</td>
+                      <td>{b.name || "-"}</td>
+                      <td>{b.phone || "-"}</td>
+                      <td>{b.NOIdentity || "-"}</td>
+                      <td>{getBranchName(b.branch)}</td>
+                      <td>{b.governorate || "-"}</td>
+                      <td>{b.city || "-"}</td>
+                      <td>{b.neighborhood || "-"}</td>
+                      <td>{b.issuedFrom || "-"}</td>
+                      <td>{b.issuedDate || "-"}</td>
                     </tr>
                   ))}
                 </tbody>

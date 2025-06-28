@@ -8,22 +8,23 @@ import Submitinput from "../../../components/submitinput";
 import "../../../style/Table.css";
 import ButtonInput from "../../../components/ButtonInput";
 import SearchableSelect from "../../../components/SearchableSelect";
+import SelectWithLabel4 from "../../../components/SelectWithLabel4";
 
 export default function ReportAggrement() {
   // فلاتر ديناميكية
-  const [branches, setBranches] = useState([]);
+  // const [branches, setBranches] = useState([]); // حذف حقل الفروع نهائياً
   const [builders, setBuilders] = useState([]);
-  const [agreementTypes, setAgreementTypes] = useState([]);
+
   const [aggrements, setAggrements] = useState([]);
   const [filteredAggrements, setFilteredAggrements] = useState([]);
   const [formData, setFormData] = useState({
-    branch_name: "الجميع",
-    aggrement_agreementType: "الجميع",
+    // branch_name: "الجميع", // حذف حقل الفرع
+    agreementType: "الجميع",
     builderMosque_name: "الجميع",
   });
   const [error, setErrors] = useState({});
   const [buildersData, setBuildersData] = useState([]);
-  const [branchesData, setBranchesData] = useState([]);
+  // const [branchesData, setBranchesData] = useState([]); // حذف بيانات الفروع نهائياً
 
   // جلب البيانات من AllData.json
   useEffect(() => {
@@ -32,26 +33,21 @@ export default function ReportAggrement() {
         const response = await fetch("/JsonData/AllData.json");
         if (response.ok) {
           const allData = await response.json();
-          setBranches(["الجميع", ...allData.Branches.map((b) => b.name)]);
-          setBranchesData(allData.Branches); // حفظ بيانات الفروع ككائنات
-          setBuilders([
-            "الجميع",
-            ...allData.Builder.map((b) => b.builderMosque_name),
-          ]);
+          // setBranches(["الجميع", ...allData.Branches.map((b) => b.name)]);
+          // setBranchesData(allData.Branches); // حذف جلب الفروع
+          setBuilders(["الجميع", ...allData.Builder.map((b) => b.name)]);
           setBuildersData(allData.Builder); // حفظ البنائين ككائنات
           // استخراج أنواع الاتفاقية من Aggrements
           const types = Array.from(
-            new Set(allData.Aggrements.map((a) => a.aggrement_agreementType))
+            new Set(allData.Aggrements.map((a) => a.agreementType))
           );
-          setAgreementTypes(["الجميع", ...types]);
           setAggrements(allData.Aggrements);
         }
       } catch (err) {
-        setBranches(["الجميع"]);
-        setBranchesData([]);
+        // setBranches(["الجميع"]); // حذف نهائي
+        // setBranchesData([]); // حذف نهائي
         setBuilders(["الجميع"]);
         setBuildersData([]);
-        setAgreementTypes(["الجميع"]);
         setAggrements([]);
       }
     };
@@ -67,45 +63,27 @@ export default function ReportAggrement() {
   const handleSubmit = (e) => {
     e.preventDefault();
     let filtered = aggrements;
-    if (formData.branch_name && formData.branch_name !== "الجميع") {
-      filtered = filtered.filter((a) => {
-        const builder = buildersData.find(
-          (b) => b.builderMosque_name === a.builderMosque_name
-        );
-        return builder && builder.builderMosque_branch === formData.branch_name;
-      });
-    }
+    // حذف تصفية الفرع
     if (
       formData.builderMosque_name &&
       formData.builderMosque_name !== "الجميع"
     ) {
       filtered = filtered.filter(
-        (a) => a.builderMosque_name === formData.builderMosque_name
+        (a) =>
+          a.builderMosque_name === formData.builderMosque_name ||
+          a.name === formData.builderMosque_name
       );
     }
-    if (
-      formData.aggrement_agreementType &&
-      formData.aggrement_agreementType !== "الجميع"
-    ) {
+    if (formData.agreementType && formData.agreementType !== "الجميع") {
       filtered = filtered.filter(
-        (a) => a.aggrement_agreementType === formData.aggrement_agreementType
+        (a) => a.agreementType === formData.agreementType
       );
     }
     setFilteredAggrements(filtered);
   };
 
   // جلب فرع الباني حسب الاسم
-  const getBuilderBranch = (builderName) => {
-    const builder = buildersData.find(
-      (b) => b.builderMosque_name === builderName
-    );
-    if (!builder) return "-";
-    // جلب اسم الفرع من id الفرع الخاص بالباني
-    const branchObj = branchesData.find(
-      (b) => b.id === builder.builderMosque_branch
-    );
-    return branchObj ? branchObj.name : builder.builderMosque_branch || "-";
-  };
+  // حذف دالة جلب اسم الفرع
 
   // تحديث الفلاتر
   const handleChange = (e) => {
@@ -114,15 +92,13 @@ export default function ReportAggrement() {
   };
 
   // أعمدة الجدول الإضافية
-  const [showaggrement_firstWitness, setShowaggrement_firstWitness] =
-    useState(false);
-  const [showaggrement_secondWitness, setShowaggrement_secondWitness] =
-    useState(false);
-  const [showaggrement_totalArea, setShowaggrement_totalArea] = useState(false);
-  const [showaggrement_north, setShowaggrement_north] = useState(false);
-  const [showaggrement_south, setShowaggrement_south] = useState(false);
-  const [showaggrement_east, setShowaggrement_east] = useState(false);
-  const [showaggrement_west, setShowaggrement_west] = useState(false);
+  const [showfirstWitness, setShowfirstWitness] = useState(false);
+  const [showsecondWitness, setShowsecondWitness] = useState(false);
+  const [showtotalArea, setShowtotalArea] = useState(false);
+  const [shownorth, setShownorth] = useState(false);
+  const [showsouth, setShowsouth] = useState(false);
+  const [showeast, setShoweast] = useState(false);
+  const [showwest, setShowwest] = useState(false);
   const [showbuilderMosque_NOIdentity, setShowbuilderMosque_NOIdentity] =
     useState(false);
   const [showbuilderMosque_issuedFrom, setShowbuilderMosque_issuedFrom] =
@@ -183,14 +159,6 @@ export default function ReportAggrement() {
             <form className="divforconten" onSubmit={handleSubmit}>
               <div className="RowForInsertinputs">
                 <SearchableSelect
-                  name="branch_name"
-                  text="الفرع"
-                  value={formData.branch_name}
-                  change={handleChange}
-                  options={branches.map((b) => ({ value: b, label: b }))}
-                />
-                <div className="widthbetween"></div>
-                <SearchableSelect
                   name="builderMosque_name"
                   text="اسم الباني"
                   value={formData.builderMosque_name}
@@ -198,15 +166,15 @@ export default function ReportAggrement() {
                   options={builders.map((b) => ({ value: b, label: b }))}
                 />
                 <div className="widthbetween"></div>
-                <SelectWithLabel
-                  name="aggrement_agreementType"
+                <SelectWithLabel4
+                  name="agreementType"
                   text="نوع الاتفاقية"
-                  value={formData.aggrement_agreementType}
+                  value={formData.agreementType}
                   change={handleChange}
-                  value1={agreementTypes[0] || "الجميع"}
-                  value2={agreementTypes[1] || ""}
-                  value3={agreementTypes[2] || ""}
-                  value4={agreementTypes[3] || ""}
+                  value1="الجميع"
+                  value2="بناء"
+                  value3="هدم وإعادة بناء"
+                  value4="تشطيب"
                 />
               </div>
               <div className="RowForInsertinputs">
@@ -230,35 +198,31 @@ export default function ReportAggrement() {
                 />
                 <Checkpoint
                   text="غرب"
-                  change={(e) => setShowaggrement_west(e.target.checked)}
+                  change={(e) => setShowwest(e.target.checked)}
                 />
                 <Checkpoint
                   text="شرق"
-                  change={(e) => setShowaggrement_east(e.target.checked)}
+                  change={(e) => setShoweast(e.target.checked)}
                 />
                 <Checkpoint
                   text="شمال"
-                  change={(e) => setShowaggrement_north(e.target.checked)}
+                  change={(e) => setShownorth(e.target.checked)}
                 />
                 <Checkpoint
                   text="جنوب"
-                  change={(e) => setShowaggrement_south(e.target.checked)}
+                  change={(e) => setShowsouth(e.target.checked)}
                 />
                 <Checkpoint
                   text="اجمالي المساحة"
-                  change={(e) => setShowaggrement_totalArea(e.target.checked)}
+                  change={(e) => setShowtotalArea(e.target.checked)}
                 />
                 <Checkpoint
                   text="الشاهد الثاني"
-                  change={(e) =>
-                    setShowaggrement_secondWitness(e.target.checked)
-                  }
+                  change={(e) => setShowsecondWitness(e.target.checked)}
                 />
                 <Checkpoint
                   text="الشاهد الأول"
-                  change={(e) =>
-                    setShowaggrement_firstWitness(e.target.checked)
-                  }
+                  change={(e) => setShowfirstWitness(e.target.checked)}
                 />
               </div>
               <div className="RowForInsertinputs">
@@ -282,16 +246,16 @@ export default function ReportAggrement() {
                       <th>نوع الإتفاقية</th>
                       <th>تاريخ الاتفاقية</th>
                       <th>فترة البناء</th>
-                      {showaggrement_firstWitness && <th>الشاهد الأول</th>}
-                      {showaggrement_secondWitness && <th>الشاهد الثاني</th>}
+                      {showfirstWitness && <th>الشاهد الأول</th>}
+                      {showsecondWitness && <th>الشاهد الثاني</th>}
                       <th>الطول</th>
                       <th>العرض</th>
-                      {showaggrement_totalArea && <th>اجمالي المساحة</th>}
-                      {showaggrement_south && <th>جنوبا</th>}
-                      {showaggrement_north && <th>شمالا</th>}
-                      {showaggrement_east && <th>شرقا</th>}
-                      {showaggrement_west && <th>غربا</th>}
-                      <th>الفرع</th>
+                      {showtotalArea && <th>اجمالي المساحة</th>}
+                      {showsouth && <th>جنوبا</th>}
+                      {shownorth && <th>شمالا</th>}
+                      {showeast && <th>شرقا</th>}
+                      {showwest && <th>غربا</th>}
+                      {/* حذف عمود الفرع */}
                       <th>اسم الباني</th>
                       {showbuilderMosque_NOIdentity && <th>رقم الهوية</th>}
                       {showbuilderMosque_issuedFrom && <th>صدرت من</th>}
@@ -306,27 +270,21 @@ export default function ReportAggrement() {
                         ) || {};
                       return (
                         <tr key={idx}>
-                          <td>{a.aggrement_aggrementNo}</td>
-                          <td>{a.aggrement_agreementType}</td>
-                          <td>{a.aggrement_date}</td>
-                          <td>{a.aggrement_timeToBuild}</td>
-                          {showaggrement_firstWitness && (
-                            <td>{a.aggrement_firstWitness}</td>
-                          )}
-                          {showaggrement_secondWitness && (
-                            <td>{a.aggrement_secondWitness}</td>
-                          )}
-                          <td>{a.aggrement_height}</td>
-                          <td>{a.aggrement_width}</td>
-                          {showaggrement_totalArea && (
-                            <td>{a.aggrement_totalArea}</td>
-                          )}
-                          {showaggrement_south && <td>{a.aggrement_south}</td>}
-                          {showaggrement_north && <td>{a.aggrement_north}</td>}
-                          {showaggrement_east && <td>{a.aggrement_east}</td>}
-                          {showaggrement_west && <td>{a.aggrement_west}</td>}
-                          <td>{getBuilderBranch(a.builderMosque_name)}</td>
-                          <td>{a.builderMosque_name}</td>
+                          <td>{a.aggrementNo}</td>
+                          <td>{a.agreementType}</td>
+                          <td>{a.date}</td>
+                          <td>{a.timeToBuild}</td>
+                          {showfirstWitness && <td>{a.firstWitness}</td>}
+                          {showsecondWitness && <td>{a.secondWitness}</td>}
+                          <td>{a.height}</td>
+                          <td>{a.width}</td>
+                          {showtotalArea && <td>{a.totalArea}</td>}
+                          {showsouth && <td>{a.south}</td>}
+                          {shownorth && <td>{a.north}</td>}
+                          {showeast && <td>{a.east}</td>}
+                          {showwest && <td>{a.west}</td>}
+                          {/* حذف قيمة الفرع */}
+                          <td>{a.builderMosque_name || a.name || "-"}</td>
                           {showbuilderMosque_NOIdentity && (
                             <td>{builder.builderMosque_NOIdentity || "-"}</td>
                           )}
