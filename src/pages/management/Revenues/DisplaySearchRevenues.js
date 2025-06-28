@@ -43,13 +43,13 @@ export default function DisplaySearchRevenues() {
             return {
               ...revenue,
               tenantName: tenant ? tenant.name : "غير محدد",
-              bondNumber: revenue.receiptVoucher_bondNumber,
+              bondNumber: revenue.bondNumber,
             };
           }
           return {
             ...revenue,
             tenantName: "غير محدد",
-            bondNumber: revenue.receiptVoucher_bondNumber,
+            bondNumber: revenue.bondNumber,
           };
         });
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Mainbutton from "../../../components/Mainbutton";
 import Managementdata from "../../../components/managementdata";
 import Managmenttitle from "../../../components/Managmenttitle";
@@ -11,22 +12,24 @@ import ButtonInput from "../../../components/ButtonInput";
 import "../../../style/deblicateError.css";
 
 export default function AddRevenues() {
+  const navigate = useNavigate();
   // الحصول على التاريخ الحالي بتنسيق YYYY-MM-DD
   const today = new Date().toISOString().split("T")[0];
 
   // متغيرات الحالة
   const [formData, setFormData] = useState({
-    receiptVoucher_description: "",
+    description: "",
     tenant_name: "",
-    receiptVoucher_date: today,
-    receiptVoucher_amount: "",
-    receiptVoucher_writtenAmount: "",
-    receiptVoucher_bondNumber: "",
-    mosque_id: "",
+    date: today,
+    amount: "",
+    writtenAmount: "",
+    bondNumber: "",
     property_id: "",
+    collectorName: "",
+    monthlyRent: "",
   });
   const [error, setErrors] = useState({});
-  const [mosques, setMosques] = useState([]);
+  // const [mosques, setMosques] = useState([]); // حذف المساجد نهائياً
   const [properties, setProperties] = useState([]); // إضافة متغير حالة للعقارات
   const [existingBondNumbers, setExistingBondNumbers] = useState([]);
   // @ts-ignore
@@ -219,12 +222,7 @@ export default function AddRevenues() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // جلب المساجد
-        const mosquesResponse = await fetch("http://localhost:3001/Mosques");
-        if (mosquesResponse.ok) {
-          const mosquesData = await mosquesResponse.json();
-          setMosques(mosquesData);
-        }
+        // تم حذف جلب المساجد نهائياً
 
         // جلب العقارات
         const propertiesResponse = await fetch(
@@ -239,9 +237,7 @@ export default function AddRevenues() {
         const revenuesResponse = await fetch("http://localhost:3001/Revenues");
         if (revenuesResponse.ok) {
           const revenuesData = await revenuesResponse.json();
-          const bondNumbers = revenuesData.map(
-            (revenue) => revenue.receiptVoucher_bondNumber
-          );
+          const bondNumbers = revenuesData.map((revenue) => revenue.bondNumber);
           setExistingBondNumbers(bondNumbers);
         }
       } catch (err) {
@@ -272,46 +268,38 @@ export default function AddRevenues() {
     fetchTenants();
   }, []);
 
-  // تعديل دالة handleChange لتحديث المسجد تلقائيًا عند اختيار العين
+  // handleChange بدون منطق المسجد
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    // تحديث قيمة الحقل
     const updatedFormData = { ...formData, [name]: value };
-
-    // إذا كان الحقل هو العين، قم بتحديث المسجد تلقائيًا
+    // عند اختيار العين، جلب قيمة الإيجار الشهري تلقائياً
     if (name === "property_id") {
-      // البحث عن العين المختارة في قائمة العقارات
-      const selectedProperty = properties.find((prop) => prop.id === value);
-      if (selectedProperty && selectedProperty.mosque_id) {
-        // تحديث المسجد المرتبط بالعين
-        updatedFormData.mosque_id = selectedProperty.mosque_id;
-      }
+      const selectedProperty = properties.find((p) => p.id === value);
+      updatedFormData.monthlyRent =
+        selectedProperty &&
+        (selectedProperty.monthlyRent ||
+          selectedProperty.rent ||
+          selectedProperty.rent_amount)
+          ? selectedProperty.monthlyRent ||
+            selectedProperty.rent ||
+            selectedProperty.rent_amount
+          : "";
     }
-
-    // إذا كان الحقل هو المبلغ رقمًا، قم بتحديث المبلغ كتابة تلقائيًا
-    if (name === "receiptVoucher_amount") {
+    if (name === "amount") {
       if (value) {
-        updatedFormData.receiptVoucher_writtenAmount = `${convertNumberToArabicWords(
+        updatedFormData.writtenAmount = `${convertNumberToArabicWords(
           value
         )} ريال فقط لا غير`;
       } else {
-        updatedFormData.receiptVoucher_writtenAmount = "";
+        updatedFormData.writtenAmount = "";
       }
     }
-
-    // تجاهل التغييرات المباشرة على حقل المبلغ كتابة
-    if (name === "receiptVoucher_writtenAmount") {
+    if (name === "writtenAmount") {
       return;
     }
-
     setFormData(updatedFormData);
-
-    // إزالة رسالة الخطأ للحقل الذي يتم تعديله
     const newErrors = { ...error };
     delete newErrors[name];
-
-    // باقي التحققات كما هي...
     setErrors(newErrors);
   };
 
@@ -320,43 +308,47 @@ export default function AddRevenues() {
     let errors = {};
 
     // التحقق من رقم السند
-    if (!formData.receiptVoucher_bondNumber) {
-      errors.receiptVoucher_bondNumber = "يجب تعبئة الحقل";
+    if (!formData.bondNumber) {
+      errors.bondNumber = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^\d+$/.test(formData.receiptVoucher_bondNumber)) {
-      errors.receiptVoucher_bondNumber = "يجب أن يحتوي رقم السند على أرقام فقط";
+    } else if (!/^\d+$/.test(formData.bondNumber)) {
+      errors.bondNumber = "يجب أن يحتوي رقم السند على أرقام فقط";
       isValid = false;
-    } else if (
-      existingBondNumbers.includes(formData.receiptVoucher_bondNumber)
-    ) {
-      errors.receiptVoucher_bondNumber = "رقم السند موجود بالفعل";
+    } else if (existingBondNumbers.includes(formData.bondNumber)) {
+      errors.bondNumber = "رقم السند موجود بالفعل";
       isValid = false;
     }
 
     // التحقق من المبلغ
-    if (!formData.receiptVoucher_amount) {
-      errors.receiptVoucher_amount = "يجب تعبئة الحقل";
+    if (!formData.amount) {
+      errors.amount = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^\d+$/.test(formData.receiptVoucher_amount)) {
-      errors.receiptVoucher_amount = "يجب أن يحتوي المبلغ على أرقام فقط";
+    } else if (!/^\d+$/.test(formData.amount)) {
+      errors.amount = "يجب أن يحتوي المبلغ على أرقام فقط";
       isValid = false;
     }
 
     // التحقق من الوصف
-    if (!formData.receiptVoucher_description) {
-      errors.receiptVoucher_description = "يجب تعبئة الحقل";
+    if (!formData.description) {
+      errors.description = "يجب تعبئة الحقل";
       isValid = false;
     }
 
     // التحقق من المبلغ كتابة
-    if (!formData.receiptVoucher_writtenAmount) {
-      errors.receiptVoucher_writtenAmount = "يجب تعبئة الحقل";
+    if (!formData.writtenAmount) {
+      errors.writtenAmount = "يجب تعبئة الحقل";
       isValid = false;
     }
 
-    // التحقق من اختيار المسجد
-    if (!formData.mosque_id) {
-      errors.mosque_id = "يجب اختيار المسجد";
+    // التحقق من اسم المحصل
+    if (!formData.collectorName) {
+      errors.collectorName = "يجب تعبئة اسم المحصل";
+      isValid = false;
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.collectorName)) {
+      errors.collectorName = "يجب أن يحتوي الاسم على أحرف عربية فقط";
+      isValid = false;
+    } else if (formData.collectorName.trim().split(/\s+/).length < 2) {
+      errors.collectorName = "يجب أن يكون الاسم ثنائيًا أو أكثر";
       isValid = false;
     }
 
@@ -395,30 +387,20 @@ export default function AddRevenues() {
       });
 
       if (response.ok) {
-        // إظهار رسالة نجاح
-        console.log("تم الحفظ بنجاح!");
-
         // إعادة تعيين النموذج
         setFormData({
-          receiptVoucher_description: "",
+          description: "",
           tenant_name: "",
-          receiptVoucher_date: today,
-          receiptVoucher_amount: "",
-          receiptVoucher_writtenAmount: "",
-          receiptVoucher_bondNumber: "",
-          mosque_id: "",
+          date: today,
+          amount: "",
+          writtenAmount: "",
+          bondNumber: "",
           property_id: "",
+          collectorName: "",
+          monthlyRent: "",
         });
-
-        // تحديث قائمة أرقام السندات الموجودة
-        const revenuesResponse = await fetch("http://localhost:3001/Revenues");
-        if (revenuesResponse.ok) {
-          const data = await revenuesResponse.json();
-          const bondNumbers = data.map(
-            (revenue) => revenue.receiptVoucher_bondNumber
-          );
-          setExistingBondNumbers(bondNumbers);
-        }
+        // التوجه مباشرة إلى صفحة البحث والعرض
+        navigate("/management/Revenues/DisplaySearchRevenues");
       } else {
         const data = await response.json();
         if (data && data.message) {
@@ -633,13 +615,11 @@ export default function AddRevenues() {
                 <div class="field-row">
                   <div class="field">
                     <span class="label">رقم السند:</span>
-                    <span class="value">${
-                      formData.receiptVoucher_bondNumber
-                    }</span>
+                    <span class="value">${formData.bondNumber}</span>
                   </div>
                   <div class="field">
                     <span class="label">التاريخ:</span>
-                    <span class="value">${formData.receiptVoucher_date}</span>
+                    <span class="value">${formData.date}</span>
                   </div>
                 </div>
                 
@@ -668,18 +648,14 @@ export default function AddRevenues() {
                 <div class="field-row">
                   <div class="field">
                     <span class="label">مبلغ وقدره:</span>
-                    <span class="value">${
-                      formData.receiptVoucher_amount
-                    } ريال</span>
+                    <span class="value">${formData.amount} ريال</span>
                   </div>
                 </div>
                 
                 <div class="field-row">
                   <div class="field">
                     <span class="label">فقط:</span>
-                    <span class="value">${
-                      formData.receiptVoucher_writtenAmount
-                    }</span>
+                    <span class="value">${formData.writtenAmount}</span>
                   </div>
                 </div>
                 
@@ -687,7 +663,7 @@ export default function AddRevenues() {
                   <div class="full-width-field">
                     <span class="label">وذلك مقابل:</span>
                     <span class="full-width-value">${
-                      formData.receiptVoucher_description
+                      formData.description
                     }</span>
                   </div>
                 </div>
@@ -721,23 +697,22 @@ export default function AddRevenues() {
 
         // إعادة تعيين النموذج بعد الحفظ والطباعة
         setFormData({
-          receiptVoucher_description: "",
+          description: "",
           tenant_name: "",
-          receiptVoucher_date: today,
-          receiptVoucher_amount: "",
-          receiptVoucher_writtenAmount: "",
-          receiptVoucher_bondNumber: "",
-          mosque_id: "",
+          date: today,
+          amount: "",
+          writtenAmount: "",
+          bondNumber: "",
           property_id: "",
+          collectorName: "",
+          monthlyRent: "",
         });
 
         // تحديث قائمة أرقام السندات الموجودة
         const revenuesResponse = await fetch("http://localhost:3001/Revenues");
         if (revenuesResponse.ok) {
           const data = await revenuesResponse.json();
-          const bondNumbers = data.map(
-            (revenue) => revenue.receiptVoucher_bondNumber
-          );
+          const bondNumbers = data.map((revenue) => revenue.bondNumber);
           setExistingBondNumbers(bondNumbers);
         }
       } else {
@@ -760,10 +735,8 @@ export default function AddRevenues() {
     }
   };
 
-  // إضافة متغير لتخزين الأعيان المفلترة حسب المسجد المحدد
-  const propertiesFilteredByMosque = formData.mosque_id
-    ? properties.filter((property) => property.mosque_id === formData.mosque_id)
-    : properties;
+  // عرض جميع الأعيان بدون فلترة
+  const propertiesFilteredByMosque = properties;
 
   return (
     <div className="displayflexhome">
@@ -795,38 +768,67 @@ export default function AddRevenues() {
             onSubmit={(e) => e.preventDefault()}
           >
             <Managementdata dataname="سند قبض" />
-            <div className="RowForInsertinputs">
-              <div className="input-container">
+            <div
+              className="RowForInsertinputs"
+              style={{
+                display: "flex",
+                gap: "18px",
+                alignItems: "flex-start",
+                marginBottom: 15,
+              }}
+            >
+              <div className="input-container" style={{ flex: 1, minWidth: 0 }}>
                 <Inputwithlabelcustom
                   widthinput="20%"
-                  widthlabel="7%"
-                  value={formData.receiptVoucher_bondNumber}
-                  name="receiptVoucher_bondNumber"
+                  widthlabel="10%"
+                  value={formData.bondNumber}
+                  name="bondNumber"
                   change={handleChange}
                   text="رقم السند"
                 />
-                {
-                  // @ts-ignore
-                  error.receiptVoucher_bondNumber && (
-                    <div className="error-message">
-                      {
-                        // @ts-ignore
-                        error.receiptVoucher_bondNumber
-                      }
-                    </div>
-                  )
-                }
+                {typeof error === "object" &&
+                  error &&
+                  "bondNumber" in error &&
+                  error.bondNumber && (
+                    <div className="error-message">{error.bondNumber}</div>
+                  )}
               </div>
             </div>
-            <div className="RowForInsertinputs">
-              <div className="input-container">
+            <div
+              className="RowForInsertinputs"
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: "0",
+                marginBottom: 15,
+              }}
+            >
+              <div
+                className="input-container"
+                style={{ width: "27%", minWidth: 0, textAlign: "right" }}
+              >
                 <InputDatecustom
-                  widthinput="20%"
-                  widthlabel="7%"
-                  value={formData.receiptVoucher_date}
-                  name="receiptVoucher_date"
+                  widthinput="100%"
+                  widthlabel="32%"
+                  value={formData.date}
+                  name="date"
                   change={handleChange}
                   text="تاريخ"
+                  disabled={true}
+                />
+              </div>
+              <div
+                className="input-container"
+                style={{ width: "25%", minWidth: 0, textAlign: "left" }}
+              >
+                <Inputwithlabelcustom
+                  widthinput="65%"
+                  widthlabel="40%"
+                  value={formData.monthlyRent}
+                  name="monthlyRent"
+                  change={() => {}}
+                  text="الإيجار الشهري"
                   disabled={true}
                 />
               </div>
@@ -834,38 +836,34 @@ export default function AddRevenues() {
             <div style={{ marginBottom: "8px" }}></div>
             <div
               className="RowForInsertinputs"
-              style={{ justifyContent: "space-between" }}
+              style={{
+                justifyContent: "flex-start",
+                gap: "18px",
+                marginBottom: 15,
+              }}
             >
-              <div style={{ width: "28%" }}>
-                <div className="input-container">
-                  <SearchableSelect
-                    name="mosque_id"
-                    text="المسجد"
-                    options={mosques.map((mosque) => ({
-                      value: mosque.id,
-                      label: mosque.mosque_name,
-                    }))}
-                    value={formData.mosque_id}
-                    change={handleChange}
-                  />
-                  {
-                    // @ts-ignore
-                    error.mosque_id && (
-                      <div
-                        className="error-message"
-                        style={{ direction: "rtl" }}
-                      >
-                        {
-                          // @ts-ignore
-                          error.mosque_id
-                        }
-                      </div>
-                    )
-                  }
-                </div>
+              <div className="input-container" style={{ flex: 1, minWidth: 0 }}>
+                <Inputwithlabelcustom
+                  widthinput="32%"
+                  widthlabel="15%"
+                  value={formData.collectorName}
+                  name="collectorName"
+                  change={handleChange}
+                  text="اسم المحصل"
+                />
+                {typeof error === "object" &&
+                  error &&
+                  "collectorName" in error &&
+                  error.collectorName && (
+                    <div className="error-message">{error.collectorName}</div>
+                  )}
               </div>
-              <div style={{ width: "32%" }}>
-                <div className="input-container">
+              <div
+                style={{
+                  width: "35%",
+                }}
+              >
+                <div style={{ flex: 1, minWidth: 0 }}>
                   <SearchableSelect
                     name="tenant_name"
                     text="المستأجر"
@@ -876,27 +874,24 @@ export default function AddRevenues() {
                     value={formData.tenant_name}
                     change={handleChange}
                   />
-                  {
-                    // @ts-ignore
+                  {typeof error === "object" &&
+                    error &&
+                    "tenant_name" in error &&
                     error.tenant_name && (
                       <div
                         className="error-message"
                         style={{ direction: "rtl" }}
                       >
-                        {
-                          // @ts-ignore
-                          error.tenant_name
-                        }
+                        {error.tenant_name}
                       </div>
-                    )
-                  }
+                    )}
                 </div>
               </div>
             </div>
             <div style={{ marginBottom: "8px" }}></div>
             <div
               className="RowForInsertinputs"
-              style={{ justifyContent: "space-between" }}
+              style={{ justifyContent: "space-between", marginBottom: 15 }}
             >
               <div style={{ width: "28%" }}>
                 <div className="input-container">
@@ -905,7 +900,7 @@ export default function AddRevenues() {
                     text="العين"
                     options={propertiesFilteredByMosque.map((property) => ({
                       value: property.id,
-                      label: property.property_number,
+                      label: property.number,
                     }))}
                     value={formData.property_id}
                     change={handleChange}
@@ -930,18 +925,18 @@ export default function AddRevenues() {
                 <Inputwithlabelcustom
                   widthinput="100%"
                   widthlabel="48%"
-                  value={formData.receiptVoucher_amount}
-                  name="receiptVoucher_amount"
+                  value={formData.amount}
+                  name="amount"
                   change={handleChange}
                   text="المبلغ رقمًا"
                 />
                 {
                   // @ts-ignore
-                  error.receiptVoucher_amount && (
+                  error.amount && (
                     <div className="error-message" style={{ direction: "rtl" }}>
                       {
                         // @ts-ignore
-                        error.receiptVoucher_amount
+                        error.amount
                       }
                     </div>
                   )
@@ -951,25 +946,25 @@ export default function AddRevenues() {
             <div style={{ marginBottom: "8px" }}></div>
             <div
               className="RowForInsertinputs"
-              style={{ justifyContent: "space-between" }}
+              style={{ justifyContent: "space-between", marginBottom: 15 }}
             >
               <div style={{ width: "25%" }}></div>
               <div style={{ width: "75%" }}>
                 <Inputwithlabelcustom
                   widthinput="100%"
                   widthlabel="12%"
-                  value={formData.receiptVoucher_description}
-                  name="receiptVoucher_description"
+                  value={formData.description}
+                  name="description"
                   change={handleChange}
                   text="ذلك بمقابل"
                 />
                 {
                   // @ts-ignore
-                  error.receiptVoucher_description && (
+                  error.description && (
                     <div className="error-message" style={{ direction: "rtl" }}>
                       {
                         // @ts-ignore
-                        error.receiptVoucher_description
+                        error.description
                       }
                     </div>
                   )
@@ -986,19 +981,19 @@ export default function AddRevenues() {
                 <Inputwithlabelcustom
                   widthinput="100%"
                   widthlabel="15%"
-                  value={formData.receiptVoucher_writtenAmount}
-                  name="receiptVoucher_writtenAmount"
+                  value={formData.writtenAmount}
+                  name="writtenAmount"
                   change={handleChange}
                   text="المبلغ كتابة"
                   disabled={true} // جعل حقل المبلغ كتابة غير قابل للتعديل
                 />
                 {
                   // @ts-ignore
-                  error.receiptVoucher_writtenAmount && (
+                  error.writtenAmount && (
                     <div className="error-message" style={{ direction: "rtl" }}>
                       {
                         // @ts-ignore
-                        error.receiptVoucher_writtenAmount
+                        error.writtenAmount
                       }
                     </div>
                   )

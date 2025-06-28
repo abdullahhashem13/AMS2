@@ -30,7 +30,7 @@ export default function ReportRevenues() {
     }
 
     return filteredRevenues.reduce((total, revenue) => {
-      const amount = parseFloat(revenue.receiptVoucher_amount) || 0;
+      const amount = parseFloat(revenue.amount) || 0;
       return total + amount;
     }, 0);
   };
@@ -39,7 +39,7 @@ export default function ReportRevenues() {
   const filterRevenues = (revenuesList, criteria) => {
     return revenuesList.filter((revenue) => {
       // تحويل التواريخ إلى كائنات Date للمقارنة
-      const revenueDate = new Date(revenue.receiptVoucher_date);
+      const revenueDate = new Date(revenue.date);
       const startDate = criteria.startofdate
         ? new Date(criteria.startofdate)
         : null;
@@ -81,40 +81,47 @@ export default function ReportRevenues() {
         const tenantsData = data.Tenants || [];
         setTenants(tenantsData);
 
+        // استخراج بيانات العقارات
+        const propertiesData = data.Properties || [];
+
         // استخراج بيانات الإيرادات
         const revenuesData = data.Revenues || [];
 
-        // إضافة اسم المستأجر إلى كل إيراد
-        const revenuesWithTenantNames = revenuesData.map((revenue) => {
+        // إضافة اسم المستأجر ورقم العين النصي إلى كل إيراد
+        const revenuesWithTenantAndProperty = revenuesData.map((revenue) => {
           // ملاحظة: في بعض الملفات، يتم استخدام tenant_name بدلاً من tenant_id
           const tenantId = revenue.tenant_id || revenue.tenant_name;
-
           // البحث عن المستأجر المرتبط بهذا الإيراد
           const tenant = tenantsData.find((t) => t.id === tenantId);
-
+          // البحث عن العقار المرتبط بهذا الإيراد
+          const propertyId = revenue.property_id;
+          const property = propertiesData.find((p) => p.id === propertyId);
           return {
             ...revenue,
             tenantName: tenant ? tenant.name : "غير محدد",
             // تخزين معرف المستأجر بشكل موحد
             tenant_id: tenantId,
+            propertyNumber: property ? property.number : "غير محدد",
           };
         });
 
-        setRevenues(revenuesWithTenantNames);
+        setRevenues(revenuesWithTenantAndProperty);
 
         // تحديد أقدم تاريخ إيراد
         let oldestDate = today;
-        if (revenuesWithTenantNames.length > 0) {
+        if (revenuesWithTenantAndProperty.length > 0) {
           // فرز الإيرادات حسب التاريخ تصاعديًا
-          const sortedRevenues = [...revenuesWithTenantNames].sort((a, b) => {
-            return (
-              // @ts-ignore
-              new Date(a.receiptVoucher_date) - new Date(b.receiptVoucher_date)
-            );
-          });
+          const sortedRevenues = [...revenuesWithTenantAndProperty].sort(
+            (a, b) => {
+              return (
+                // @ts-ignore
+                new Date(a.date) - new Date(b.date)
+              );
+            }
+          );
 
           // الحصول على أقدم تاريخ
-          oldestDate = sortedRevenues[0].receiptVoucher_date;
+          oldestDate = sortedRevenues[0].date;
 
           // تحديث نموذج البيانات بأقدم تاريخ
           setFormData((prev) => ({
@@ -130,7 +137,7 @@ export default function ReportRevenues() {
         }
 
         // تطبيق الفلترة الأولية
-        const initialFiltered = filterRevenues(revenuesWithTenantNames, {
+        const initialFiltered = filterRevenues(revenuesWithTenantAndProperty, {
           startofdate: oldestDate,
           endofdate: today,
           tenant_id: "كل المستأجرين",
@@ -253,9 +260,11 @@ export default function ReportRevenues() {
                 <table id="propertyreport">
                   <thead>
                     <tr>
+                      <th>اسم المحصل</th>
+                      <th>رقم العين</th>
                       <th>رقم السند</th>
                       <th>التاريخ</th>
-                      <th> مقابل</th>
+                      <th>مقابل</th>
                       <th>المبلغ</th>
                       <th>اسم المستأجر</th>
                     </tr>
@@ -283,39 +292,38 @@ export default function ReportRevenues() {
                       <>
                         {filteredRevenues.map((revenue) => {
                           // البحث عن المستأجر مرة أخرى للتأكد
-                          // استخدام كلا الحقلين tenant_id و tenant_name للبحث
                           const tenantId =
                             revenue.tenant_id || revenue.tenant_name;
                           const tenant = tenants.find((t) => t.id === tenantId);
-
-                          // استخدام اسم المستأجر من الكائن إذا وجد، وإلا استخدام القيمة المخزنة مسبقًا
                           const tenantName = tenant
                             ? tenant.name
                             : revenue.tenantName || "غير محدد";
-
+                          // اسم المحصل
+                          const collectorName =
+                            revenue.collectorName ||
+                            revenue.collector_name ||
+                            "غير محدد";
+                          // رقم العين النصي فقط من جدول العقارات (property.number)
+                          const propertyNumber =
+                            revenue.propertyNumber || "غير محدد";
                           return (
                             <tr key={revenue.id}>
-                              <td>
-                                {revenue.receiptVoucher_bondNumber ||
-                                  "غير محدد"}
-                              </td>
-                              <td>
-                                {revenue.receiptVoucher_date || "غير محدد"}
-                              </td>
-                              <td>
-                                {revenue.receiptVoucher_description ||
-                                  "غير محدد"}
-                              </td>
-                              <td>{revenue.receiptVoucher_amount || "0"}</td>
+                              <td>{collectorName}</td>
+                              <td>{propertyNumber}</td>
+                              <td>{revenue.bondNumber || "غير محدد"}</td>
+                              <td>{revenue.date || "غير محدد"}</td>
+                              <td>{revenue.description || "غير محدد"}</td>
+                              <td>{revenue.amount || "0"}</td>
                               <td>{tenantName}</td>
                             </tr>
                           );
                         })}
                         {/* سطر المجموع */}
                         <tr className="total-row">
+                          <td></td>
+                          <td></td>
                           <td
-                            // @ts-ignore
-                            colSpan="3"
+                            colSpan={3}
                             style={{ textAlign: "left", fontWeight: "bold" }}
                           ></td>
                           <td style={{ fontWeight: "bold" }}>

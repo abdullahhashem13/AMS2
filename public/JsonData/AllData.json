@@ -196,7 +196,20 @@
       "mosque_id": "e587"
     }
   ],
-  "Revenues": [],
+  "Revenues": [
+    {
+      "bondNumber": "8888888",
+      "date": "2025-06-28",
+      "property_id": "025d",
+      "monthlyRent": "10000",
+      "tenant_name": "7a5b",
+      "amount": "20000",
+      "writtenAmount": "عشرون ألف ريال فقط لا غير",
+      "collectorName": "خالد الجفري",
+      "description": "ايجارات شهر 12 و11",
+      "id": "3975"
+    }
+  ],
   "Aggrements": [],
   "Builder": [],
   "LandFarmingContract": [],

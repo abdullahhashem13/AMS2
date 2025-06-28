@@ -45,24 +45,20 @@ export default function RevenueDetails({ revenue, onClose }) {
         <div className="details-container">
           <div className="details-row">
             <span className="details-label">رقم السند:</span>
-            <span className="details-value">
-              {revenue.receiptVoucher_bondNumber}
-            </span>
+            <span className="details-value">{revenue.bondNumber}</span>
           </div>
           <div className="details-row">
             <span className="details-label">التاريخ:</span>
-            <span className="details-value">{revenue.receiptVoucher_date}</span>
+            <span className="details-value">{revenue.date}</span>
           </div>
           <div className="details-row">
             <span className="details-label">المبلغ:</span>
-            <span className="details-value">
-              {revenue.receiptVoucher_amount} ريال
-            </span>
+            <span className="details-value">{revenue.amount} ريال</span>
           </div>
           <div className="details-row">
             <span className="details-label">المبلغ كتابة:</span>
             <span className="details-value">
-              {revenue.receiptVoucher_writtenAmount || "غير محدد"}
+              {revenue.writtenAmount || "غير محدد"}
             </span>
           </div>
           <div className="details-row">
@@ -72,7 +68,7 @@ export default function RevenueDetails({ revenue, onClose }) {
           <div className="details-row">
             <span className="details-label">الوصف:</span>
             <span className="details-value">
-              {revenue.receiptVoucher_description || "غير محدد"}
+              {revenue.description || "غير محدد"}
             </span>
           </div>
         </div>
