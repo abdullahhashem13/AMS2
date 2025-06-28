@@ -16,14 +16,14 @@ export default function EditQuranCenter() {
   const navigate = useNavigate();
   const { id } = useParams(); // استخراج معرف المركز من الرابط
   const [formData, setFormData] = useState({
-    quranCenter_name: "",
+    name: "",
     mosque_id: "",
-    quranCenter_managerName: "",
-    quranCenter_managerIdNumber: "",
-    quranCenter_managerPhone: "",
-    quranCenter_governorate: "",
-    quranCenter_city: "",
-    quranCenter_neighborhood: "",
+    managerName: "",
+    managerIdNumber: "",
+    managerPhone: "",
+    governorate: "",
+    city: "",
+    neighborhood: "",
   });
   const [error, setErrors] = useState({});
   const [existingCenters, setExistingCenters] = useState([]);
@@ -42,7 +42,7 @@ export default function EditQuranCenter() {
         if (centerResponse.ok) {
           const centerData = await centerResponse.json();
           setFormData(centerData);
-          setOriginalCenterName(centerData.quranCenter_name);
+          setOriginalCenterName(centerData.name);
           console.log("Center data loaded:", centerData);
         } else {
           console.error("Failed to fetch center:", centerResponse.status);
@@ -78,7 +78,7 @@ export default function EditQuranCenter() {
     setErrors({ ...error, [name]: "" });
 
     // إزالة خطأ التكرار عند تغيير اسم المركز
-    if (name === "quranCenter_name") {
+    if (name === "name") {
       setShowDuplicateError(false);
     }
   };
@@ -93,14 +93,12 @@ export default function EditQuranCenter() {
     let errors = {};
 
     // التحقق من اسم المركز
-    if (!formData.quranCenter_name.trim()) {
-      errors.quranCenter_name = "اسم المركز مطلوب";
+    if (!formData.name.trim()) {
+      errors.name = "اسم المركز مطلوب";
       isValid = false;
     } else if (
-      formData.quranCenter_name !== originalCenterName &&
-      existingCenters.some(
-        (center) => center.quranCenter_name === formData.quranCenter_name
-      )
+      formData.name !== originalCenterName &&
+      existingCenters.some((center) => center.name === formData.name)
     ) {
       setShowDuplicateError(true);
       isValid = false;
@@ -113,38 +111,38 @@ export default function EditQuranCenter() {
     }
 
     // التحقق من اسم المدير
-    if (!formData.quranCenter_managerName.trim()) {
-      errors.quranCenter_managerName = "اسم المدير مطلوب";
+    if (!formData.managerName.trim()) {
+      errors.managerName = "اسم المدير مطلوب";
       isValid = false;
     }
 
     // التحقق من رقم الهوية
-    if (!formData.quranCenter_managerIdNumber.trim()) {
-      errors.quranCenter_managerIdNumber = "رقم الهوية مطلوب";
+    if (!formData.managerIdNumber.trim()) {
+      errors.managerIdNumber = "رقم الهوية مطلوب";
       isValid = false;
     }
 
     // التحقق من رقم الهاتف
-    if (!formData.quranCenter_managerPhone.trim()) {
-      errors.quranCenter_managerPhone = "رقم الهاتف مطلوب";
+    if (!formData.managerPhone.trim()) {
+      errors.managerPhone = "رقم الهاتف مطلوب";
       isValid = false;
     }
 
     // التحقق من المحافظة
-    if (!formData.quranCenter_governorate.trim()) {
-      errors.quranCenter_governorate = "المحافظة مطلوبة";
+    if (!formData.governorate.trim()) {
+      errors.governorate = "المحافظة مطلوبة";
       isValid = false;
     }
 
     // التحقق من المدينة
-    if (!formData.quranCenter_city.trim()) {
-      errors.quranCenter_city = "المدينة مطلوبة";
+    if (!formData.city.trim()) {
+      errors.city = "المدينة مطلوبة";
       isValid = false;
     }
 
     // التحقق من الحي
-    if (!formData.quranCenter_neighborhood.trim()) {
-      errors.quranCenter_neighborhood = "الحي مطلوب";
+    if (!formData.neighborhood.trim()) {
+      errors.neighborhood = "الحي مطلوب";
       isValid = false;
     }
 
@@ -252,7 +250,7 @@ export default function EditQuranCenter() {
                   text="تابع لمسجد"
                   options={mosques.map((mosque) => ({
                     value: mosque.id,
-                    label: mosque.mosque_name,
+                    label: mosque.name,
                   }))}
                   value={formData.mosque_id}
                   change={handleMosqueChange} // Cambiado de onChange a change
@@ -272,18 +270,18 @@ export default function EditQuranCenter() {
               <div className="widthbetween"></div>
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.quranCenter_name}
-                  name="quranCenter_name"
+                  value={formData.name}
+                  name="name"
                   change={handleChange}
                   text="اسم المركز"
                 />
                 {
                   // @ts-ignore
-                  error.quranCenter_name && (
+                  error.name && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.quranCenter_name
+                        error.name
                       }
                     </div>
                   )
@@ -308,18 +306,18 @@ export default function EditQuranCenter() {
             <div className="RowForInsertinputs">
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.quranCenter_neighborhood}
-                  name="quranCenter_neighborhood"
+                  value={formData.neighborhood}
+                  name="neighborhood"
                   change={handleChange}
                   text="الحي"
                 />
                 {
                   // @ts-ignore
-                  error.quranCenter_neighborhood && (
+                  error.neighborhood && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.quranCenter_neighborhood
+                        error.neighborhood
                       }
                     </div>
                   )
@@ -328,18 +326,18 @@ export default function EditQuranCenter() {
               <div className="widthbetween"></div>
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.quranCenter_city}
-                  name="quranCenter_city"
+                  value={formData.city}
+                  name="city"
                   change={handleChange}
                   text="المدينة"
                 />
                 {
                   // @ts-ignore
-                  error.quranCenter_city && (
+                  error.city && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.quranCenter_city
+                        error.city
                       }
                     </div>
                   )
@@ -348,18 +346,18 @@ export default function EditQuranCenter() {
               <div className="widthbetween"></div>
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.quranCenter_governorate}
-                  name="quranCenter_governorate"
+                  value={formData.governorate}
+                  name="governorate"
                   change={handleChange}
                   text="المحافظة"
                 />
                 {
                   // @ts-ignore
-                  error.quranCenter_governorate && (
+                  error.governorate && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.quranCenter_governorate
+                        error.governorate
                       }
                     </div>
                   )
@@ -376,18 +374,18 @@ export default function EditQuranCenter() {
             <div className="RowForInsertinputs">
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.quranCenter_managerPhone}
-                  name="quranCenter_managerPhone"
+                  value={formData.managerPhone}
+                  name="managerPhone"
                   change={handleChange}
                   text="التلفون"
                 />
                 {
                   // @ts-ignore
-                  error.quranCenter_managerPhone && (
+                  error.managerPhone && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.quranCenter_managerPhone
+                        error.managerPhone
                       }
                     </div>
                   )
@@ -396,18 +394,18 @@ export default function EditQuranCenter() {
               <div className="widthbetween"></div>
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.quranCenter_managerIdNumber}
-                  name="quranCenter_managerIdNumber"
+                  value={formData.managerIdNumber}
+                  name="managerIdNumber"
                   change={handleChange}
                   text="رقم الهوية"
                 />
                 {
                   // @ts-ignore
-                  error.quranCenter_managerIdNumber && (
+                  error.managerIdNumber && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.quranCenter_managerIdNumber
+                        error.managerIdNumber
                       }
                     </div>
                   )
@@ -416,18 +414,18 @@ export default function EditQuranCenter() {
               <div className="widthbetween"></div>
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.quranCenter_managerName}
-                  name="quranCenter_managerName"
+                  value={formData.managerName}
+                  name="managerName"
                   change={handleChange}
                   text="الاسم"
                 />
                 {
                   // @ts-ignore
-                  error.quranCenter_managerName && (
+                  error.managerName && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.quranCenter_managerName
+                        error.managerName
                       }
                     </div>
                   )

@@ -132,7 +132,19 @@
       "type": "ارض زراعية"
     }
   ],
-  "Gauidnces": [],
+  "Gauidnces": [
+    {
+      "id": "984f",
+      "name": "النور",
+      "mosque_id": "e587",
+      "managerName": "محمد حسن علي الحامد",
+      "managerIdNumber": "658465",
+      "managerPhone": "777315622",
+      "governorate": "حضرموت",
+      "city": "المكلا",
+      "neighborhood": "السلام"
+    }
+  ],
   "Expenses": [
     {
       "id": "0ff1",

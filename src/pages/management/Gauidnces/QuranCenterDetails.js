@@ -15,7 +15,7 @@ export default function QuranCenterDetails({ center, onClose }) {
             const data = await response.json();
             const mosque = data.Mosques?.find((m) => m.id === center.mosque_id);
             if (mosque) {
-              setMosqueName(mosque.mosque_name);
+              setMosqueName(mosque.name);
             }
           }
         }
@@ -43,7 +43,7 @@ export default function QuranCenterDetails({ center, onClose }) {
         <div className="details-container">
           <div className="details-row">
             <span className="details-label">اسم المركز:</span>
-            <span className="details-value">{center.quranCenter_name}</span>
+            <span className="details-value">{center.name}</span>
           </div>
           <div className="details-row">
             <span className="details-label">المسجد التابع له:</span>
@@ -52,19 +52,19 @@ export default function QuranCenterDetails({ center, onClose }) {
           <div className="details-row">
             <span className="details-label">اسم مدير المركز:</span>
             <span className="details-value">
-              {center.quranCenter_managerName || "غير محدد"}
+              {center.managerName || "غير محدد"}
             </span>
           </div>
           <div className="details-row">
             <span className="details-label">رقم هوية المدير:</span>
             <span className="details-value">
-              {center.quranCenter_managerIdNumber || "غير محدد"}
+              {center.managerIdNumber || "غير محدد"}
             </span>
           </div>
           <div className="details-row">
             <span className="details-label">رقم هاتف المدير:</span>
             <span className="details-value">
-              {center.quranCenter_managerPhone || "غير محدد"}
+              {center.managerPhone || "غير محدد"}
             </span>
           </div>
         </div>
@@ -74,19 +74,17 @@ export default function QuranCenterDetails({ center, onClose }) {
           <div className="details-row">
             <span className="details-label">المحافظة:</span>
             <span className="details-value">
-              {center.quranCenter_governorate || "غير محدد"}
+              {center.governorate || "غير محدد"}
             </span>
           </div>
           <div className="details-row">
             <span className="details-label">المدينة:</span>
-            <span className="details-value">
-              {center.quranCenter_city || "غير محدد"}
-            </span>
+            <span className="details-value">{center.city || "غير محدد"}</span>
           </div>
           <div className="details-row">
             <span className="details-label">الحي:</span>
             <span className="details-value">
-              {center.quranCenter_neighborhood || "غير محدد"}
+              {center.neighborhood || "غير محدد"}
             </span>
           </div>
         </div>

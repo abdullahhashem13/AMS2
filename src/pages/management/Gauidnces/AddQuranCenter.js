@@ -13,14 +13,14 @@ import "../../../style/searchableSelect.css"; // إضافة ملف CSS للتن�
 export default function AddQuranCenter() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    quranCenter_name: "",
+    name: "",
     mosque_id: "", // تغيير من mosque_name إلى mosque_id
-    quranCenter_managerName: "",
-    quranCenter_managerIdNumber: "",
-    quranCenter_managerPhone: "",
-    quranCenter_governorate: "",
-    quranCenter_city: "",
-    quranCenter_neighborhood: "",
+    managerName: "",
+    managerIdNumber: "",
+    managerPhone: "",
+    governorate: "",
+    city: "",
+    neighborhood: "",
   });
   const [error, setErrors] = useState({});
   const [existingCenters, setExistingCenters] = useState([]);
@@ -60,7 +60,7 @@ export default function AddQuranCenter() {
     setErrors({ ...error, [name]: "" });
 
     // إزالة خطأ التكرار عند تغيير اسم المركز
-    if (name === "quranCenter_name") {
+    if (name === "name") {
       setShowDuplicateError(false);
     }
   };
@@ -93,16 +93,16 @@ export default function AddQuranCenter() {
     }
 
     // التحقق من اسم المركز (أحرف عربية فقط)
-    if (!formData.quranCenter_name) {
-      errors.quranCenter_name = "يجب تعبئة الحقل";
+    if (!formData.name) {
+      errors.name = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.quranCenter_name)) {
-      errors.quranCenter_name = "يجب أن يحتوي اسم المركز على أحرف عربية فقط";
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.name)) {
+      errors.name = "يجب أن يحتوي اسم المركز على أحرف عربية فقط";
       isValid = false;
     } else {
       // التحقق من تكرار اسم المركز
       const isDuplicate = existingCenters.some(
-        (center) => center.quranCenter_name === formData.quranCenter_name
+        (center) => center.name === formData.name
       );
       if (isDuplicate) {
         setShowDuplicateError(true);
@@ -111,74 +111,69 @@ export default function AddQuranCenter() {
     }
 
     // التحقق من المحافظة (أحرف عربية فقط)
-    if (!formData.quranCenter_governorate) {
-      errors.quranCenter_governorate = "يجب تعبئة الحقل";
+    if (!formData.governorate) {
+      errors.governorate = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.quranCenter_governorate)) {
-      errors.quranCenter_governorate =
-        "يجب أن تحتوي المحافظة على أحرف عربية فقط";
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.governorate)) {
+      errors.governorate = "يجب أن تحتوي المحافظة على أحرف عربية فقط";
       isValid = false;
     }
 
     // التحقق من المدينة (أحرف عربية فقط)
-    if (!formData.quranCenter_city) {
-      errors.quranCenter_city = "يجب تعبئة الحقل";
+    if (!formData.city) {
+      errors.city = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.quranCenter_city)) {
-      errors.quranCenter_city = "يجب أن تحتوي المدينة على أحرف عربية فقط";
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.city)) {
+      errors.city = "يجب أن تحتوي المدينة على أحرف عربية فقط";
       isValid = false;
     }
 
     // التحقق من الحي (أحرف عربية فقط)
-    if (!formData.quranCenter_neighborhood) {
-      errors.quranCenter_neighborhood = "يجب تعبئة الحقل";
+    if (!formData.neighborhood) {
+      errors.neighborhood = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (
-      !/^[\u0600-\u06FF\s]+$/.test(formData.quranCenter_neighborhood)
-    ) {
-      errors.quranCenter_neighborhood = "يجب أن يحتوي الحي على أحرف عربية فقط";
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.neighborhood)) {
+      errors.neighborhood = "يجب أن يحتوي الحي على أحرف عربية فقط";
       isValid = false;
     }
 
     // التحقق من اسم المدير (أحرف عربية فقط واسم رباعي)
-    if (!formData.quranCenter_managerName) {
-      errors.quranCenter_managerName = "يجب تعبئة الحقل";
+    if (!formData.managerName) {
+      errors.managerName = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.quranCenter_managerName)) {
-      errors.quranCenter_managerName =
-        "يجب أن يحتوي اسم المدير على أحرف عربية فقط";
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.managerName)) {
+      errors.managerName = "يجب أن يحتوي اسم المدير على أحرف عربية فقط";
       isValid = false;
     } else {
       // التحقق من أن الاسم يتكون من أربع كلمات على الأقل (اسم رباعي)
-      const words = formData.quranCenter_managerName.trim().split(/\s+/);
+      const words = formData.managerName.trim().split(/\s+/);
       if (words.length < 4) {
-        errors.quranCenter_managerName = "يجب أن يكون اسم المدير رباعي";
+        errors.managerName = "يجب أن يكون اسم المدير رباعي";
         isValid = false;
       }
     }
 
     // التحقق من رقم الهوية (أرقام فقط)
-    if (!formData.quranCenter_managerIdNumber) {
-      errors.quranCenter_managerIdNumber = "يجب تعبئة الحقل";
+    if (!formData.managerIdNumber) {
+      errors.managerIdNumber = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^\d+$/.test(formData.quranCenter_managerIdNumber)) {
-      errors.quranCenter_managerIdNumber =
-        "يجب أن يحتوي رقم الهوية على أرقام فقط";
+    } else if (!/^\d+$/.test(formData.managerIdNumber)) {
+      errors.managerIdNumber = "يجب أن يحتوي رقم الهوية على أرقام فقط";
       isValid = false;
     }
 
     // التحقق من رقم الهاتف (9 أرقام ويبدأ بـ 7)
-    if (!formData.quranCenter_managerPhone) {
-      errors.quranCenter_managerPhone = "يجب تعبئة الحقل";
+    if (!formData.managerPhone) {
+      errors.managerPhone = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^\d+$/.test(formData.quranCenter_managerPhone)) {
-      errors.quranCenter_managerPhone = "يجب أن يحتوي رقم الهاتف على أرقام فقط";
+    } else if (!/^\d+$/.test(formData.managerPhone)) {
+      errors.managerPhone = "يجب أن يحتوي رقم الهاتف على أرقام فقط";
       isValid = false;
-    } else if (formData.quranCenter_managerPhone.length !== 9) {
-      errors.quranCenter_managerPhone = "يجب أن يتكون رقم الهاتف من 9 أرقام";
+    } else if (formData.managerPhone.length !== 9) {
+      errors.managerPhone = "يجب أن يتكون رقم الهاتف من 9 أرقام";
       isValid = false;
-    } else if (!formData.quranCenter_managerPhone.startsWith("7")) {
-      errors.quranCenter_managerPhone = "يجب أن يبدأ رقم الهاتف بالرقم 7";
+    } else if (!formData.managerPhone.startsWith("7")) {
+      errors.managerPhone = "يجب أن يبدأ رقم الهاتف بالرقم 7";
       isValid = false;
     }
 
@@ -207,14 +202,14 @@ export default function AddQuranCenter() {
         console.log("successful!");
         // يمكن إضافة توجيه إلى صفحة أخرى أو إعادة تعيين النموذج هنا
         setFormData({
-          quranCenter_name: "",
+          name: "",
           mosque_id: "",
-          quranCenter_managerName: "",
-          quranCenter_managerIdNumber: "",
-          quranCenter_managerPhone: "",
-          quranCenter_governorate: "",
-          quranCenter_city: "",
-          quranCenter_neighborhood: "",
+          managerName: "",
+          managerIdNumber: "",
+          managerPhone: "",
+          governorate: "",
+          city: "",
+          neighborhood: "",
         });
         navigate("/management/Gauidnces/DisplaySearchQuranCenter");
       } else {
@@ -290,7 +285,7 @@ export default function AddQuranCenter() {
                   text="تابع لمسجد"
                   options={mosques.map((mosque) => ({
                     value: mosque.id,
-                    label: mosque.mosque_name,
+                    label: mosque.name,
                   }))}
                   value={formData.mosque_id}
                   change={handleMosqueChange} // Cambiado de onChange a change
@@ -310,18 +305,18 @@ export default function AddQuranCenter() {
               <div className="widthbetween"></div>
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.quranCenter_name}
-                  name="quranCenter_name"
+                  value={formData.name}
+                  name="name"
                   change={handleChange}
                   text="اسم المركز"
                 />
                 {
                   // @ts-ignore
-                  error.quranCenter_name && (
+                  error.name && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.quranCenter_name
+                        error.name
                       }
                     </div>
                   )
@@ -346,18 +341,18 @@ export default function AddQuranCenter() {
             <div className="RowForInsertinputs">
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.quranCenter_neighborhood}
-                  name="quranCenter_neighborhood"
+                  value={formData.neighborhood}
+                  name="neighborhood"
                   change={handleChange}
                   text="الحي"
                 />
                 {
                   // @ts-ignore
-                  error.quranCenter_neighborhood && (
+                  error.neighborhood && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.quranCenter_neighborhood
+                        error.neighborhood
                       }
                     </div>
                   )
@@ -366,18 +361,18 @@ export default function AddQuranCenter() {
               <div className="widthbetween"></div>
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.quranCenter_city}
-                  name="quranCenter_city"
+                  value={formData.city}
+                  name="city"
                   change={handleChange}
                   text="المدينة"
                 />
                 {
                   // @ts-ignore
-                  error.quranCenter_city && (
+                  error.city && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.quranCenter_city
+                        error.city
                       }
                     </div>
                   )
@@ -386,18 +381,18 @@ export default function AddQuranCenter() {
               <div className="widthbetween"></div>
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.quranCenter_governorate}
-                  name="quranCenter_governorate"
+                  value={formData.governorate}
+                  name="governorate"
                   change={handleChange}
                   text="المحافظة"
                 />
                 {
                   // @ts-ignore
-                  error.quranCenter_governorate && (
+                  error.governorate && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.quranCenter_governorate
+                        error.governorate
                       }
                     </div>
                   )
@@ -414,18 +409,18 @@ export default function AddQuranCenter() {
             <div className="RowForInsertinputs">
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.quranCenter_managerPhone}
-                  name="quranCenter_managerPhone"
+                  value={formData.managerPhone}
+                  name="managerPhone"
                   change={handleChange}
                   text="التلفون"
                 />
                 {
                   // @ts-ignore
-                  error.quranCenter_managerPhone && (
+                  error.managerPhone && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.quranCenter_managerPhone
+                        error.managerPhone
                       }
                     </div>
                   )
@@ -434,18 +429,18 @@ export default function AddQuranCenter() {
               <div className="widthbetween"></div>
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.quranCenter_managerIdNumber}
-                  name="quranCenter_managerIdNumber"
+                  value={formData.managerIdNumber}
+                  name="managerIdNumber"
                   change={handleChange}
                   text="رقم الهوية"
                 />
                 {
                   // @ts-ignore
-                  error.quranCenter_managerIdNumber && (
+                  error.managerIdNumber && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.quranCenter_managerIdNumber
+                        error.managerIdNumber
                       }
                     </div>
                   )
@@ -454,18 +449,18 @@ export default function AddQuranCenter() {
               <div className="widthbetween"></div>
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.quranCenter_managerName}
-                  name="quranCenter_managerName"
+                  value={formData.managerName}
+                  name="managerName"
                   change={handleChange}
                   text="الاسم"
                 />
                 {
                   // @ts-ignore
-                  error.quranCenter_managerName && (
+                  error.managerName && (
                     <div className="error-message">
                       {
                         // @ts-ignore
-                        error.quranCenter_managerName
+                        error.managerName
                       }
                     </div>
                   )

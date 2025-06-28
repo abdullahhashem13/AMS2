@@ -42,7 +42,7 @@ export default function DisplaySearchQuranCenter() {
     }
 
     const filtered = quranCenters.filter((center) =>
-      center.quranCenter_name.includes(searchTerm)
+      center.name.includes(searchTerm)
     );
     setFilteredCenters(filtered);
   };
@@ -117,7 +117,7 @@ export default function DisplaySearchQuranCenter() {
                     <QuranCenterCard
                       key={center.id}
                       id={center.id}
-                      name={center.quranCenter_name}
+                      name={center.name}
                       mosqueName={center.mosque_name}
                       onDelete={handleDeleteCenter}
                     />
