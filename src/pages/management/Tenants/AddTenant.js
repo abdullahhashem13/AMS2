@@ -37,7 +37,7 @@ export default function AddTenant() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/JsonData/AllData.json");
+        const response = await fetch("http://awgaff1.runasp.net/api/Tenant");
         if (!response.ok) {
           throw new Error("فشل في جلب البيانات");
         }
@@ -181,12 +181,26 @@ export default function AddTenant() {
     }
 
     try {
-      const response = await fetch("http://localhost:3001/Tenants", {
+      // تحويل الحقول لتطابق الـ API
+      const apiData = {
+        name: formData.name,
+        genders: formData.gender,
+        phone: Number(formData.phone),
+        city: formData.city,
+        neighborhood: formData.neighborhood,
+        governorate: formData.governorate,
+        idNumber: Number(formData.IdNumber),
+        type: formData.type,
+        tenant_Warining: null,
+        receipt_Vouchers: null,
+        aggrements: null,
+      };
+      const response = await fetch("http://awgaff1.runasp.net/api/Tenant", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(apiData),
       });
 
       if (response.ok) {

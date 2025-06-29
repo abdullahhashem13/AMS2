@@ -11,7 +11,7 @@ export default function TenantWarningDetails({ warning, onClose }) {
       if (!warning.tenantName && warning.tenant_id) {
         try {
           const response = await fetch(
-            `http://localhost:3001/Tenants/${warning.tenant_id}`
+            `http://awgaff1.runasp.net/api/Tenant/${warning.tenant_id}`
           );
           if (response.ok) {
             const tenant = await response.json();

@@ -25,7 +25,7 @@ export default function TenantWaringReport() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch("/JsonData/AllData.json");
+        const response = await fetch("http://awgaff1.runasp.net/api/Tenant");
         if (!response.ok) {
           throw new Error("فشل في جلب البيانات");
         }

@@ -16,15 +16,26 @@ export default function DisplaySearchTenant() {
   useEffect(() => {
     const fetchTenants = async () => {
       try {
-        const response = await fetch("/JsonData/AllData.json");
+        const response = await fetch("http://awgaff1.runasp.net/api/Tenant");
         if (!response.ok) {
           throw new Error("فشل في جلب البيانات");
         }
         const data = await response.json();
-        if (data.Tenants && Array.isArray(data.Tenants)) {
-          setTenants(data.Tenants);
-          setFilteredTenants(data.Tenants);
+        // دعم جميع أشكال الاستجابة: مصفوفة مباشرة أو داخل خاصية Tenants أو data أو payload أو result
+        let tenantsArr = [];
+        if (Array.isArray(data)) {
+          tenantsArr = data;
+        } else if (Array.isArray(data.Tenants)) {
+          tenantsArr = data.Tenants;
+        } else if (Array.isArray(data.data)) {
+          tenantsArr = data.data;
+        } else if (Array.isArray(data.payload)) {
+          tenantsArr = data.payload;
+        } else if (Array.isArray(data.result)) {
+          tenantsArr = data.result;
         }
+        setTenants(tenantsArr);
+        setFilteredTenants(tenantsArr);
       } catch (error) {
         console.error("Error fetching tenants:", error);
       } finally {

@@ -49,28 +49,53 @@ export default function EditTenant() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/JsonData/AllData.json");
+        const response = await fetch("http://awgaff1.runasp.net/api/Tenant");
         if (!response.ok) {
           throw new Error("فشل في جلب البيانات");
         }
 
         const data = await response.json();
 
-        // جلب قائمة المستأجرين
-        if (data.Tenants && Array.isArray(data.Tenants)) {
-          setExistingTenants(data.Tenants);
+        // دعم جميع أشكال الاستجابة: مصفوفة مباشرة أو داخل خاصية Tenants أو data أو payload أو result
+        let tenantsArr = [];
+        if (Array.isArray(data)) {
+          tenantsArr = data;
+        } else if (Array.isArray(data.Tenants)) {
+          tenantsArr = data.Tenants;
+        } else if (Array.isArray(data.data)) {
+          tenantsArr = data.data;
+        } else if (Array.isArray(data.payload)) {
+          tenantsArr = data.payload;
+        } else if (Array.isArray(data.result)) {
+          tenantsArr = data.result;
+        }
+        setExistingTenants(tenantsArr);
 
-          // البحث عن المستأجر المحدد
-          const tenant = data.Tenants.find((tenant) => tenant.id === id);
-          if (tenant) {
-            setFormData(tenant);
-            setOriginalTenantName(tenant.name);
-            setOriginalIdNumber(tenant.IdNumber); // حفظ رقم الهوية الأصلي
-          } else {
-            throw new Error("لم يتم العثور على المستأجر");
-          }
+        // البحث عن المستأجر المحدد
+        const tenant = tenantsArr.find(
+          (tenant) => String(tenant.id) === String(id)
+        );
+        if (tenant) {
+          // تحويل الحقول القادمة من الـ API لتناسب formData
+          const normalizedTenant = normalizeTenant(tenant);
+          setFormData(normalizedTenant);
+          setOriginalTenantName(normalizedTenant.name);
+          setOriginalIdNumber(normalizedTenant.IdNumber); // حفظ رقم الهوية الأصلي
         } else {
-          throw new Error("بيانات المستأجرين غير متوفرة");
+          throw new Error("لم يتم العثور على المستأجر");
+        }
+        // دالة لتحويل الحقول القادمة من الـ API إلى الشكل المطلوب في formData
+        function normalizeTenant(apiTenant) {
+          return {
+            name: apiTenant.name || "",
+            phone: apiTenant.phone ? String(apiTenant.phone) : "",
+            IdNumber: apiTenant.IdNumber || apiTenant.idNumber || "",
+            gender: apiTenant.gender || apiTenant.genders || "",
+            type: apiTenant.type || "",
+            governorate: apiTenant.governorate || "",
+            city: apiTenant.city || "",
+            neighborhood: apiTenant.neighborhood || "",
+          };
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -103,6 +128,7 @@ export default function EditTenant() {
       return;
     }
 
+    // عرض رسالة التأكيد أولاً
     const result = await Swal.fire({
       title: "هل أنت متأكد؟",
       text: "هل تريد حفظ التعديلات؟",
@@ -119,21 +145,32 @@ export default function EditTenant() {
     }
 
     try {
-      const response = await fetch(`http://localhost:3001/Tenants/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `http://awgaff1.runasp.net/api/Tenant/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (response.ok) {
         navigate("/management/Tenants/DisplaySearchTenant");
       } else {
-        const data = await response.json();
+        // محاولة قراءة رسالة الخطأ كنص وليس كـ JSON
+        let errorMsg = "فشل في تحديث البيانات";
+        try {
+          const text = await response.text();
+          // محاولة استخراج الرسالة العربية من النص
+          if (text && text.length < 200) {
+            errorMsg = text;
+          }
+        } catch (e) {}
         setErrors({
           ...error,
-          general: data.message || "فشل في تحديث البيانات",
+          general: errorMsg,
         });
       }
     } catch (err) {

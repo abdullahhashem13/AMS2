@@ -1,21 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "../../../style/Modal.css";
 
 export default function TenantDetails({ tenant, onClose }) {
   const [isClosing, setIsClosing] = useState(false);
 
-  useEffect(() => {
-    // حذف كل ما يتعلق بالفروع
-  }, [tenant]);
+  // تحويل بيانات المستأجر إذا كانت قادمة من الـ API بشكل خام
+  const normalizedTenant = tenant ? normalizeTenant(tenant) : null;
 
-  if (!tenant) return null;
+  if (!normalizedTenant) return null;
 
   const handleClose = () => {
     setIsClosing(true);
-    // انتظر حتى ينتهي الانيميشن قبل إغلاق النافذة فعليًا
     setTimeout(() => {
       onClose();
-    }, 280); // وقت أقل قليلاً من مدة الانيميشن (300ms)
+    }, 280);
   };
 
   return (
@@ -26,45 +24,47 @@ export default function TenantDetails({ tenant, onClose }) {
         <div className="details-container">
           <div className="details-row">
             <div className="details-label">اسم المستأجر:</div>
-            <div className="details-value">{tenant.name}</div>
+            <div className="details-value">{normalizedTenant.name}</div>
           </div>
 
           <div className="details-row">
             <div className="details-label">رقم الهوية:</div>
-            <div className="details-value">{tenant.IdNumber}</div>
+            <div className="details-value">{normalizedTenant.IdNumber}</div>
           </div>
 
           <div className="details-row">
             <div className="details-label">رقم التلفون:</div>
-            <div className="details-value">{tenant.phone}</div>
+            <div className="details-value">{normalizedTenant.phone}</div>
           </div>
 
           <div className="details-row">
             <div className="details-label">الجنس:</div>
-            <div className="details-value">{tenant.gender}</div>
+            <div className="details-value">{normalizedTenant.gender}</div>
           </div>
 
           <div className="details-row">
             <div className="details-label">نوع المستأجر:</div>
-            <div className="details-value">{tenant.type}</div>
+            <div className="details-value">{normalizedTenant.type}</div>
           </div>
 
           <div className="details-row">
             <div className="details-label">المحافظة:</div>
             <div className="details-value">
-              {tenant.governorate || "غير محدد"}
+              {normalizedTenant.governorate || "غير محدد"}
             </div>
           </div>
 
           <div className="details-row">
             <div className="details-label">المدينة:</div>
-            <div className="details-value">{tenant.city || "غير محدد"}</div>
+            <div className="details-value">
+              {normalizedTenant.city || "غير محدد"}
+            </div>
           </div>
 
           <div className="details-row">
             <div className="details-label">الحي:</div>
             <div className="details-value">
-              {tenant.neighborhood || "غير محدد"}
+              {normalizedTenant.neighborhood || "غير محدد"}
             </div>
           </div>
         </div>
@@ -77,4 +77,18 @@ export default function TenantDetails({ tenant, onClose }) {
       </div>
     </div>
   );
+}
+
+// دالة لتحويل الحقول القادمة من الـ API إلى الشكل المطلوب للعرض
+function normalizeTenant(apiTenant) {
+  return {
+    name: apiTenant.name || "",
+    phone: apiTenant.phone ? String(apiTenant.phone) : "",
+    IdNumber: apiTenant.IdNumber || apiTenant.idNumber || "",
+    gender: apiTenant.gender || apiTenant.genders || "",
+    type: apiTenant.type || "",
+    governorate: apiTenant.governorate || "",
+    city: apiTenant.city || "",
+    neighborhood: apiTenant.neighborhood || "",
+  };
 }

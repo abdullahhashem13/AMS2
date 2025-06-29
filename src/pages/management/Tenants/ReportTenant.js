@@ -27,13 +27,34 @@ export default function ReportTenant() {
         setLoading(true);
 
         // جلب بيانات المستأجرين
-        const tenantsResponse = await fetch("http://localhost:3001/Tenants");
+        const tenantsResponse = await fetch(
+          "http://awgaff1.runasp.net/api/Tenant"
+        );
         if (!tenantsResponse.ok) {
           throw new Error("فشل في جلب بيانات المستأجرين");
         }
         const tenantsData = await tenantsResponse.json();
-        setTenants(tenantsData);
-        setFilteredTenants(tenantsData); // عرض جميع المستأجرين افتراضياً
+        // دعم جميع أشكال استجابة الـ API
+        let tenantsArr = [];
+        if (Array.isArray(tenantsData)) {
+          tenantsArr = tenantsData;
+        } else if (Array.isArray(tenantsData.Tenants)) {
+          tenantsArr = tenantsData.Tenants;
+        } else if (Array.isArray(tenantsData.data)) {
+          tenantsArr = tenantsData.data;
+        } else if (Array.isArray(tenantsData.payload)) {
+          tenantsArr = tenantsData.payload;
+        } else if (Array.isArray(tenantsData.result)) {
+          tenantsArr = tenantsData.result;
+        }
+        // تحويل الحقول لتوحيدها مع الكود المحلي
+        tenantsArr = tenantsArr.map((tenant) => ({
+          ...tenant,
+          idNumber: tenant.idNumber || tenant.IdNumber || "",
+          genders: tenant.genders || tenant.gender || "",
+        }));
+        setTenants(tenantsArr);
+        setFilteredTenants(tenantsArr); // عرض جميع المستأجرين افتراضياً
 
         setLoading(false);
       } catch (error) {
@@ -60,7 +81,7 @@ export default function ReportTenant() {
       // فلترة حسب الجنس
       if (formData.gender && formData.gender !== "الجميع(الذكر والأنثى)") {
         filtered = filtered.filter(
-          (tenant) => tenant.gender === formData.gender
+          (tenant) => (tenant.genders || tenant.gender) === formData.gender
         );
       }
 
@@ -131,7 +152,7 @@ export default function ReportTenant() {
               <Mainbutton text="إضافة" path="/management/Tenants/AddTenant" />
             </div>
           </div>
-          <div className="divforconten">
+          <div>
             <form className="divforconten" onSubmit={handleSubmit}>
               <div className="RowForInsertinputs">
                 <SelectWithLabel3
@@ -227,10 +248,10 @@ export default function ReportTenant() {
                               <td>{tenant.neighborhood || "غير محدد"}</td>
                             )}
                             {showIDnumber && (
-                              <td>{tenant.IdNumber || "غير محدد"}</td>
+                              <td>{tenant.idNumber || "غير محدد"}</td>
                             )}
                             <td>{tenant.type || "غير محدد"}</td>
-                            <td>{tenant.gender || "غير محدد"}</td>
+                            <td>{tenant.genders || "غير محدد"}</td>
                             <td>{tenant.phone || "غير محدد"}</td>
                             <td>{tenant.name || "غير محدد"}</td>
                           </tr>

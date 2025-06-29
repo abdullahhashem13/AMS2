@@ -37,7 +37,7 @@ export default function TenantCard(props) {
         try {
           // إرسال طلب حذف إلى الخادم
           const response = await fetch(
-            `http://localhost:3001/Tenants/${props.id}`,
+            `http://awgaff1.runasp.net/api/Tenant/${props.id}`,
             {
               method: "DELETE",
             }
@@ -62,12 +62,45 @@ export default function TenantCard(props) {
   };
 
   const handleCardClick = async () => {
+    if (!props.id) {
+      console.warn("لا يوجد id للمستأجر، لن يتم عرض التفاصيل.");
+      return;
+    }
     try {
-      const response = await fetch(`http://localhost:3001/Tenants/${props.id}`);
+      // جلب جميع المستأجرين
+      const response = await fetch(`http://awgaff1.runasp.net/api/Tenant`);
       if (response.ok) {
         const data = await response.json();
-        setTenantDetails(data);
-        setShowDetails(true);
+        // دعم جميع أشكال استجابة الـ API
+        let tenantsArr = [];
+        if (Array.isArray(data)) {
+          tenantsArr = data;
+        } else if (Array.isArray(data.Tenants)) {
+          tenantsArr = data.Tenants;
+        } else if (Array.isArray(data.data)) {
+          tenantsArr = data.data;
+        } else if (Array.isArray(data.payload)) {
+          tenantsArr = data.payload;
+        } else if (Array.isArray(data.result)) {
+          tenantsArr = data.result;
+        }
+        // البحث عن المستأجر المطلوب
+        const tenantObj = tenantsArr.find(
+          (t) =>
+            String(t.id) === String(props.id) ||
+            String(t._id) === String(props.id)
+        );
+        if (tenantObj) {
+          setTenantDetails(tenantObj);
+          setShowDetails(true);
+        } else {
+          console.warn(
+            "لم يتم العثور على بيانات المستأجر في القائمة.",
+            tenantsArr
+          );
+        }
+      } else {
+        console.error("فشل في جلب قائمة المستأجرين من الـ API.");
       }
     } catch (error) {
       console.error("Error fetching tenant details:", error);
