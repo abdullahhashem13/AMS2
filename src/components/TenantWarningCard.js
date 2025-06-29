@@ -34,16 +34,21 @@ export default function TenantWarningCard(props) {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          // إرسال طلب حذف إلى الخادم
+          // حذف من الـ API الخارجي
           const response = await fetch(
-            `http://localhost:3001/TenantWaring/${props.id}`,
+            `http://awgaff1.runasp.net/api/TenantWarning/${props.id}`,
             {
               method: "DELETE",
             }
           );
 
           if (!response.ok) {
-            throw new Error("فشل في حذف الإنذار");
+            let msg = "فشل في حذف الإنذار";
+            try {
+              const text = await response.text();
+              if (text && text.length < 200) msg = text;
+            } catch {}
+            throw new Error(msg);
           }
 
           // إذا نجح الحذف، استدعاء دالة onDelete لتحديث واجهة المستخدم
@@ -54,7 +59,7 @@ export default function TenantWarningCard(props) {
           Swal.fire("تم الحذف!", "تم حذف الإنذار بنجاح.", "success");
         } catch (error) {
           console.error("Error deleting warning:", error);
-          Swal.fire("خطأ!", "حدث خطأ أثناء حذف الإنذار.", "error");
+          Swal.fire("خطأ!", error.message || "حدث خطأ أثناء حذف الإنذار.", "error");
         }
       }
     });
@@ -62,16 +67,25 @@ export default function TenantWarningCard(props) {
 
   const handleCardClick = async () => {
     try {
+      // جلب بيانات الإنذار من الـ API الخارجي
       const response = await fetch(
-        `http://localhost:3001/TenantWaring/${props.id}`
+        `http://awgaff1.runasp.net/api/TenantWarning/${props.id}`
       );
       if (response.ok) {
         const data = await response.json();
         setWarningDetails(data);
         setShowDetails(true);
+      } else {
+        let msg = "فشل في جلب بيانات الإنذار";
+        try {
+          const text = await response.text();
+          if (text && text.length < 200) msg = text;
+        } catch {}
+        Swal.fire("خطأ!", msg, "error");
       }
     } catch (error) {
       console.error("Error fetching warning details:", error);
+      Swal.fire("خطأ!", "حدث خطأ أثناء جلب بيانات الإنذار.", "error");
     }
   };
 

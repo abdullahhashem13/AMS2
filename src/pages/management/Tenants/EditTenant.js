@@ -145,6 +145,18 @@ export default function EditTenant() {
     }
 
     try {
+      // تجهيز البيانات حسب ما يطلبه الـ API الخارجي
+      const apiData = {
+        idNumber: Number(formData.IdNumber),
+        genders: formData.gender,
+        phone: Number(formData.phone),
+        city: formData.city,
+        neighborhood: formData.neighborhood,
+        governorate: formData.governorate,
+        type: formData.type,
+        name: formData.name,
+        // يمكن إضافة حقول أخرى إذا كان الـ API يطلبها
+      };
       const response = await fetch(
         `http://awgaff1.runasp.net/api/Tenant/${id}`,
         {
@@ -152,7 +164,7 @@ export default function EditTenant() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(apiData),
         }
       );
 

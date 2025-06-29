@@ -25,27 +25,73 @@ export default function TenantWaringReport() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch("http://awgaff1.runasp.net/api/Tenant");
-        if (!response.ok) {
-          throw new Error("فشل في جلب البيانات");
+        // جلب بيانات المستأجرين من API الخارجي
+        const tenantsRes = await fetch("http://awgaff1.runasp.net/api/Tenant");
+        let tenantsArr = [];
+        if (tenantsRes.ok) {
+          const tenantsData = await tenantsRes.json();
+          if (Array.isArray(tenantsData)) {
+            tenantsArr = tenantsData;
+          } else if (Array.isArray(tenantsData.Tenants)) {
+            tenantsArr = tenantsData.Tenants;
+          } else if (Array.isArray(tenantsData.data)) {
+            tenantsArr = tenantsData.data;
+          } else if (Array.isArray(tenantsData.payload)) {
+            tenantsArr = tenantsData.payload;
+          } else if (Array.isArray(tenantsData.result)) {
+            tenantsArr = tenantsData.result;
+          }
+          setTenants(tenantsArr);
+        } else {
+          setTenants([]);
         }
 
-        const data = await response.json();
-
-        // جلب بيانات المستأجرين
-        const tenantsData = data.Tenants || [];
-        setTenants(tenantsData);
-
-        // جلب بيانات الإنذارات
-        const warningsData = data.TenantWaring || [];
+        // جلب بيانات الإنذارات من API الخارجي
+        const warningsRes = await fetch(
+          "http://awgaff1.runasp.net/api/TenantWarning"
+        );
+        let warningsArr = [];
+        if (warningsRes.ok) {
+          const warningsData = await warningsRes.json();
+          if (Array.isArray(warningsData)) {
+            warningsArr = warningsData;
+          } else if (Array.isArray(warningsData.TenantWarning)) {
+            warningsArr = warningsData.TenantWarning;
+          } else if (Array.isArray(warningsData.data)) {
+            warningsArr = warningsData.data;
+          } else if (Array.isArray(warningsData.payload)) {
+            warningsArr = warningsData.payload;
+          } else if (Array.isArray(warningsData.result)) {
+            warningsArr = warningsData.result;
+          }
+        }
 
         // دمج بيانات الإنذارات مع أسماء المستأجرين فقط (بدون فروع)
-        const warningsWithDetails = warningsData.map((warning) => {
-          const tenantObj = tenantsData.find((t) => t.id === warning.tenant_id);
+        const warningsWithDetails = warningsArr.map((warning) => {
+          // استخراج اسم المستأجر من جميع المصادر الممكنة
+          const tenantId =
+            warning.tenant_id ||
+            warning.Tenant_Id ||
+            warning.tenantId ||
+            warning.TenantId;
+          let tenantName = "غير محدد";
+          if (warning.tenantName) tenantName = warning.tenantName;
+          else if (warning.tenant_name) tenantName = warning.tenant_name;
+          else if (warning.TenantName) tenantName = warning.TenantName;
+          else if (warning.tenant && warning.tenant.name)
+            tenantName = warning.tenant.name;
+          else if (warning.tenantObj && warning.tenantObj.name)
+            tenantName = warning.tenantObj.name;
+          else {
+            const tenantObj = tenantsArr.find(
+              (t) => String(t.id) === String(tenantId)
+            );
+            if (tenantObj) tenantName = tenantObj.name;
+          }
           return {
             ...warning,
-            tenantName: tenantObj ? tenantObj.name : "مستأجر غير معروف",
-            tenantId: tenantObj ? tenantObj.id : "",
+            tenantName,
+            tenantId: tenantId || "",
           };
         });
 

@@ -28,26 +28,52 @@ export default function TenantWaringAdd() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/JsonData/AllData.json");
-        if (response.ok) {
-          const data = await response.json();
-          // التأكد من أن البيانات تحتوي على مصفوفة المستأجرين
-          if (data.Tenants && Array.isArray(data.Tenants)) {
-            // فلترة المستأجرين للحصول على الحاليين فقط
-            const currentTenants = data.Tenants.filter(
-              (tenant) => tenant.type === "حالي"
-            );
-            setTenants(currentTenants);
-          } else {
-            console.error("بيانات المستأجرين غير متوفرة أو ليست مصفوفة");
+        // جلب المستأجرين من API الخارجي
+        const tenantsRes = await fetch("http://awgaff1.runasp.net/api/Tenant");
+        let tenantsArr = [];
+        if (tenantsRes.ok) {
+          const tenantsData = await tenantsRes.json();
+          if (Array.isArray(tenantsData)) {
+            tenantsArr = tenantsData;
+          } else if (Array.isArray(tenantsData.Tenants)) {
+            tenantsArr = tenantsData.Tenants;
+          } else if (Array.isArray(tenantsData.data)) {
+            tenantsArr = tenantsData.data;
+          } else if (Array.isArray(tenantsData.payload)) {
+            tenantsArr = tenantsData.payload;
+          } else if (Array.isArray(tenantsData.result)) {
+            tenantsArr = tenantsData.result;
           }
-
-          // حفظ بيانات الإنذارات
-          if (data.TenantWaring && Array.isArray(data.TenantWaring)) {
-            setWarnings(data.TenantWaring);
-          }
+          // فلترة المستأجرين للحصول على الحاليين فقط
+          const currentTenants = tenantsArr.filter(
+            (tenant) => tenant.type === "حالي"
+          );
+          setTenants(currentTenants);
         } else {
-          console.error("Failed to fetch data");
+          console.error("فشل في جلب بيانات المستأجرين");
+        }
+
+        // جلب الإنذارات من API الخارجي
+        const warningsRes = await fetch(
+          "http://awgaff1.runasp.net/api/TenantWarning"
+        );
+        if (warningsRes.ok) {
+          const warningsData = await warningsRes.json();
+          let warningsArr = [];
+          if (Array.isArray(warningsData)) {
+            warningsArr = warningsData;
+          } else if (Array.isArray(warningsData.TenantWarning)) {
+            warningsArr = warningsData.TenantWarning;
+          } else if (Array.isArray(warningsData.data)) {
+            warningsArr = warningsData.data;
+          } else if (Array.isArray(warningsData.payload)) {
+            warningsArr = warningsData.payload;
+          } else if (Array.isArray(warningsData.result)) {
+            warningsArr = warningsData.result;
+          }
+          setWarnings(warningsArr);
+        } else {
+          console.error("فشل في جلب بيانات الإنذارات");
         }
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -93,21 +119,25 @@ export default function TenantWaringAdd() {
   // التحقق من وجود إنذار سابق للمستأجر
   const checkExistingWarning = (tenantId, warningType) => {
     let errorMsg = "";
+    // دعم جميع أشكال الحقول القادمة من الباك اند
     const existingWarning = warnings.find(
       (warning) =>
-        warning.tenant_id === tenantId && warning.typeOfWarning === warningType
+        String(warning.tenant_id || warning.tenant_Id) === String(tenantId) &&
+        (warning.typeOfWarning || warning.typeOfWarining) === warningType
     );
     if (existingWarning) {
       const tenantName =
-        tenants.find((tenant) => tenant.id === tenantId)?.name || "المستأجر";
+        tenants.find((tenant) => String(tenant.id) === String(tenantId))
+          ?.name || "المستأجر";
       errorMsg = `${tenantName} لديه بالفعل ${warningType}`;
     } else {
       // تحقق من التسلسل: لا يمكن إضافة الثاني بدون الأول، ولا الثالث بدون الثاني
       if (warningType === "إنذار ثاني") {
         const hasFirst = warnings.some(
           (warning) =>
-            warning.tenant_id === tenantId &&
-            warning.typeOfWarning === "إنذار أول"
+            String(warning.tenant_id || warning.tenant_Id) ===
+              String(tenantId) &&
+            (warning.typeOfWarning || warning.typeOfWarining) === "إنذار أول"
         );
         if (!hasFirst) {
           errorMsg =
@@ -116,8 +146,9 @@ export default function TenantWaringAdd() {
       } else if (warningType === "إنذار نهائي") {
         const hasSecond = warnings.some(
           (warning) =>
-            warning.tenant_id === tenantId &&
-            warning.typeOfWarning === "إنذار ثاني"
+            String(warning.tenant_id || warning.tenant_Id) ===
+              String(tenantId) &&
+            (warning.typeOfWarning || warning.typeOfWarining) === "إنذار ثاني"
         );
         if (!hasSecond) {
           errorMsg =
@@ -159,20 +190,24 @@ export default function TenantWaringAdd() {
       let errorMsg = "";
       const existingWarning = warnings.find(
         (warning) =>
-          warning.tenant_id === formData.tenant_id &&
-          warning.typeOfWarning === formData.typeOfWarning
+          String(warning.tenant_id || warning.tenant_Id) ===
+            String(formData.tenant_id) &&
+          (warning.typeOfWarning || warning.typeOfWarining) ===
+            formData.typeOfWarning
       );
       if (existingWarning) {
         const tenantName =
-          tenants.find((tenant) => tenant.id === formData.tenant_id)?.name ||
-          "المستأجر";
+          tenants.find(
+            (tenant) => String(tenant.id) === String(formData.tenant_id)
+          )?.name || "المستأجر";
         errorMsg = `${tenantName} لديه بالفعل ${formData.typeOfWarning}. لا يمكن إضافة نفس نوع الإنذار مرتين.`;
       } else {
         if (formData.typeOfWarning === "إنذار ثاني") {
           const hasFirst = warnings.some(
             (warning) =>
-              warning.tenant_id === formData.tenant_id &&
-              warning.typeOfWarning === "إنذار أول"
+              String(warning.tenant_id || warning.tenant_Id) ===
+                String(formData.tenant_id) &&
+              (warning.typeOfWarning || warning.typeOfWarining) === "إنذار أول"
           );
           if (!hasFirst) {
             errorMsg = "لا يمكن إنذار ثاني قبل إنذار أول للمستأجر.";
@@ -180,8 +215,9 @@ export default function TenantWaringAdd() {
         } else if (formData.typeOfWarning === "إنذار نهائي") {
           const hasSecond = warnings.some(
             (warning) =>
-              warning.tenant_id === formData.tenant_id &&
-              warning.typeOfWarning === "إنذار ثاني"
+              String(warning.tenant_id || warning.tenant_Id) ===
+                String(formData.tenant_id) &&
+              (warning.typeOfWarning || warning.typeOfWarining) === "إنذار ثاني"
           );
           if (!hasSecond) {
             errorMsg = "لا يمكن إنذار نهائي قبل إنذار ثاني للمستأجر.";
@@ -199,25 +235,27 @@ export default function TenantWaringAdd() {
       return;
     }
 
-    // إنشاء نسخة من البيانات للإرسال بدون حقول إضافية
-    const dataToSend = {
-      tenant_id: formData.tenant_id,
-      typeOfWarning: formData.typeOfWarning,
-      date: formData.date,
-      description: formData.description,
+    // تجهيز البيانات للإرسال حسب ما يطلبه الـ API الخارجي (مطابقة أسماء الحقول)
+    const apiData = {
+      Tenant_Id: formData.tenant_id,
+      TypeOfWarining: formData.typeOfWarning,
+      Date: formData.date,
+      Description: formData.description,
     };
 
     try {
-      const response = await fetch("http://localhost:3001/TenantWaring", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataToSend),
-      });
+      const response = await fetch(
+        "http://awgaff1.runasp.net/api/TenantWarning",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(apiData),
+        }
+      );
 
       if (response.ok) {
-        console.log("successful!");
         // إعادة تعيين النموذج بعد النجاح مع الاحتفاظ بتاريخ اليوم
         setFormData({
           tenant_id: "",
@@ -229,24 +267,19 @@ export default function TenantWaringAdd() {
 
         // تحديث قائمة الإنذارات
         const newWarning = {
-          ...dataToSend,
+          ...apiData,
           id: Math.random().toString(36).substr(2, 4),
         };
         setWarnings([...warnings, newWarning]);
       } else {
-        const data = await response.json();
-
-        if (data && data.message) {
-          if (typeof data.message === "object") {
-            setErrors({ ...error, ...data.message });
-          } else if (typeof data.message === "string") {
-            setErrors({ ...error, general: data.message });
-          } else {
-            setErrors({ ...error, general: "Registration failed." });
+        let errorMsg = "Registration failed.";
+        try {
+          const text = await response.text();
+          if (text && text.length < 200) {
+            errorMsg = text;
           }
-        } else {
-          setErrors({ ...error, general: "Registration failed." });
-        }
+        } catch (e) {}
+        setErrors({ ...error, general: errorMsg });
       }
     } catch (err) {
       setErrors({ ...error, general: "An error occurred." });

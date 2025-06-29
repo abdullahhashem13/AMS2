@@ -41,40 +41,70 @@ export default function TenantWarningEdit() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://awgaff1.runasp.net/api/Tenant");
-        if (!response.ok) {
-          throw new Error("فشل في جلب البيانات");
-        }
-
-        const data = await response.json();
-
-        // جلب قائمة المستأجرين
-        if (data.Tenants && Array.isArray(data.Tenants)) {
+        // جلب المستأجرين من API الخارجي
+        const tenantsRes = await fetch("http://awgaff1.runasp.net/api/Tenant");
+        let tenantsArr = [];
+        if (tenantsRes.ok) {
+          const tenantsData = await tenantsRes.json();
+          if (Array.isArray(tenantsData)) {
+            tenantsArr = tenantsData;
+          } else if (Array.isArray(tenantsData.Tenants)) {
+            tenantsArr = tenantsData.Tenants;
+          } else if (Array.isArray(tenantsData.data)) {
+            tenantsArr = tenantsData.data;
+          } else if (Array.isArray(tenantsData.payload)) {
+            tenantsArr = tenantsData.payload;
+          } else if (Array.isArray(tenantsData.result)) {
+            tenantsArr = tenantsData.result;
+          }
           // فلترة المستأجرين للحصول على الحاليين فقط
-          const currentTenants = data.Tenants.filter(
+          const currentTenants = tenantsArr.filter(
             (tenant) => tenant.type === "حالي"
           );
           setTenants(currentTenants);
+        } else {
+          setTenants([]);
         }
 
-        // جلب بيانات الإنذارات
-        if (data.TenantWaring && Array.isArray(data.TenantWaring)) {
-          setWarnings(data.TenantWaring);
+        // جلب بيانات الإنذارات من API الخارجي
+        const warningsRes = await fetch(
+          "http://awgaff1.runasp.net/api/TenantWarning"
+        );
+        let warningsArr = [];
+        if (warningsRes.ok) {
+          const warningsData = await warningsRes.json();
+          if (Array.isArray(warningsData)) {
+            warningsArr = warningsData;
+          } else if (Array.isArray(warningsData.TenantWarning)) {
+            warningsArr = warningsData.TenantWarning;
+          } else if (Array.isArray(warningsData.data)) {
+            warningsArr = warningsData.data;
+          } else if (Array.isArray(warningsData.payload)) {
+            warningsArr = warningsData.payload;
+          } else if (Array.isArray(warningsData.result)) {
+            warningsArr = warningsData.result;
+          }
+          setWarnings(warningsArr);
 
           // جلب بيانات الإنذار المحدد
-          const warning = data.TenantWaring.find(
-            (warning) => warning.id === id
+          const warning = warningsArr.find(
+            (warning) => String(warning.id) === String(id)
           );
           if (warning) {
+            // دعم جميع أشكال الحقول
+            const tenantId = warning.tenant_id || warning.tenant_Id || "";
+            const typeOfWarning =
+              warning.typeOfWarning || warning.typeOfWarining || "";
+            const date = warning.date || "";
+            const description = warning.description || "";
             setFormData({
-              tenant_id: warning.tenant_id,
-              typeOfWarning: warning.typeOfWarning,
-              date: warning.date,
-              description: warning.description,
+              tenant_id: tenantId,
+              typeOfWarning: typeOfWarning,
+              date: date,
+              description: description,
             });
-            // حفظ القيم الأصلية للتحقق من التكرار
-            setOriginalTypeOfWarning(warning.typeOfWarning);
-            setOriginalTenantId(warning.tenant_id);
+            setOriginalTypeOfWarning(typeOfWarning);
+            setOriginalTenantId(tenantId);
           } else {
             throw new Error("لم يتم العثور على الإنذار");
           }
@@ -125,17 +155,18 @@ export default function TenantWarningEdit() {
 
   // التحقق من وجود إنذار سابق للمستأجر
   const checkExistingWarning = (tenantId, warningType) => {
-    // تجاهل الإنذار الحالي الذي يتم تعديله
+    // تجاهل الإنذار الحالي الذي يتم تعديله ودعم جميع أشكال الحقول
     const existingWarning = warnings.find(
       (warning) =>
-        warning.tenant_id === tenantId &&
-        warning.typeOfWarning === warningType &&
-        warning.id !== id
+        String(warning.tenant_id || warning.tenant_Id) === String(tenantId) &&
+        (warning.typeOfWarning || warning.typeOfWarining) === warningType &&
+        String(warning.id) !== String(id)
     );
 
     if (existingWarning) {
       const tenantName =
-        tenants.find((tenant) => tenant.id === tenantId)?.name || "المستأجر";
+        tenants.find((tenant) => String(tenant.id) === String(tenantId))
+          ?.name || "المستأجر";
       setErrors({
         ...error,
         typeOfWarning: `${tenantName} لديه بالفعل ${warningType}. `,
@@ -247,21 +278,47 @@ export default function TenantWarningEdit() {
     }
 
     try {
-      const response = await fetch(`http://localhost:3001/TenantWaring/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      // تجهيز البيانات بنفس أسماء الحقول المطلوبة من الباك اند
+      const apiData = {
+        Tenant_Id: formData.tenant_id,
+        TypeOfWarining: formData.typeOfWarning,
+        Date: formData.date,
+        Description: formData.description,
+      };
+
+      const response = await fetch(
+        `http://awgaff1.runasp.net/api/TenantWarning/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(apiData),
+        }
+      );
 
       if (response.ok) {
+        await Swal.fire({
+          title: "تأكيد التعديل",
+          text: "تم حفظ التعديلات بنجاح!",
+          icon: "success",
+          showConfirmButton: true,
+          confirmButtonText: "موافق",
+        });
         navigate("/management/Tenants/TenantWaringDisplaySearch");
       } else {
-        const data = await response.json();
+        let errorMsg = "فشل في تحديث البيانات";
+        try {
+          const text = await response.text();
+          // اطبع نص الخطأ القادم من الخادم في الكونسول للمطور
+          console.error("API Error Response:", text);
+          if (text && text.length < 200) {
+            errorMsg = text;
+          }
+        } catch (e) {}
         setErrors({
           ...error,
-          general: data.message || "فشل في تحديث البيانات",
+          general: errorMsg,
         });
       }
     } catch (err) {
