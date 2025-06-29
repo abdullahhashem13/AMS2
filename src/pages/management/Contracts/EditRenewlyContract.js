@@ -19,7 +19,7 @@ export default function EditRenewlyContract() {
   const [error, setError] = useState({});
   const [tenants, setTenants] = useState([]);
   const [properties, setProperties] = useState([]);
-  const [branches, setBranches] = useState([]);
+  // حذف الفروع نهائياً
   const [allRenewals, setAllRenewals] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -44,13 +44,12 @@ export default function EditRenewlyContract() {
           // إذا كانت القيمة "جديد" أو أي قيمة أخرى غير "منتهي"، اجعلها "مجدد"
           setFormData({
             ...contract,
-            contract_statue:
-              contract.contract_statue === "منتهي" ? "منتهي" : "مجدد",
+            statue: contract.statue === "منتهي" ? "منتهي" : "مجدد",
           });
         }
         setTenants(data.Tenants || []);
         setProperties(data.Properties || []);
-        setBranches(data.Branches || []);
+        // حذف جلب الفروع نهائياً
         setAllRenewals(data.RenewlyContract || []);
         setLoading(false);
       });
@@ -62,32 +61,29 @@ export default function EditRenewlyContract() {
     let updated = { ...formData, [name]: value };
     // إذا كان تاريخ النهاية أقل من اليوم، الحالة "منتهي"، غير ذلك "مجدد"
     if (
-      (name === "contract_endDate" || name === "contract_startDate") &&
-      updated.contract_endDate &&
-      updated.contract_startDate
+      (name === "endDate" || name === "startDate") &&
+      updated.endDate &&
+      updated.startDate
     ) {
-      const end = new Date(
-        name === "contract_endDate" ? value : updated.contract_endDate
-      );
+      const end = new Date(name === "endDate" ? value : updated.endDate);
       const now = new Date();
       if (end < now) {
-        updated.contract_statue = "منتهي";
+        updated.statue = "منتهي";
       } else {
-        updated.contract_statue = "مجدد";
+        updated.statue = "مجدد";
       }
-    } else if (name === "contract_endDate") {
+    } else if (name === "endDate") {
       // إذا فقط تم تغيير تاريخ النهاية
       const end = new Date(value);
       const now = new Date();
       if (end < now) {
-        updated.contract_statue = "منتهي";
+        updated.statue = "منتهي";
       } else {
-        updated.contract_statue = "مجدد";
+        updated.statue = "مجدد";
       }
     } else {
       // في كل الحالات الأخرى
-      updated.contract_statue =
-        formData.contract_statue === "منتهي" ? "منتهي" : "مجدد";
+      updated.statue = formData.statue === "منتهي" ? "منتهي" : "مجدد";
     }
     setFormData(updated);
     setError((prev) => ({ ...prev, [name]: "" }));
@@ -97,16 +93,13 @@ export default function EditRenewlyContract() {
     e.preventDefault();
     // تحقق من الحقول المطلوبة
     let newErrors = {};
-    if (!formData.contract_landlord)
-      newErrors.contract_landlord = "هذا الحقل مطلوب";
+    if (!formData.landlord) newErrors.landlord = "هذا الحقل مطلوب";
     if (!formData.tenant_name) newErrors.tenant_name = "المستأجر مطلوب";
     if (!formData.property_number)
       newErrors.property_number = "رقم العين مطلوب";
-    if (!formData.branch_name) newErrors.branch_name = "الفرع مطلوب";
-    if (!formData.contract_startDate)
-      newErrors.contract_startDate = "تاريخ البداية مطلوب";
-    if (!formData.contract_endDate)
-      newErrors.contract_endDate = "تاريخ النهاية مطلوب";
+    // حذف التحقق من الفرع
+    if (!formData.startDate) newErrors.startDate = "تاريخ البداية مطلوب";
+    if (!formData.endDate) newErrors.endDate = "تاريخ النهاية مطلوب";
     if (!formData.renewal_order)
       newErrors.renewal_order = "ترتيب التجديد مطلوب";
 
@@ -114,7 +107,7 @@ export default function EditRenewlyContract() {
     if (formData.renewal_order) {
       const renewalsForThisContract = allRenewals.filter(
         (c) =>
-          (c.contract_contractNumber === formData.contract_contractNumber ||
+          (c.contractNumber === formData.contractNumber ||
             c.property_number === formData.property_number) &&
           c.id !== formData.id // استثناء العقد الحالي
       );
@@ -239,7 +232,7 @@ export default function EditRenewlyContract() {
             )}
             <Managementdata
               dataname={
-                formData && formData.contract_type === "أرض بيضاء"
+                formData && formData.type === "أرض بيضاء"
                   ? "تعديل عقد مجدد أرض بيضاء"
                   : "تعديل عقد مجدد أرض زراعية "
               }
@@ -256,7 +249,7 @@ export default function EditRenewlyContract() {
                         (p) => p.id === formData.property_number
                       );
                       return property
-                        ? property.property_number
+                        ? property.number
                         : formData.property_number;
                     })()}
                     name="property_number"
@@ -289,25 +282,23 @@ export default function EditRenewlyContract() {
                 <div className="widthbetween"></div>
                 <div className="input-container">
                   <Inputwithlabel
-                    value={formData.contract_landlord}
-                    name="contract_landlord"
+                    value={formData.landlord}
+                    name="landlord"
                     change={() => {}}
                     text="الطرف الأول"
                     disabled={true}
-                    error={error.contract_landlord}
+                    error={error.landlord}
                   />
-                  {error.contract_landlord && (
-                    <div className="error-message">
-                      {error.contract_landlord}
-                    </div>
+                  {error.landlord && (
+                    <div className="error-message">{error.landlord}</div>
                   )}
                 </div>
               </div>
               <div className="RowForInsertinputs" style={{ marginBottom: 25 }}>
                 <div className="input-container">
                   <InputDate
-                    value={formData.contract_creationDate}
-                    name="contract_creationDate"
+                    value={formData.creationDate}
+                    name="creationDate"
                     change={handleChange}
                     text="تاريخ الاصدار"
                   />
@@ -315,8 +306,8 @@ export default function EditRenewlyContract() {
                 <div className="widthbetween"></div>
                 <div className="input-container">
                   <Inputwithlabel
-                    value={formData.contract_contractNumber}
-                    name="contract_contractNumber"
+                    value={formData.contractNumber}
+                    name="contractNumber"
                     change={() => {}}
                     text="رقم العقد"
                     disabled={true}
@@ -325,8 +316,8 @@ export default function EditRenewlyContract() {
                 <div className="widthbetween"></div>
                 <div className="input-container">
                   <Inputwithlabel
-                    value={formData.contract_statue}
-                    name="contract_statue"
+                    value={formData.statue}
+                    name="statue"
                     change={() => {}}
                     text="حالة العقد"
                     disabled={true}
@@ -334,135 +325,90 @@ export default function EditRenewlyContract() {
                 </div>
               </div>
               <div className="RowForInsertinputs" style={{ marginBottom: 25 }}>
-                <div className="input-container">
-                  <Inputwithlabel
-                    value={(() => {
-                      const branch = branches.find(
-                        (b) => b.id === formData.branch_name
-                      );
-                      return branch ? branch.name : formData.branch_name;
-                    })()}
-                    name="branch_name"
-                    change={() => {}}
-                    text="الفرع"
-                    disabled={true}
-                  />
-                  {error.branch_name && (
-                    <div className="error-message">{error.branch_name}</div>
-                  )}
-                </div>
-                <div className="widthbetween"></div>
+                {/* حذف حقل الفرع */}
                 <div className="input-container">
                   <InputDate
-                    value={formData.contract_endDate}
-                    name="contract_endDate"
+                    value={formData.endDate}
+                    name="endDate"
                     change={handleChange}
                     text="إلى فترة"
-                    error={error.contract_endDate}
+                    error={error.endDate}
                   />
-                  {error.contract_endDate && (
-                    <div className="error-message">
-                      {error.contract_endDate}
-                    </div>
+                  {error.endDate && (
+                    <div className="error-message">{error.endDate}</div>
                   )}
                 </div>
                 <div className="widthbetween"></div>
                 <div className="input-container">
                   <InputDate
-                    value={formData.contract_startDate}
-                    name="contract_startDate"
+                    value={formData.startDate}
+                    name="startDate"
                     change={handleChange}
                     text="من فترة"
-                    error={error.contract_startDate}
+                    error={error.startDate}
                   />
-                  {error.contract_startDate && (
-                    <div className="error-message">
-                      {error.contract_startDate}
-                    </div>
+                  {error.startDate && (
+                    <div className="error-message">{error.startDate}</div>
                   )}
                 </div>
               </div>
               <div className="RowForInsertinputs" style={{ marginBottom: 25 }}>
                 <div className="input-container">
                   <Inputwithlabel
-                    value={formData.contract_purposeOfLease}
-                    name="contract_purposeOfLease"
+                    value={formData.purposeOfLease}
+                    name="purposeOfLease"
                     change={handleChange}
                     text="غرض الإيجار"
-                    error={error.contract_purposeOfLease}
+                    error={error.purposeOfLease}
                   />
-                  {error.contract_purposeOfLease && (
-                    <div className="error-message">
-                      {error.contract_purposeOfLease}
-                    </div>
+                  {error.purposeOfLease && (
+                    <div className="error-message">{error.purposeOfLease}</div>
                   )}
                 </div>
                 <div className="widthbetween"></div>
                 <div className="input-container">
                   <Inputwithlabel
-                    value={formData.contract_yerlyRent}
-                    name="contract_yerlyRent"
+                    value={formData.yerlyRent}
+                    name="yerlyRent"
                     change={handleChange}
                     text="إيجار السنوي"
-                    error={error.contract_yerlyRent}
+                    error={error.yerlyRent}
                   />
-                  {error.contract_yerlyRent && (
-                    <div className="error-message">
-                      {error.contract_yerlyRent}
-                    </div>
+                  {error.yerlyRent && (
+                    <div className="error-message">{error.yerlyRent}</div>
                   )}
                 </div>
                 <div className="widthbetween"></div>
                 <div className="input-container">
                   <Inputwithlabel
-                    value={formData.contract_monthlyRent}
-                    name="contract_monthlyRent"
+                    value={formData.monthlyRent}
+                    name="monthlyRent"
                     change={handleChange}
                     text="إيجار الشهري"
-                    error={error.contract_monthlyRent}
+                    error={error.monthlyRent}
                   />
-                  {error.contract_monthlyRent && (
-                    <div className="error-message">
-                      {error.contract_monthlyRent}
-                    </div>
+                  {error.monthlyRent && (
+                    <div className="error-message">{error.monthlyRent}</div>
                   )}
                 </div>
               </div>
               <div className="RowForInsertinputs" style={{ marginBottom: 25 }}>
                 <div className="input-container">
                   <Inputwithlabel
-                    value={formData.contract_landArea}
-                    name="contract_landArea"
-                    change={() => {}}
-                    text="المساحة"
-                    disabled={true}
-                    error={error.contract_landArea}
-                  />
-                  {error.contract_landArea && (
-                    <div className="error-message">
-                      {error.contract_landArea}
-                    </div>
-                  )}
-                </div>
-                <div className="widthbetween"></div>
-                <div className="input-container">
-                  <Inputwithlabel
-                    value={formData.contract_initialPayment}
-                    name="contract_initialPayment"
+                    value={formData.initialPayment}
+                    name="initialPayment"
                     change={handleChange}
                     text="المبلغ المقدم"
-                    error={error.contract_initialPayment}
+                    error={error.initialPayment}
                   />
-                  {error.contract_initialPayment && (
-                    <div className="error-message">
-                      {error.contract_initialPayment}
-                    </div>
+                  {error.initialPayment && (
+                    <div className="error-message">{error.initialPayment}</div>
                   )}
                 </div>
                 <div className="widthbetween"></div>
                 {/* حقل ترتيب التجديد يظهر فقط في صفحة تجديد العقد */}
                 {formData &&
-                  formData.contract_statue === "مجدد" &&
+                  formData.statue === "مجدد" &&
                   // يظهر فقط إذا كان id موجود في RenewlyContract (id يبدأ بـ "renew")
                   formData.id &&
                   formData.id.startsWith("renew") && (

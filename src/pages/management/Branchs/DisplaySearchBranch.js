@@ -14,7 +14,8 @@ export default function DisplaySearchBranch() {
 
   useEffect(() => {
     // جلب البيانات مباشرة من ملف JSON المحلي
-    fetch("/JsonData/AllData.json")
+    // fetch("/JsonData/AllData.json")
+    fetch("http://awgaff1.runasp.net/api/Branch")
       .then((response) => {
         if (!response.ok) {
           throw new Error("فشل جلب ملف JSON");
@@ -23,7 +24,14 @@ export default function DisplaySearchBranch() {
       })
       .then((data) => {
         console.log("تم استلام البيانات:", data);
-        setBranches(Array.isArray(data.Branches) ? data.Branches : []);
+        // إذا كان الرد عبارة عن مصفوفة مباشرة
+        if (Array.isArray(data)) {
+          setBranches(data);
+        } else if (Array.isArray(data.Branches)) {
+          setBranches(data.Branches);
+        } else {
+          setBranches([]);
+        }
         setLoding(false);
       })
       .catch((err) => {

@@ -17,6 +17,51 @@
       "governorate": "حضرموت",
       "city": "الشحر",
       "neighborhood": "السده"
+    },
+    {
+      "id": "0aa0",
+      "name": "الديس الشرقية",
+      "manager": "محمد هاشم الحامد",
+      "phone": "755489858",
+      "governorate": "حضرموت",
+      "city": "المكلا",
+      "neighborhood": "السلام"
+    },
+    {
+      "id": "67ed",
+      "name": "المكلا",
+      "manager": "محمد هاشم الحامد",
+      "phone": "777000111",
+      "governorate": "حضرموت",
+      "city": "المكلا",
+      "neighborhood": "السلام"
+    },
+    {
+      "id": "5a30",
+      "name": "المكلا",
+      "manager": "محمد هاشم الحامد",
+      "phone": "777000111",
+      "governorate": "حضرموت",
+      "city": "المكلا",
+      "neighborhood": "السلام"
+    },
+    {
+      "id": "5904",
+      "name": "المكلا",
+      "manager": "محمد هاشم الحامد",
+      "phone": "777000111",
+      "governorate": "حضرموت",
+      "city": "المكلا",
+      "neighborhood": "السلام"
+    },
+    {
+      "id": "6430",
+      "name": "المكلا",
+      "manager": "محمد هاشم الحامد",
+      "phone": "777000111",
+      "governorate": "حضرموت",
+      "city": "المكلا",
+      "neighborhood": "السلام"
     }
   ],
   "Tenants": [
@@ -45,6 +90,10 @@
     {
       "id": "ed57",
       "name": "جامع"
+    },
+    {
+      "id": "4d42",
+      "name": "مسجد"
     }
   ],
   "Mosques": [
@@ -73,12 +122,41 @@
       "city": "المكلا",
       "neighborhood": "السلام",
       "numberOfProperty": "6"
+    },
+    {
+      "id": "4af7",
+      "name": "عمر",
+      "number": "5",
+      "branch_id": "d6c9",
+      "type_id": "ed57",
+      "statue": "جاهز",
+      "isForAwgaf": true,
+      "governorate": "حضرموت",
+      "city": "المكلا",
+      "neighborhood": "السلام",
+      "numberOfProperty": "10"
     }
   ],
   "TypesOfEmployee": [
     {
       "id": "3bff",
       "name": "امام"
+    },
+    {
+      "id": "a391",
+      "name": "خطيب"
+    },
+    {
+      "id": "fb12",
+      "name": "مؤذن"
+    },
+    {
+      "id": "32f8",
+      "name": "امام وخطيب"
+    },
+    {
+      "id": "79ec",
+      "name": "محاسب"
     }
   ],
   "Employees": [
@@ -102,12 +180,53 @@
           "type_id": "3bff"
         }
       ]
+    },
+    {
+      "id": "bb43",
+      "name": "حسن علي عمر العمودي",
+      "phone": "777858989",
+      "abilities": "جامعي",
+      "birthDate": "",
+      "gender": "ذكر",
+      "workAs": "اوقافي وارشادي",
+      "statue": "فعال",
+      "salary": "20000",
+      "governorate": "حضرموت",
+      "city": "المكلا",
+      "neighborhood": "السلام",
+      "mosque_assignments": [
+        {
+          "id": 1751203807344,
+          "mosque_id": "4af7",
+          "type_id": "a391"
+        },
+        {
+          "id": 1751203854709,
+          "mosque_id": "e587",
+          "type_id": "fb12"
+        }
+      ]
     }
   ],
-  "EmployeeWaring": [],
+  "EmployeeWaring": [
+    {
+      "id": "1751203013596",
+      "employee_id": "7c4a",
+      "typeOfWarning": "إنذار أول",
+      "date": "2025-06-29",
+      "description": "مهمل في عمله"
+    },
+    {
+      "id": "1751203907581",
+      "employee_id": "bb43",
+      "typeOfWarning": "إنذار أول",
+      "date": "2025-06-29",
+      "description": "مهمل في عمله"
+    }
+  ],
   "Properties": [
     {
-      "id": "025d",
+      "id": "cffb",
       "number": "1-1",
       "type_id": "ca94",
       "mosque_id": "a1fc",
@@ -146,17 +265,6 @@
     }
   ],
   "Expenses": [
-    {
-      "id": "0ff1",
-      "description": "متأخرات",
-      "recipient": "محمد عمر علي العمودي",
-      "date": "2025-06-27",
-      "amount": "80000",
-      "writtenAmount": "ثمانون ألف ريال فقط لا غير",
-      "bondNumber": "655822",
-      "mosque_id": "e587",
-      "name": "الروضة"
-    },
     {
       "id": "90a8",
       "description": "متأخرات",
@@ -205,6 +313,26 @@
       "amount": "20000",
       "writtenAmount": "عشرون ألف ريال فقط لا غير",
       "bondNumber": "25452",
+      "mosque_id": "e587"
+    },
+    {
+      "id": "9c0d",
+      "description": "شراء بطارية",
+      "recipient": "محمد عمر علي العمودي",
+      "date": "2025-06-29",
+      "amount": "30000",
+      "writtenAmount": "ثلاثون ألف ريال فقط لا غير",
+      "bondNumber": "6585454",
+      "mosque_id": "e587"
+    },
+    {
+      "id": "ba46",
+      "description": "مقابل دينمى",
+      "recipient": "محمد عمر علي العمودي",
+      "date": "2025-06-29",
+      "amount": "20000",
+      "writtenAmount": "عشرون ألف ريال فقط لا غير",
+      "bondNumber": "654654",
       "mosque_id": "e587"
     }
   ],
@@ -266,35 +394,52 @@
       "issuedDate": "2025-06-28"
     }
   ],
-  "LandFarmingContract": [],
-  "PropertyContract": [
+  "LandFarmingContract": [
     {
-      "id": "614d",
-      "contract_landlord": "مكتب وزارة الأوقاف",
-      "tenant_name": "066f",
-      "property_number": "8291",
-      "contract_statue": "منتهي",
-      "contract_contractNumber": "44534",
-      "contract_creationDate": "2025-06-25",
-      "contract_startDate": "2025-06-25",
-      "contract_endDate": "2025-06-25",
-      "branch_name": "d6c9",
-      "contract_monthlyRent": "250000",
-      "contract_yerlyRent": "3000000",
-      "contract_purposeOfLease": "الانتقاع",
-      "contract_initialPayment": "6000000",
-      "contract_landArea": "12*12",
-      "renewal_order": ""
+      "id": "322e",
+      "landlord": "مكتب وزارة الأوقاف والإرشاد",
+      "tenant_name": "7a5b",
+      "property_number": "cffb",
+      "statue": "جديد",
+      "contractNumber": "65885",
+      "creationDate": "2025-06-29",
+      "startDate": "2025-06-29",
+      "endDate": "2025-07-29",
+      "yerlyRent": "",
+      "rentDuration": "",
+      "monthlyRent": "10000",
+      "purposeOfLease": "الانتقاع",
+      "renewal_order": "",
+      "initialPayment": ""
     }
   ],
+  "PropertyContract": [],
   "WhiteLandContract": [],
-  "RenewlyContract": [],
+  "RenewlyContract": [
+    {
+      "id": "renew_322e_1751211980521",
+      "landlord": "مكتب وزارة الأوقاف والإرشاد",
+      "tenant_name": "7a5b",
+      "property_number": "cffb",
+      "statue": "مجدد",
+      "contractNumber": "65885",
+      "creationDate": "2025-06-29",
+      "startDate": "2025-06-29",
+      "endDate": "2025-07-29",
+      "yerlyRent": "",
+      "rentDuration": "",
+      "monthlyRent": "10000",
+      "purposeOfLease": "الانتقاع",
+      "renewal_order": "التجديد الأول",
+      "initialPayment": ""
+    }
+  ],
   "Users": [
     {
       "username": "ssss",
       "password": "009665717",
       "confirmPassword": "009665717",
-      "fullName": "عبدالله هاشم الحامد",
+      "fullName": "علي خالد عمر",
       "phoneNumber": "777315622",
       "address": "الغويزي",
       "educationalQualification": "بكلاريوس",
@@ -305,7 +450,7 @@
       "username": "v5b9",
       "password": "123321123321",
       "confirmPassword": "123321123321",
-      "fullName": "عبدالله هاشم الحامد",
+      "fullName": "محمد حسن",
       "phoneNumber": "777315622",
       "address": "الغويزي",
       "educationalQualification": "بكلاريوس",

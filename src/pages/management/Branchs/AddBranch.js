@@ -15,21 +15,20 @@ export default function AddBranch() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
-    manager: "",
+    manger: "",
     phone: "",
     governorate: "",
     city: "",
     neighborhood: "",
   });
   const [error, setErrors] = useState({});
-  const [showDuplicateError, setShowDuplicateError] = useState(false);
   const [existingBranches, setExistingBranches] = useState([]);
 
   // جلب بيانات الفروع الموجودة عند تحميل الصفحة
   useEffect(() => {
     const fetchBranches = async () => {
       try {
-        const response = await fetch("/JsonData/AllData.json");
+        const response = await fetch("http://awgaff1.runasp.net/api/Branch");
         if (response.ok) {
           const data = await response.json();
           if (data && data.Branches) {
@@ -87,17 +86,17 @@ export default function AddBranch() {
     }
 
     // التحقق من اسم المدير (أحرف عربية فقط واسم ثلاثي على الأقل)
-    if (!formData.manager) {
-      errors.manager = "يجب تعبئة الحقل";
+    if (!formData.manger) {
+      errors.manger = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.manager)) {
-      errors.manager = "يجب أن يحتوي اسم المدير على أحرف عربية فقط";
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.manger)) {
+      errors.manger = "يجب أن يحتوي اسم المدير على أحرف عربية فقط";
       isValid = false;
     } else {
       // التحقق من أن الاسم يتكون من ثلاث كلمات على الأقل (اسم ثلاثي)
-      const words = formData.manager.trim().split(/\s+/);
+      const words = formData.manger.trim().split(/\s+/);
       if (words.length < 3) {
-        errors.manager = "يجب ان يكون اسمه على اقل ثلاثي";
+        errors.manger = "يجب ان يكون اسمه على اقل ثلاثي";
         isValid = false;
       }
     }
@@ -141,7 +140,7 @@ export default function AddBranch() {
     }
 
     try {
-      const response = await fetch("http://localhost:3001/Branches", {
+      const response = await fetch("http://awgaff1.runasp.net/api/Branch", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -152,7 +151,7 @@ export default function AddBranch() {
         // إعادة تعيين النموذج بعد النجاح
         setFormData({
           name: "",
-          manager: "",
+          manger: "",
           phone: "",
           governorate: "",
           city: "",
@@ -219,8 +218,8 @@ export default function AddBranch() {
             <div className="RowForInsertinputs">
               <div className="input-container">
                 <Inputwithlabel
-                  value={formData.manager}
-                  name="manager"
+                  value={formData.manger}
+                  name="manger"
                   change={handleChange}
                   text="المدير"
                 />

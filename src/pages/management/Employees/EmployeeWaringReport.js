@@ -11,17 +11,16 @@ import SelectWithLabelDynamic from "../../../components/SelectWithLabelDynamic";
 
 export default function EmployeeWaringReport() {
   const [formData, setFormData] = useState({
-    branch_id: "الجميع",
-    employeeWarning_typeOfWarning: "جميع الإنذارات",
+    typeOfWarning: "جميع الإنذارات",
     employee_id: "الجميع",
   });
   const [error, setErrors] = useState({});
   const [warnings, setWarnings] = useState([]);
   const [employees, setEmployees] = useState([]);
-  const [branches, setBranches] = useState([]);
+  // حذف الفروع
   const [filteredWarnings, setFilteredWarnings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [mosques, setMosques] = useState([]);
+  // حذف المساجد
 
   // جلب بيانات الإنذارات والموظفين والفروع والمساجد
   useEffect(() => {
@@ -52,23 +51,7 @@ export default function EmployeeWaringReport() {
           console.error("Failed to fetch employees:", employeesResponse.status);
         }
 
-        // جلب بيانات الفروع
-        const branchesResponse = await fetch("http://localhost:3001/Branches");
-        if (branchesResponse.ok) {
-          const branchesData = await branchesResponse.json();
-          setBranches(branchesData);
-        } else {
-          console.error("Failed to fetch branches:", branchesResponse.status);
-        }
-
-        // جلب بيانات المساجد
-        const mosquesResponse = await fetch("http://localhost:3001/Mosques");
-        if (mosquesResponse.ok) {
-          const mosquesData = await mosquesResponse.json();
-          setMosques(mosquesData);
-        } else {
-          console.error("Failed to fetch mosques:", mosquesResponse.status);
-        }
+        // حذف جلب الفروع والمساجد
 
         setLoading(false);
       } catch (error) {
@@ -85,61 +68,26 @@ export default function EmployeeWaringReport() {
     setErrors({ ...error, [e.target.name]: "" });
   };
 
-  // دالة مساعدة للحصول على الفرع الذي ينتمي إليه الموظف من خلال المسجد
-
-  // تعديل handleSubmit لفلترة حسب الفرع الذي ينتمي إليه المسجد الذي يعمل فيه الموظف
+  // دالة فلترة بدون فرع
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // تطبيق الفلترة على البيانات المحلية
       let filtered = [...warnings];
-
-      // فلترة حسب الفرع (باستخدام الفرع الذي ينتمي إليه المسجد الذي يعمل فيه الموظف)
-      if (formData.branch_id && formData.branch_id !== "الجميع") {
-        filtered = filtered.filter((warning) => {
-          const employee = employees.find(
-            (emp) => emp.id === warning.employee_id
-          );
-          if (
-            !employee ||
-            !employee.mosque_assignments ||
-            employee.mosque_assignments.length === 0
-          ) {
-            return false;
-          }
-
-          // الحصول على معرف المسجد من التعيين الأول للموظف
-          const mosqueId = employee.mosque_assignments[0].mosque_id;
-
-          // البحث عن المسجد
-          const mosque = mosques.find((m) => m.id === mosqueId);
-          if (!mosque) {
-            return false;
-          }
-
-          // التحقق من أن الفرع الذي ينتمي إليه المسجد يطابق الفرع المحدد في الفلتر
-          return mosque.branch_id === formData.branch_id;
-        });
-      }
-
       // فلترة حسب نوع الإنذار
       if (
-        formData.employeeWarning_typeOfWarning &&
-        formData.employeeWarning_typeOfWarning !== "جميع الإنذارات"
+        formData.typeOfWarning &&
+        formData.typeOfWarning !== "جميع الإنذارات"
       ) {
         filtered = filtered.filter(
-          (warning) =>
-            warning.typeOfWarning === formData.employeeWarning_typeOfWarning
+          (warning) => warning.typeOfWarning === formData.typeOfWarning
         );
       }
-
       // فلترة حسب اسم الموظف
       if (formData.employee_id && formData.employee_id !== "الجميع") {
         filtered = filtered.filter(
           (warning) => warning.employee_id === formData.employee_id
         );
       }
-
       setFilteredWarnings(filtered);
     } catch (err) {
       setErrors({ ...error, general: "حدث خطأ أثناء الفلترة." });
@@ -169,21 +117,14 @@ export default function EmployeeWaringReport() {
     };
   }, []);
 
-  // إعداد خيارات الفروع للقائمة المنسدلة
-  const branchOptions = [
-    { id: "الجميع", name: "جميع الفروع" },
-    ...branches.map((branch) => ({
-      id: branch.id,
-      name: branch.name || branch.branch_name, // التعامل مع الاختلافات في هيكل البيانات
-    })),
-  ];
+  // حذف خيارات الفروع
 
   // إعداد خيارات الموظفين للقائمة المنسدلة
   const employeeSearchOptions = [
     { value: "الجميع", label: "جميع الموظفين" },
     ...employees.map((employee) => ({
       value: employee.id,
-      label: employee.employee_name,
+      label: employee.name,
     })),
   ];
 
@@ -240,21 +181,11 @@ export default function EmployeeWaringReport() {
           <div className="divforconten">
             <form className="divforconten" onSubmit={handleSubmit}>
               <div className="RowForInsertinputs">
-                <SelectWithLabelDynamic
-                  name="branch_id"
-                  text="الفرع"
-                  value={formData.branch_id}
-                  change={handleChange}
-                  options={branchOptions}
-                  placeholder="اختر الفرع"
-                  valueKey="id"
-                  displayKey="name"
-                />
-                <div className="widthbetween"></div>
+                {/* حذف حقل الفرع */}
                 <SelectWithLabel4
-                  name="employeeWarning_typeOfWarning"
+                  name="typeOfWarning"
                   text="نوع الإنذار"
-                  value={formData.employeeWarning_typeOfWarning}
+                  value={formData.typeOfWarning}
                   change={handleChange}
                   // values
                   value1="إنذار أول"
@@ -278,7 +209,6 @@ export default function EmployeeWaringReport() {
                 <table id="propertyreport">
                   <thead>
                     <tr>
-                      <th>الفرع</th>
                       <th>الوصف</th>
                       <th>التاريخ</th>
                       <th>نوع الإنذار</th>
@@ -292,39 +222,15 @@ export default function EmployeeWaringReport() {
                         const employee = employees.find(
                           (emp) => emp.id === warning.employee_id
                         );
-
-                        // الحصول على الفرع الذي ينتمي إليه الموظف من خلال المسجد
-                        const branch =
-                          employee &&
-                          employee.mosque_assignments &&
-                          employee.mosque_assignments.length > 0
-                            ? (() => {
-                                const mosqueId =
-                                  employee.mosque_assignments[0].mosque_id;
-                                const mosque = mosques.find(
-                                  (m) => m.id === mosqueId
-                                );
-                                if (!mosque) return null;
-                                return branches.find(
-                                  (b) => b.id === mosque.branch_id
-                                );
-                              })()
-                            : null;
-
                         return (
                           <tr key={warning.id}>
-                            <td>
-                              {branch
-                                ? branch.name || branch.branch_name
-                                : "غير محدد"}
-                            </td>
                             <td>{warning.description}</td>
                             <td>{warning.date}</td>
                             <td>{warning.typeOfWarning}</td>
                             <td>
                               {employee
-                                ? employee.employee_name
-                                : warning.employee_name || "غير محدد"}
+                                ? employee.name
+                                : warning.name || "غير محدد"}
                             </td>
                           </tr>
                         );

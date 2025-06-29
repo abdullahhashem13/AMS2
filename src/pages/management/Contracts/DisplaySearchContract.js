@@ -107,8 +107,7 @@ export default function DisplaySearchContract() {
         const tenantName = tenants[c.tenant_name] || "";
         return (
           (tenantName && tenantName.toLowerCase().includes(lower)) ||
-          (c.contract_contractNumber &&
-            c.contract_contractNumber.includes(lower))
+          (c.contractNumber && c.contractNumber.includes(lower))
         );
       })
     );
@@ -161,8 +160,8 @@ export default function DisplaySearchContract() {
                     <RenewlyContractCard
                       key={c.id}
                       tenantName={tenants[c.tenant_name] || c.tenant_name}
-                      contractNumber={c.contract_contractNumber}
-                      contractStatue={c.contract_statue}
+                      contractNumber={c.contractNumber}
+                      contractStatue={c.statue}
                       contractId={c.id}
                       contractType={c.contractType}
                       renewalOrder={c.renewal_order} // تمرير ترتيب التجديد
@@ -192,8 +191,8 @@ export default function DisplaySearchContract() {
                     <ContractCard
                       key={c.id}
                       tenantName={tenants[c.tenant_name] || c.tenant_name}
-                      contractNumber={c.contract_contractNumber}
-                      contractStatue={c.contract_statue}
+                      contractNumber={c.contractNumber}
+                      contractStatue={c.statue}
                       contractId={c.id}
                       contractType={c.contractType}
                       onDelete={(e) => {

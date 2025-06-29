@@ -15,7 +15,24 @@ export default function AddWhiteLandContract() {
           const contract = (data.WhiteLandContract || []).find(
             (c) => c.id === id
           );
-          if (contract) setInitialData(contract);
+          if (contract) {
+            setInitialData({
+              landlord: contract.landlord || "",
+              tenant_name: contract.tenant_name || "",
+              property_number: contract.property_number || "",
+              statue: contract.statue || "جديد",
+              contractNumber: contract.contractNumber || "",
+              creationDate: contract.creationDate || "",
+              startDate: contract.startDate || "",
+              endDate: contract.endDate || "",
+              yerlyRent: contract.yerlyRent || "",
+              rentDuration: contract.rentDuration || "",
+              monthlyRent: contract.monthlyRent || "",
+              purposeOfLease: contract.purposeOfLease || "",
+              renewal_order: contract.renewal_order || "",
+              initialPayment: contract.initialPayment || "",
+            });
+          }
         });
     }
   }, [id]);
@@ -45,7 +62,10 @@ export default function AddWhiteLandContract() {
       dataTitle="بيانات عقد أرض بيضاء"
       initialData={initialData}
       submitButtonText={initialData ? "حفظ التعديلات" : "إضافة عقد جديد"}
+      buttonText={undefined}
       onSubmit={handleSubmit}
+      showYearlyRent={true}
+      showInitialPayment={true}
     />
   );
 }

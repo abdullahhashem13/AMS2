@@ -8,20 +8,20 @@ export default function EmployeeWarningDetails({ warning, onClose }) {
   useEffect(() => {
     // جلب اسم الموظف إذا لم يكن موجودًا في بيانات الإنذار
     const fetchEmployeeName = async () => {
-      if (!warning.employee_name && warning.employee_id) {
+      if (!warning.name && warning.employee_id) {
         try {
           const response = await fetch(
             `http://localhost:3001/Employees/${warning.employee_id}`
           );
           if (response.ok) {
             const employee = await response.json();
-            setEmployeeName(employee.employee_name);
+            setEmployeeName(employee.name);
           }
         } catch (error) {
           console.error("Error fetching employee name:", error);
         }
-      } else if (warning.employee_name) {
-        setEmployeeName(warning.employee_name);
+      } else if (warning.name) {
+        setEmployeeName(warning.name);
       }
     };
 

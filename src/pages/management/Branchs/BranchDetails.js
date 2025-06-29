@@ -32,7 +32,9 @@ export default function BranchDetails({ branch, onClose }) {
 
           <div className="details-row">
             <div className="details-label">المدير:</div>
-            <div className="details-value">{branch.manager}</div>
+            <div className="details-value">
+              {branch.manger ?? branch.manager}
+            </div>
           </div>
 
           <div className="details-row">

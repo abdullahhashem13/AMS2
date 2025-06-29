@@ -253,7 +253,7 @@ export default function EmployeeWaringAdd() {
                   text="اسم الموظف"
                   options={employees.map((employee) => ({
                     value: employee.id,
-                    label: employee.employee_name,
+                    label: employee.name,
                   }))}
                   value={formData.employee_id}
                   change={handleChange}

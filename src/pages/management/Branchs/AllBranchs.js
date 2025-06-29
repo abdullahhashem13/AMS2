@@ -17,15 +17,20 @@ export default function AllBranch() {
   useEffect(() => {
     const fetchBranches = async () => {
       try {
-        // جلب البيانات مباشرة من ملف JSON المحلي
-        const response = await fetch("/JsonData/AllData.json");
+        // جلب البيانات من الـ API الخارجي
+        const response = await fetch("http://awgaff1.runasp.net/api/Branch");
         if (!response.ok) {
-          throw new Error("خطأ في جلب البيانات");
+          throw new Error("خطأ في جلب البيانات من السيرفر");
         }
         const data = await response.json();
-        console.log("تم استلام البيانات:", data);
-        // Ensure branches is always an array
-        setBranches(Array.isArray(data.Branches) ? data.Branches : []);
+        // يدعم الاستجابة كمصفوفة أو كائن فيه Branches
+        if (Array.isArray(data)) {
+          setBranches(data);
+        } else if (Array.isArray(data.Branches)) {
+          setBranches(data.Branches);
+        } else {
+          setBranches([]);
+        }
       } catch (err) {
         console.error("خطأ في جلب البيانات:", err);
         setError(err.message);
@@ -33,7 +38,6 @@ export default function AllBranch() {
         setLoading(false);
       }
     };
-
     fetchBranches();
   }, []);
 
@@ -118,7 +122,7 @@ export default function AllBranch() {
                         <td>{branch.neighborhood}</td>
                         <td>{branch.city}</td>
                         <td>{branch.governorate}</td>
-                        <td>{branch.manager}</td>
+                        <td>{branch.manger ?? branch.manager}</td>
                         <td>{branch.phone}</td>
                         <td>{branch.name}</td>
                       </tr>

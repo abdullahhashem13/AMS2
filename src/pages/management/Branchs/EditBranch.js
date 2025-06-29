@@ -21,7 +21,7 @@ export default function EditBranch() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
-    manager: "",
+    manger: "",
     phone: "",
     governorate: "",
     city: "",
@@ -34,35 +34,57 @@ export default function EditBranch() {
   // @ts-ignore
   const [, setJsonData] = useState(null);
 
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/JsonData/AllData.json");
+        // جلب بيانات الفرع من الـ API الخارجي
+        const response = await fetch(
+          `http://awgaff1.runasp.net/api/Branch/${id}`
+        );
         if (!response.ok) {
-          throw new Error("فشل في جلب البيانات");
+          throw new Error("فشل في جلب بيانات الفرع من السيرفر");
         }
+        let branch = await response.json();
+        // معالجة إذا كانت البيانات داخل خاصية Branch أو مباشرة
+        if (branch && branch.Branch) {
+          branch = branch.Branch;
+        }
+        // إذا كان هناك خاصية data أو payload أو result بداخل branch، استخرجها
+        let branchData = branch;
+        if (branch.data) branchData = branch.data;
+        if (branch.payload) branchData = branch.payload;
+        if (branch.result) branchData = branch.result;
+        setFormData({
+          name: branchData.name ?? "",
+          manger: branchData.manger ?? branchData.manager ?? "",
+          phone: branchData.phone ?? "",
+          governorate: branchData.governorate ?? "",
+          city: branchData.city ?? "",
+          neighborhood: branchData.neighborhood ?? "",
+        });
+        // توحيد منطق تعيين الاسم الأصلي للفرع ليعتمد فقط على branchData.name
+        setOriginalBranchName(branchData.name ?? "");
 
-        const data = await response.json();
-        setJsonData(data);
-
-        if (data.Branches && Array.isArray(data.Branches)) {
-          const branch = data.Branches.find((branch) => branch.id === id);
-          if (branch) {
-            setFormData(branch);
-            setOriginalBranchName(branch.name);
-            setExistingBranches(data.Branches);
-          } else {
-            throw new Error("لم يتم العثور على الفرع");
+        // جلب جميع الفروع للتحقق من التكرار
+        const allBranchesRes = await fetch(
+          "http://awgaff1.runasp.net/api/Branch"
+        );
+        if (allBranchesRes.ok) {
+          const allBranchesData = await allBranchesRes.json();
+          if (Array.isArray(allBranchesData)) {
+            setExistingBranches(allBranchesData);
+          } else if (Array.isArray(allBranchesData.Branches)) {
+            setExistingBranches(allBranchesData.Branches);
           }
-        } else {
-          throw new Error("بيانات الفروع غير متوفرة");
         }
       } catch (error) {
         console.error("Error fetching data:", error);
         setErrors({ general: error.message });
+      } finally {
+        setLoading(false);
       }
     };
-
     fetchData();
   }, [id]);
 
@@ -94,27 +116,21 @@ export default function EditBranch() {
     if (!formData.phone) {
       errors.phone = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^\d+$/.test(formData.phone)) {
-      errors.phone = "يجب أن يحتوي رقم الهاتف على أرقام فقط";
-      isValid = false;
-    } else if (formData.phone.length !== 6 && formData.phone.length !== 9) {
-      errors.phone = "يجب أن يتكون رقم الهاتف من 6 أو 9 أرقام";
-      isValid = false;
-    } else if (formData.phone.length === 9 && !formData.phone.startsWith("7")) {
-      errors.phone = "يجب أن يبدأ رقم الهاتف المكون من 9 أرقام بالرقم 7";
+    } else if (!/^\d{9}$/.test(formData.phone)) {
+      errors.phone = "يجب أن يتكون رقم الهاتف من 9 أرقام فقط";
       isValid = false;
     }
 
-    if (!formData.manager) {
-      errors.manager = "يجب تعبئة الحقل";
+    if (!formData.manger) {
+      errors.manger = "يجب تعبئة الحقل";
       isValid = false;
-    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.manager)) {
-      errors.manager = "يجب أن يحتوي اسم المدير على أحرف عربية فقط";
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(formData.manger)) {
+      errors.manger = "يجب أن يحتوي اسم المدير على أحرف عربية فقط";
       isValid = false;
     } else {
-      const words = formData.manager.trim().split(/\s+/);
+      const words = formData.manger.trim().split(/\s+/);
       if (words.length < 3) {
-        errors.manager = "يجب ان يكون اسمه على اقل ثلاثي";
+        errors.manger = "يجب ان يكون اسمه على اقل ثلاثي";
         isValid = false;
       }
     }
@@ -170,13 +186,16 @@ export default function EditBranch() {
     }
 
     try {
-      const response = await fetch(`http://localhost:3001/Branches/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `http://awgaff1.runasp.net/api/Branch/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (response.ok) {
         navigate("/management/Branchs/DisplaySearchBranch");
@@ -218,142 +237,154 @@ export default function EditBranch() {
               <Mainbutton text="إضافة" path="/management/Branchs/AddBranch" />
             </div>
           </div>
-          <form className="divforconten" onSubmit={handleSubmit}>
-            <Managementdata dataname="تعديل بيانات الفرع" />
-            <div className="RowForInsertinputs">
-              <div className="input-container">
-                <Inputwithlabel
-                  value={formData.manager}
-                  name="manager"
-                  change={handleChange}
-                  text="المدير"
-                />
-                {
-                  // @ts-ignore
-                  error.manager && (
-                    <div className="error-message">
-                      {
-                        // @ts-ignore
-                        error.manager
-                      }
-                    </div>
-                  )
-                }
-              </div>
-              <div className="widthbetween"></div>
-              <div className="input-container">
-                <Inputwithlabel
-                  value={formData.phone}
-                  name="phone"
-                  change={handleChange}
-                  text="رقم التلفون"
-                />
-                {
-                  // @ts-ignore
-                  error.phone && (
-                    <div className="error-message">
-                      {
-                        // @ts-ignore
-                        error.phone
-                      }
-                    </div>
-                  )
-                }
-              </div>
-              <div className="widthbetween"></div>
-              <div className="input-container">
-                <Inputwithlabel
-                  value={formData.name}
-                  name="name"
-                  change={handleChange}
-                  text="اسم الفرع"
-                />
-                {
-                  // @ts-ignore
-                  error.name && (
-                    <div className="error-message">
-                      {
-                        // @ts-ignore
-                        error.name
-                      }
-                    </div>
-                  )
-                }
-              </div>
+          {loading ? (
+            <div
+              style={{
+                textAlign: "center",
+                margin: "30px",
+                fontWeight: "bold",
+              }}
+            >
+              جاري تحميل بيانات الفرع...
             </div>
-            <div className="RowForInsertinputs">
-              <div className="deviderwithword">
-                <hr className="st_hr2managment"></hr>
-                <h2>الموقع</h2>
-                <hr className="st_hr1managment"></hr>
+          ) : (
+            <form className="divforconten" onSubmit={handleSubmit}>
+              <Managementdata dataname="تعديل بيانات الفرع" />
+              <div className="RowForInsertinputs">
+                <div className="input-container">
+                  <Inputwithlabel
+                    value={formData.manger}
+                    name="manger"
+                    change={handleChange}
+                    text="المدير"
+                  />
+                  {
+                    // @ts-ignore
+                    error.manger && (
+                      <div className="error-message">
+                        {
+                          // @ts-ignore
+                          error.manger
+                        }
+                      </div>
+                    )
+                  }
+                </div>
+                <div className="widthbetween"></div>
+                <div className="input-container">
+                  <Inputwithlabel
+                    value={formData.phone}
+                    name="phone"
+                    change={handleChange}
+                    text="رقم التلفون"
+                  />
+                  {
+                    // @ts-ignore
+                    error.phone && (
+                      <div className="error-message">
+                        {
+                          // @ts-ignore
+                          error.phone
+                        }
+                      </div>
+                    )
+                  }
+                </div>
+                <div className="widthbetween"></div>
+                <div className="input-container">
+                  <Inputwithlabel
+                    value={formData.name}
+                    name="name"
+                    change={handleChange}
+                    text="اسم الفرع"
+                  />
+                  {
+                    // @ts-ignore
+                    error.name && (
+                      <div className="error-message">
+                        {
+                          // @ts-ignore
+                          error.name
+                        }
+                      </div>
+                    )
+                  }
+                </div>
               </div>
-            </div>
-            <div className="RowForInsertinputs">
-              <div className="input-container">
-                <Inputwithlabel
-                  value={formData.neighborhood}
-                  name="neighborhood"
-                  change={handleChange}
-                  text="الحي"
-                />
-                {
-                  // @ts-ignore
-                  error.neighborhood && (
-                    <div className="error-message">
-                      {
-                        // @ts-ignore
-                        error.neighborhood
-                      }
-                    </div>
-                  )
-                }
+              <div className="RowForInsertinputs">
+                <div className="deviderwithword">
+                  <hr className="st_hr2managment"></hr>
+                  <h2>الموقع</h2>
+                  <hr className="st_hr1managment"></hr>
+                </div>
               </div>
-              <div className="widthbetween"></div>
-              <div className="input-container">
-                <Inputwithlabel
-                  value={formData.city}
-                  name="city"
-                  change={handleChange}
-                  text="المدينة"
-                />
-                {
-                  // @ts-ignore
-                  error.city && (
-                    <div className="error-message">
-                      {
-                        // @ts-ignore
-                        error.city
-                      }
-                    </div>
-                  )
-                }
+              <div className="RowForInsertinputs">
+                <div className="input-container">
+                  <Inputwithlabel
+                    value={formData.neighborhood}
+                    name="neighborhood"
+                    change={handleChange}
+                    text="الحي"
+                  />
+                  {
+                    // @ts-ignore
+                    error.neighborhood && (
+                      <div className="error-message">
+                        {
+                          // @ts-ignore
+                          error.neighborhood
+                        }
+                      </div>
+                    )
+                  }
+                </div>
+                <div className="widthbetween"></div>
+                <div className="input-container">
+                  <Inputwithlabel
+                    value={formData.city}
+                    name="city"
+                    change={handleChange}
+                    text="المدينة"
+                  />
+                  {
+                    // @ts-ignore
+                    error.city && (
+                      <div className="error-message">
+                        {
+                          // @ts-ignore
+                          error.city
+                        }
+                      </div>
+                    )
+                  }
+                </div>
+                <div className="widthbetween"></div>
+                <div className="input-container">
+                  <Inputwithlabel
+                    value={formData.governorate}
+                    name="governorate"
+                    change={handleChange}
+                    text="المحافظة"
+                  />
+                  {
+                    // @ts-ignore
+                    error.governorate && (
+                      <div className="error-message">
+                        {
+                          // @ts-ignore
+                          error.governorate
+                        }
+                      </div>
+                    )
+                  }
+                </div>
               </div>
-              <div className="widthbetween"></div>
-              <div className="input-container">
-                <Inputwithlabel
-                  value={formData.governorate}
-                  name="governorate"
-                  change={handleChange}
-                  text="المحافظة"
-                />
-                {
-                  // @ts-ignore
-                  error.governorate && (
-                    <div className="error-message">
-                      {
-                        // @ts-ignore
-                        error.governorate
-                      }
-                    </div>
-                  )
-                }
-              </div>
-            </div>
 
-            <div className="RowForInsertinputs">
-              <ButtonInput text="حفظ التعديل" onClick={handleSubmit} />
-            </div>
-          </form>
+              <div className="RowForInsertinputs">
+                <ButtonInput text="حفظ التعديل" onClick={handleSubmit} />
+              </div>
+            </form>
+          )}
         </div>
       </div>
       {showDuplicateError && (

@@ -10,10 +10,38 @@ export default function EmployeeWaringDisplaySearch() {
   const [filteredWarnings, setFilteredWarnings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [employees, setEmployees] = useState([]);
 
   useEffect(() => {
-    fetchWarnings();
+    fetchAllData();
   }, []);
+
+  const fetchAllData = async () => {
+    try {
+      setLoading(true);
+      // جلب الإنذارات والموظفين معاً
+      const [warningsRes, employeesRes] = await Promise.all([
+        fetch("http://localhost:3001/EmployeeWaring"),
+        fetch("http://localhost:3001/Employees"),
+      ]);
+      if (!warningsRes.ok) throw new Error("فشل في جلب الإنذارات");
+      if (!employeesRes.ok) throw new Error("فشل في جلب الموظفين");
+      const warningsData = await warningsRes.json();
+      const employeesData = await employeesRes.json();
+      setEmployees(employeesData);
+      // دمج اسم الموظف مع كل إنذار
+      const warningsWithNames = warningsData.map((w) => {
+        const emp = employeesData.find((e) => e.id === w.employee_id);
+        return { ...w, name: emp ? emp.name : "---" };
+      });
+      setWarnings(warningsWithNames);
+      setFilteredWarnings(warningsWithNames);
+      setLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+    }
+  };
 
   const fetchWarnings = async () => {
     try {
@@ -38,9 +66,8 @@ export default function EmployeeWaringDisplaySearch() {
       setFilteredWarnings(warnings);
       return;
     }
-
     const filtered = warnings.filter((warning) =>
-      warning.employee_name.toLowerCase().includes(searchTerm.toLowerCase())
+      (warning.name || "").toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredWarnings(filtered);
   };
@@ -98,7 +125,7 @@ export default function EmployeeWaringDisplaySearch() {
                     <EmployeeWarningCard
                       key={warning.id}
                       id={warning.id}
-                      employeeName={warning.employee_name}
+                      employeeName={warning.name}
                       typeOfWarning={warning.typeOfWarning}
                       onDelete={handleDeleteWarning}
                     />

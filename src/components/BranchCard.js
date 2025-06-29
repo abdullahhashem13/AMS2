@@ -36,7 +36,7 @@ export default function BranchCard(props) {
     if (result.isConfirmed) {
       try {
         const response = await fetch(
-          `http://localhost:3001/Branches/${props.id}`,
+          `http://awgaff1.runasp.net/api/Branch/${props.id}`,
           {
             method: "DELETE",
           }
@@ -56,7 +56,7 @@ export default function BranchCard(props) {
   const handleCardClick = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3001/Branches/${props.id}`
+        `http://awgaff1.runasp.net/api/Branch/${props.id}`
       );
       if (response.ok) {
         const data = await response.json();

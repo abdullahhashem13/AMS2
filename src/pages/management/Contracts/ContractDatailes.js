@@ -34,27 +34,23 @@ export default function ContractDatailes({ id, onClose }) {
             if (tenantObj) tenantName = tenantObj.name;
           }
 
-          // جلب اسم الفرع من Branches
-          let branchName = contract.branch_name;
-          if (branchName && allData.Branches) {
-            const branchObj = allData.Branches.find((b) => b.id === branchName);
-            if (branchObj) branchName = branchObj.name;
-          }
+          // حذف جلب اسم الفرع نهائياً
 
           // جلب رقم العقار من Properties
           let propertyNumber = contract.property_number;
+          let propertyNumberDisplay = propertyNumber;
           if (propertyNumber && allData.Properties) {
             const propertyObj = allData.Properties.find(
               (p) => p.id === propertyNumber
             );
-            if (propertyObj) propertyNumber = propertyObj.property_number;
+            if (propertyObj) propertyNumberDisplay = propertyObj.number;
           }
 
           setData({
             ...contract,
             tenant_name: tenantName,
-            branch_name: branchName,
-            property_number: propertyNumber,
+            // حذف branch_name نهائياً
+            number: propertyNumberDisplay,
           });
         } else {
           setData(null);
@@ -89,67 +85,56 @@ export default function ContractDatailes({ id, onClose }) {
             <div className="details-container">
               <div className="details-row">
                 <div className="details-label">رقم العقد:</div>
-                <div className="details-value">
-                  {data.contract_contractNumber}
-                </div>
+                <div className="details-value">{data.contractNumber}</div>
               </div>
               <div className="details-row">
                 <div className="details-label">اسم المؤجر:</div>
-                <div className="details-value">{data.contract_landlord}</div>
+                <div className="details-value">{data.landlord}</div>
               </div>
               <div className="details-row">
                 <div className="details-label">اسم المستأجر:</div>
                 <div className="details-value">{data.tenant_name}</div>
               </div>
               <div className="details-row">
-                <div className="details-label">رقم العقار:</div>
-                <div className="details-value">{data.property_number}</div>
+                <div className="details-label">رقم العين:</div>
+                <div className="details-value">{data.number}</div>
               </div>
               <div className="details-row">
                 <div className="details-label">تاريخ إنشاء العقد:</div>
-                <div className="details-value">
-                  {data.contract_creationDate}
-                </div>
+                <div className="details-value">{data.creationDate}</div>
               </div>
               <div className="details-row">
                 <div className="details-label">تاريخ بداية العقد:</div>
-                <div className="details-value">{data.contract_startDate}</div>
+                <div className="details-value">{data.startDate}</div>
               </div>
               <div className="details-row">
                 <div className="details-label">تاريخ نهاية العقد:</div>
-                <div className="details-value">{data.contract_endDate}</div>
+                <div className="details-value">{data.endDate}</div>
               </div>
               <div className="details-row">
                 <div className="details-label">قيمة الإيجار الشهري:</div>
-                <div className="details-value">{data.contract_monthlyRent}</div>
+                <div className="details-value">{data.monthlyRent}</div>
               </div>
               <div className="details-row">
                 <div className="details-label">قيمة الإيجار السنوي:</div>
-                <div className="details-value">{data.contract_yerlyRent}</div>
+                <div className="details-value">{data.yerlyRent}</div>
               </div>
               <div className="details-row">
                 <div className="details-label">الغرض من الإيجار:</div>
-                <div className="details-value">
-                  {data.contract_purposeOfLease}
-                </div>
+                <div className="details-value">{data.purposeOfLease}</div>
               </div>
               <div className="details-row">
                 <div className="details-label">الدفعة المقدمة:</div>
-                <div className="details-value">
-                  {data.contract_initialPayment}
-                </div>
+                <div className="details-value">{data.initialPayment}</div>
               </div>
               <div className="details-row">
                 <div className="details-label">الحالة:</div>
-                <div className="details-value">{data.contract_statue}</div>
+                <div className="details-value">{data.statue}</div>
               </div>
-              <div className="details-row">
-                <div className="details-label">اسم الفرع:</div>
-                <div className="details-value">{data.branch_name}</div>
-              </div>
+              {/* حذف عرض اسم الفرع */}
               <div className="details-row">
                 <div className="details-label">المساحة:</div>
-                <div className="details-value">{data.contract_landArea}</div>
+                <div className="details-value">{data.landArea}</div>
               </div>
             </div>
             <div className="modal-actions">
